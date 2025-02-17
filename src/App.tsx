@@ -1,13 +1,13 @@
-import SignInPage from './pages/Auth/SignIn';
+import AppRoutes from './routes';
 
-function App() {
+const App = () => {
   return (
     <>
       <div className="w-screen h-screen flex justify-center items-center flex-col space-y-8">
-        <SignInPage />
+        <AppRoutes />
       </div>
     </>
   );
-}
+};
 
 export default App;
