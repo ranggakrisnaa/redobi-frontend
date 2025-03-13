@@ -1,4 +1,4 @@
-import { loginSchema, LoginSchema } from '@/commons/schema/sign-in.schema';
+import { signInSchema, SignInSchema } from '@/commons/schema/sign-in.schema';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { SignInFormProps } from '@/types/sign-in-props.types';
+import { SignInFormProps } from '@/types/sign-in-prop.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
@@ -17,8 +17,8 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignInSchema>({
+    resolver: zodResolver(signInSchema),
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -26,7 +26,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
     },
   });
 
-  const onSubmit: SubmitHandler<LoginSchema> = (data: LoginSchema) => {
+  const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
     console.log('Form Submitted:', data);
     if (onSuccess) {
       onSuccess(data);
