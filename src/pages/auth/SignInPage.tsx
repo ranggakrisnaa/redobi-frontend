@@ -1,7 +1,7 @@
 import { SignInSchema } from '@/commons/schema/sign-in.schema';
 import AuthContainer from '@/components/containers/AuthContainer';
 import SignInForm from '@/components/modules/auth/SignInForm';
-import { SignInFormProps } from '@/types/sign-in-prop.types';
+import { SignInFormProps } from '@/types/sign-in-prop.type';
 
 const SignInPage: React.FC<SignInFormProps> = () => {
   const handleSuccess = (data: SignInSchema) => {
