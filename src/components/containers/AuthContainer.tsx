@@ -2,7 +2,8 @@ import background from '@/assets/images/background.png';
 import icon from '@/assets/images/icon-batik.png';
 import ilustration from '@/assets/images/ilustration-login.png';
 import logo from '@/assets/images/redobi.png';
-import { AuthContainerProps } from '@/types/component-container-props.type';
+import { AuthContainerProps } from '@/commons/types/component-container-props.type';
+import * as React from 'react';
 
 const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
   return (
@@ -16,10 +17,10 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
           />
         </div>
         <div className="flex flex-col items-center relative z-10 gap-3">
-          <p className="text-3xl md:text-5xl font-bold text-center text-white ">
+          <p className="text-3xl md:text-5xl font-bold text-center text-white">
             Sistem Rekomendasi
           </p>
-          <p className="text-3xl md:text-5xl font-bold text-center text-white ">
+          <p className="text-3xl md:text-5xl font-bold text-center text-white">
             Dosen Pembimbing
           </p>
         </div>
@@ -27,7 +28,7 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
           <img src={ilustration} alt="Illustration" className="w-full h-auto" />
         </div>
       </div>
-      <div className="w-full md:w-1/2 h-1/2 md:h-full flex justify-start items-center flex-col bg-white relative px-4">
+      <div className="w-full md:w-1/2 h-1/2 md:h-full flex justify-start items-center flex-col bg-white gap-6 relative px-4">
         <img
           src={logo}
           alt="Logo"
@@ -38,7 +39,7 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
           src={icon}
           className="absolute right-0 bottom-0 [transform:rotate(180deg)]"
         />
-        <div>{children}</div>
+        <div className="mt-16">{children}</div>
       </div>
     </div>
   );

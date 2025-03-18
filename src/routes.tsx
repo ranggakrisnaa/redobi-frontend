@@ -1,3 +1,4 @@
+import PrivateRoute from '@/private-route.tsx';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
@@ -8,10 +9,12 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/verify" element={<VerifySignInPage />} />
-        <Route path="/students" element={<StudentPage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/students" element={<StudentPage />} />
+        </Route>
       </Routes>
     </Router>
   );

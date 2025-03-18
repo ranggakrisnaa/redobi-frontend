@@ -2,6 +2,7 @@ import {
   verifySignInSchema,
   VerifySignInSchema,
 } from '@/commons/schema/verify-sign-in.schema';
+import { VerifySignInProps } from '@/commons/types/verify-sign-in-props.type';
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
@@ -15,7 +16,6 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { VerifySignInProps } from '@/types/verify-sign-in-props.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -66,7 +66,7 @@ const VerifySignInForm: React.FC<VerifySignInProps> = ({ onSuccess }) => {
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="mt-10 bg-primary-500 h-[44px] w-full"
+          className="mt-10 bg-primary-500 h-[44px] w-full disabled:opacity-100"
         >
           Submit
         </Button>

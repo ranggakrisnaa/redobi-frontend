@@ -1,4 +1,5 @@
 import { signInSchema, SignInSchema } from '@/commons/schema/sign-in.schema';
+import { SignInFormProps } from '@/commons/types/sign-in-prop.type';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -9,13 +10,15 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { SignInFormProps } from '@/types/sign-in-prop.type';
+import { useAuthStore } from '@/store/authStore.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
+import * as React from 'react';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
+  const { rememberMe, setRememberMe } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
@@ -92,6 +95,8 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
           <div className="flex items-center justify-center gap-2">
             <Checkbox
               id="terms"
+              checked={rememberMe}
+              onCheckedChange={setRememberMe}
               className="border-primary-500 data-[state=checked]:bg-primary-500 data-[state=checked]:text-primary-foreground"
             />
             <label
@@ -107,13 +112,15 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
             </p>
           </div>
         </div>
-        <Button
-          type="submit"
-          disabled={!form.formState.isValid}
-          className="mt-10 bg-primary-500 h-[44px] w-full"
-        >
-          Submit
-        </Button>
+        <div className="relative">
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid}
+            className="mt-10 bg-primary-500 h-[44px] w-full disabled:opacity-100 absolute z-40"
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </FormProvider>
   );

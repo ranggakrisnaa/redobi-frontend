@@ -1,4 +1,5 @@
-import { DashboardContainerProps } from '@/types/component-container-props.type';
+import { DashboardContainerProps } from '@/commons/types/component-container-props.type';
+import * as React from 'react';
 import SideBarComponent from '../commons/SideBarComponent';
 
 const DashboardContainer: React.FC<DashboardContainerProps> = ({
