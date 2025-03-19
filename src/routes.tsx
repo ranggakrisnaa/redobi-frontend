@@ -7,7 +7,7 @@ import StudentPage from './pages/student/StudentPage';
 
 const AppRoutes = () => {
   return (
-    <Router>
+    <Router basename="/">
       <Routes>
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/verify" element={<VerifySignInPage />} />
