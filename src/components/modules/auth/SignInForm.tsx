@@ -39,7 +39,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
+        <div className="space-y-3">
           <FormField
             control={form.control}
             name="email"
@@ -112,15 +112,13 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
             </p>
           </div>
         </div>
-        <div className="relative">
-          <Button
-            type="submit"
-            disabled={!form.formState.isValid}
-            className="mt-10 bg-primary-500 h-[44px] w-full disabled:opacity-100 absolute z-40"
-          >
-            Submit
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          disabled={!form.formState.isValid}
+          className="mt-8 bg-primary-500 h-[44px] w-full disabled:opacity-100"
+        >
+          Submit
+        </Button>
       </form>
     </FormProvider>
   );

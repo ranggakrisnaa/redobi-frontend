@@ -5,20 +5,28 @@ import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
 import VerifySignInForm from '@/components/modules/auth/VerifySignInForm';
 import { useAuthStore } from '@/store/authStore.ts';
-import { useState } from 'react';
+import { maskEmail } from '@/utils/utils.ts';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+type VerifyLoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+  tokenExpires: number;
+};
+
 const VerifySignInPage = () => {
-  const { rememberMe, userId } = useAuthStore();
+  const { rememberMe, login, user, checkSession, setToken } = useAuthStore();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  type VerifyLoginResponse = {
-    accessToken: string;
-    refreshToken: string;
-    tokenExpires: number;
-  };
+  useEffect(() => {
+    checkSession();
+    if (!user) {
+      navigate('/sign-in');
+    }
+  }, [checkSession, user, navigate]);
 
   const handleSuccess = async (data: VerifySignInSchema) => {
     setError(null);
@@ -26,11 +34,11 @@ const VerifySignInPage = () => {
     try {
       const response = await apiService.post<VerifyLoginResponse>(
         '/auth/verify-login',
-        { ...data, userId },
+        { ...data, ...login },
       );
       if (response.status === 200) {
         if (rememberMe) {
-          localStorage.setItem('token', response.data.accessToken);
+          setToken(response.data.accessToken, rememberMe);
         }
         navigate('/');
         return;
@@ -41,6 +49,7 @@ const VerifySignInPage = () => {
       setLoading(false);
     }
   };
+
   return (
     <AuthContainer>
       {loading ? (
@@ -51,7 +60,7 @@ const VerifySignInPage = () => {
         <>
           <div className="flex justify-center flex-col items-center">
             <div className="text-center max-w-[420px]">
-              <p className="text-3xl md:text-4xl font-bold mb-10 2xl:mb-12">
+              <p className="text-3xl md:text-4xl font-bold mb-2">
                 Masukkan Kode OTP
               </p>
               {error ? (
@@ -61,9 +70,9 @@ const VerifySignInPage = () => {
                   </AlertComponent>
                 </div>
               ) : (
-                <p className="text-xl md:text-2xl font-normal">
-                  Kode verifikasi telah dikirim melalui email ke
-                  s*******@gmail.com
+                <p className="text-lg md:text-xl font-normal">
+                  Kode verifikasi telah dikirim melalui email ke{' '}
+                  {maskEmail(user?.email)}
                 </p>
               )}
               <p className="my-6 text-lg font-normal">Kode Verifikasi</p>

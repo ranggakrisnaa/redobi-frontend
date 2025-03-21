@@ -1,4 +1,4 @@
-import PrivateRoute from '@/private-route.tsx';
+import PrivateRoute from '@/middlewares/privateRoute.tsx';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';

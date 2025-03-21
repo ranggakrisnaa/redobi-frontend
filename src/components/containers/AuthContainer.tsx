@@ -7,7 +7,7 @@ import * as React from 'react';
 
 const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
   return (
-    <div className="w-full flex flex-col md:flex-row items-center justify-center h-screen overflow-hidden">
+    <div className="w-full h-screen flex overflow-hidden">
       <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col gap-6 md:gap-10 justify-center items-center p-6 md:p-8 bg-gradient-to-tr from-[#001a66] via-[#1663e7] to-[#b0c8f7]">
         <div className="absolute inset-0">
           <img
@@ -24,22 +24,25 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
             Dosen Pembimbing
           </p>
         </div>
-        <div className="w-3/4 md:w-auto relative z-10">
-          <img src={ilustration} alt="Illustration" className="w-full h-auto" />
-        </div>
+        <img
+          src={ilustration}
+          alt="Illustration"
+          className="w-[571px] h-[443px] mt-12"
+        />
       </div>
-      <div className="w-full md:w-1/2 h-1/2 md:h-full flex justify-start items-center flex-col bg-white gap-6 relative px-4">
+      <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex justify-center items-center flex-col bg-white gap-6">
         <img
           src={logo}
           alt="Logo"
-          className="w-[180px] 2xl:w-[250px] md:mt-[40px]"
+          className="w-[180px] 2xl:w-[250px] absolute top-[60px] 2xl:top-[120px]"
         />
-        <img src={icon} className="absolute left-0 top-0" />
+        <img src={icon} className="absolute left-0 top-0" alt="icon" />
         <img
           src={icon}
           className="absolute right-0 bottom-0 [transform:rotate(180deg)]"
+          alt="icon"
         />
-        <div className="mt-16">{children}</div>
+        <div className="">{children}</div>
       </div>
     </div>
   );
