@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/input-otp';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import * as React from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 const VerifySignInForm: React.FC<VerifySignInProps> = ({ onSuccess }) => {
@@ -66,7 +67,7 @@ const VerifySignInForm: React.FC<VerifySignInProps> = ({ onSuccess }) => {
         <Button
           type="submit"
           disabled={!form.formState.isValid}
-          className="mt-10 bg-primary-500 h-[44px] w-full disabled:opacity-100"
+          className="mt-8 bg-primary-500 h-[44px] w-full disabled:opacity-100"
         >
           Submit
         </Button>

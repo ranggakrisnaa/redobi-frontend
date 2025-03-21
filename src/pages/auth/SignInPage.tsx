@@ -7,19 +7,27 @@ import AuthContainer from '@/components/containers/AuthContainer';
 import SignInForm from '@/components/modules/auth/SignInForm';
 import { useAuthStore } from '@/store/authStore.ts';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+type LoginResponse = {
+  id: string;
+  token: string;
+  email: string;
+};
+
 const SignInPage: React.FC<SignInFormProps> = () => {
-  const { setUserId } = useAuthStore();
+  const { login, rememberMe, user } = useAuthStore();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  type LoginResponse = {
-    id: string;
-    token: string;
-  };
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      navigate('/verify');
+    }
+  }, [user, navigate]);
 
   const handleSuccess = async (data: SignInSchema) => {
     setError(null);
@@ -29,9 +37,8 @@ const SignInPage: React.FC<SignInFormProps> = () => {
         '/auth/login',
         data,
       );
-      console.log(response.data);
       if (response.status === 200) {
-        setUserId(response.data.id);
+        login(response.data, rememberMe);
         navigate('/verify');
         return;
       }
@@ -50,15 +57,18 @@ const SignInPage: React.FC<SignInFormProps> = () => {
         </div>
       ) : (
         <>
-          <p className="text-3xl md:text-4xl text-center font-bold mb-10 2xl:mb-12">
-            Selamat Datang
-          </p>
-          {error && (
-            <AlertComponent>
-              <p>{error}</p>
-            </AlertComponent>
-          )}
           <div className="min-w-96 2xl:min-w-[480px]">
+            <p className="text-3xl md:text-4xl text-center font-bold mb-2">
+              Selamat Datang
+            </p>
+            <p className="text-center font-medium mb-8">
+              Masuk ke akun Anda untuk mengakses semua fitur.
+            </p>
+            {error && (
+              <AlertComponent>
+                <p>{error}</p>
+              </AlertComponent>
+            )}
             <SignInForm onSuccess={handleSuccess} />
           </div>
         </>
