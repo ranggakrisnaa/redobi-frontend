@@ -6,9 +6,11 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <SideBarComponent />
-      <main className="flex-1 p-4 border-t mt-[71.9px] max-w-full overflow-hidden">
+    <div className="flex w-full min-h-screen">
+      <div className="fixed h-screen flex">
+        <SideBarComponent />
+      </div>
+      <main className="flex-1 p-4 border-t overflow-y-auto min-h-screen pl-72">
         {children}
       </main>
     </div>

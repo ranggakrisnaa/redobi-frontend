@@ -1,6 +1,6 @@
 import apiService from '@/api/apiService.ts';
 import { SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInFormProps } from '@/commons/types/sign-in-prop.type';
+import { SignInFormProps } from '@/commons/types/auth/sign-in-prop.type.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
@@ -28,6 +28,10 @@ const SignInPage: React.FC<SignInFormProps> = () => {
       navigate('/verify');
     }
   }, [user, navigate]);
+
+  const handleForgotPassword = () => {
+    console.log('clicked');
+  };
 
   const handleSuccess = async (data: SignInSchema) => {
     setError(null);
@@ -69,7 +73,10 @@ const SignInPage: React.FC<SignInFormProps> = () => {
                 <p>{error}</p>
               </AlertComponent>
             )}
-            <SignInForm onSuccess={handleSuccess} />
+            <SignInForm
+              onSuccess={handleSuccess}
+              onClick={handleForgotPassword}
+            />
           </div>
         </>
       )}

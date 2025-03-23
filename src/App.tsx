@@ -1,12 +1,15 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppRoutes from './routes';
+
+const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <>
-      <div className="w-screen h-screen flex justify-center items-center flex-col space-y-8">
+    <QueryClientProvider client={queryClient}>
+      <div className="w-full min-h-screen">
         <AppRoutes />
       </div>
-    </>
+    </QueryClientProvider>
   );
 };
 

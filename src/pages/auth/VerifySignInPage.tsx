@@ -1,5 +1,7 @@
 import apiService from '@/api/apiService.ts';
 import { VerifySignInSchema } from '@/commons/schema/verify-sign-in.schema';
+import { ResendOtpResponse } from '@/commons/types/auth/resend-otp-res.type.ts';
+import { UserLoginData } from '@/commons/types/auth/user-login-data.type.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
@@ -28,18 +30,35 @@ const VerifySignInPage = () => {
     }
   }, [checkSession, user, navigate]);
 
+  const handleResendOTP = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const response = await apiService.post<ResendOtpResponse>(
+        '/auth/resend',
+        { userId: user?.id, email: user?.email },
+      );
+      if (response.status == 200) {
+        login(user as UserLoginData, rememberMe);
+        return;
+      }
+    } catch {
+      setError('Gagal mengirim ulang kode OTP. Coba lagi nanti.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSuccess = async (data: VerifySignInSchema) => {
     setError(null);
     setLoading(true);
     try {
       const response = await apiService.post<VerifyLoginResponse>(
         '/auth/verify-login',
-        { ...data, ...login },
+        { userId: user?.id, otpCode: data.otpCode },
       );
       if (response.status === 200) {
-        if (rememberMe) {
-          setToken(response.data.accessToken, rememberMe);
-        }
+        setToken(response.data.accessToken, rememberMe);
         navigate('/');
         return;
       }
@@ -85,7 +104,12 @@ const VerifySignInPage = () => {
             <p className="text-sm font-medium text-black">
               Tidak menerima kode?
             </p>
-            <p className="text-sm font-medium text-primary-500">Kirim Ulang</p>
+            <p
+              className="text-sm font-medium text-primary-500 select-none hover:cursor-pointer z-50"
+              onClick={handleResendOTP}
+            >
+              Kirim Ulang
+            </p>
           </div>
         </>
       )}

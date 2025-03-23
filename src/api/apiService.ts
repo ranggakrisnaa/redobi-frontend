@@ -17,7 +17,7 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth-token');
     if (token) {
       config.headers = {
         ...config.headers,
@@ -37,7 +37,9 @@ apiClient.interceptors.response.use(
     if (response) {
       switch (response.status) {
         case 401:
-          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth-token');
+          localStorage.removeItem('auth-data');
+          localStorage.removeItem('auth-storage');
           break;
         case 500:
           console.error('Server error occurred:', error);

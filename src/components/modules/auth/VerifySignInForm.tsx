@@ -2,7 +2,7 @@ import {
   verifySignInSchema,
   VerifySignInSchema,
 } from '@/commons/schema/verify-sign-in.schema';
-import { VerifySignInProps } from '@/commons/types/verify-sign-in-props.type';
+import { VerifySignInProps } from '@/commons/types/auth/verify-sign-in-props.type.ts';
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
