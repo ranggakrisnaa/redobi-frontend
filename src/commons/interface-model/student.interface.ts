@@ -1,9 +1,9 @@
+import { ClassEnum } from '@/commons/enums/class.enum.ts';
+import { MajorEnum } from '@/commons/enums/major.enum.ts';
+import { IReccomendation } from '@/commons/interface-model/reccomendation.interface.ts';
+import { ISelection } from '@/commons/interface-model/selection.interface.ts';
+import { IUser } from '@/commons/interface-model/user.interface.ts';
 import { UUID } from 'crypto';
-import { ClassEnum } from '../enums/class.enum';
-import { MajorEnum } from '../enums/major.enum';
-import { IReccomendation } from './reccomendation.interface';
-import { ISelection } from './selection.interface';
-import { IUser } from './user.interface';
 
 export interface IStudent {
   id: UUID;

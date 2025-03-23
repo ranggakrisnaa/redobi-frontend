@@ -1,5 +1,5 @@
 import { signInSchema, SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInFormProps } from '@/commons/types/sign-in-prop.type';
+import { SignInFormProps } from '@/commons/types/auth/sign-in-prop.type.ts';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -17,7 +17,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
+const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
   const { rememberMe, setRememberMe } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const form = useForm<SignInSchema>({
@@ -101,24 +101,29 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess }) => {
             />
             <label
               htmlFor="terms"
-              className="text-sm font-medium text-neutral-500 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-medium text-neutral-500 leading-none cursor-pointer select-none"
             >
               Ingat Saya?
             </label>
           </div>
           <div>
-            <p className="text-sm font-medium text-primary-500">
+            <p
+              className="text-sm font-medium text-primary-500 cursor-pointer select-none"
+              onClick={onClick}
+            >
               Lupa Password?
             </p>
           </div>
         </div>
-        <Button
-          type="submit"
-          disabled={!form.formState.isValid}
-          className="mt-8 bg-primary-500 h-[44px] w-full disabled:opacity-100"
-        >
-          Submit
-        </Button>
+        <div className="relative">
+          <Button
+            type="submit"
+            disabled={!form.formState.isValid}
+            className="mt-8 bg-primary-500 h-[44px] w-full disabled:opacity-100 absolute z-40"
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </FormProvider>
   );

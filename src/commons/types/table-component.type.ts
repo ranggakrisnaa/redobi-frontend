@@ -1,7 +1,8 @@
+import { UUID } from 'crypto';
 import * as React from 'react';
 
 export type TableComponentItem = {
-  id: number;
+  id: UUID;
   avatar?: string;
   [key: string]: string | number | boolean | null | undefined;
 };

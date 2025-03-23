@@ -2,6 +2,7 @@ import { TableComponentProps } from '@/commons/interfaces/table-component.interf
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
+import * as React from 'react';
 import { useState } from 'react';
 import {
   Table,
@@ -12,19 +13,15 @@ import {
   TableRow,
 } from '../ui/table';
 
-const TableComponent = <T extends TableComponentItem>({
+const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   data,
   columns,
-}: TableComponentProps<T>) => {
+}) => {
   const [selected, setSelected] = useState<number[]>([]);
   const isAllSelected = selected.length === data.length;
 
   const toggleSelectAll = () => {
-    if (isAllSelected) {
-      setSelected([]);
-    } else {
-      setSelected(data.map((item) => item.id));
-    }
+    setSelected(isAllSelected ? [] : data.map((_item, index) => index));
   };
 
   const toggleSelect = (id: number) => {
@@ -35,14 +32,14 @@ const TableComponent = <T extends TableComponentItem>({
 
   return (
     <div className="rounded-lg mt-10 overflow-hidden border-b-4">
-      <div className="relative max-h-96 overflow-y-auto">
+      <div className="relative max-h-full overflow-y-auto">
         <Table className="w-full min-w-[1000px] border-0">
-          <TableHeader className="bg-gray-100 text-gray-700 sticky top-0 z-10 shadow-none">
+          <TableHeader className="bg-gray-100 text-gray-700 top-0 z-10">
             <TableRow>
-              <TableHead className="min-w-[40px] text-center">
+              <TableHead className="w-[40px] text-center">
                 <Checkbox
                   checked={isAllSelected}
-                  onCheckedChange={() => toggleSelectAll()}
+                  onCheckedChange={toggleSelectAll}
                   className="size-4"
                 />
               </TableHead>
@@ -60,17 +57,17 @@ const TableComponent = <T extends TableComponentItem>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
+            {data.map((item, index) => (
               <TableRow key={item.id} className="border-b hover:bg-gray-50">
                 <TableCell className="text-center">
                   <Checkbox
-                    checked={selected.includes(item.id)}
-                    onCheckedChange={() => toggleSelect(item.id)}
+                    checked={selected.includes(index)}
+                    onCheckedChange={() => toggleSelect(index)}
                     className="size-4"
                   />
                 </TableCell>
-                {columns.map((column, index) => (
-                  <TableCell key={index} className="py-2">
+                {columns.map((column, colIndex) => (
+                  <TableCell key={colIndex} className="py-2">
                     {column.cell ? column.cell(item) : item[column.accessorKey]}
                   </TableCell>
                 ))}
