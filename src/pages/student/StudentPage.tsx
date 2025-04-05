@@ -1,5 +1,6 @@
-import { filterOptions } from '@/commons/constants/filter-option-student.constant.ts';
-import { TableComponentColumnDef } from '@/commons/types/table-component.type.ts';
+import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
+import { studentColumns } from '@/commons/constants/student/table-column-data.constant.tsx';
+import { StudentFilterParams } from '@/commons/types/student/student-filter-data.type.ts';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
@@ -7,39 +8,55 @@ import PaginationComponent from '@/components/commons/PaginationComponent.tsx';
 import TableComponent from '@/components/commons/TableComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar.tsx';
-import { useStudents } from '@/hooks/useStudent.ts';
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb.tsx';
+import { useStudentsPagination } from '@/hooks/useStudent.ts';
 import { useStudentStore } from '@/store/studentStore.ts';
+import { Slash } from 'lucide-react';
+import { useEffect } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const StudentPage = () => {
-  const { currentPage, pageSize, setPage, setPageSize, setFilters } =
-    useStudentStore();
-  const { data, isLoading, isError, error } = useStudents();
+  const {
+    currentPage,
+    pageSize,
+    setPage,
+    setPageSize,
+    setFilters,
+    setSearch,
+    setSortData,
+  } = useStudentStore();
+  const { data, isLoading, isError, error } = useStudentsPagination();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
 
-  const mahasiswaColumns: TableComponentColumnDef[] = [
-    {
-      accessorKey: 'name',
-      header: 'Nama Mahasiswa',
-      cell: (item) => (
-        <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={item.imageUrl ?? null} alt={item.name} />
-            <AvatarFallback></AvatarFallback>
-          </Avatar>
-          <span className="whitespace-pre-line">{item.name}</span>
-        </div>
-      ),
-      width: 'w-[283px]',
-    },
-    { accessorKey: 'nim', header: 'NIM', width: 'w-[120px]' },
-    { accessorKey: 'tahunMasuk', header: 'Angkatan', width: 'w-[100px]' },
-    { accessorKey: 'major', header: 'Jurusan', width: 'w-[106px]' },
-    { accessorKey: 'kelas', header: 'Kelas', width: 'w-[115px]' },
-    { accessorKey: 'judulSkripsi', header: 'Judul Skripsi', width: 'w-1/3' },
-  ];
+  useEffect(() => {
+    setFilters({
+      tahun_masuk: searchParams.get('angkatan') || '',
+      major: searchParams.get('jurusan') || '',
+      class: searchParams.get('kelas') || '',
+    });
+
+    setSearch(searchParams.get('search') || '');
+  }, [searchParams, setFilters, setSearch]);
+
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setSearchParams(newParams, { replace: true });
+  };
 
   const formattedData =
     data?.data.map((student) => ({
@@ -53,42 +70,84 @@ const StudentPage = () => {
       imageUrl: student.imageUrl,
     })) || [];
 
-  const handleFilterChange = (filters: any) => {
+  const handleFilterChange = (filters: StudentFilterParams) => {
     setFilters({
-      tahun_masuk: filters.angkatan || null,
-      major: filters.jurusan || null,
-      class: filters.kelas || null,
+      tahun_masuk: filters.angkatan ?? '',
+      major: filters.jurusan ?? '',
+      class: filters.kelas ?? '',
+    });
+
+    updateURL({
+      angkatan: filters.angkatan || '',
+      jurusan: filters.jurusan || '',
+      kelas: filters.kelas || '',
     });
   };
 
+  const handleSearchChange = (search: string) => {
+    setSearch(search);
+    updateURL({ search });
+  };
+
+  const handleSortData = (sort: string) => {
+    setSortData(sort);
+  };
+
   return (
-    <DashboardContainer>
-      <h1 className="text-2xl font-bold">Data Mahasiswa</h1>
-      <DataManagementComponent />
-      <FilterComponent
-        filterOptions={filterOptions}
-        onFilterChange={handleFilterChange}
-      />
-      {isLoading ? (
-        <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
-          <LoadingComponent />
-        </div>
-      ) : isError ? (
-        <p className="text-center text-red-500 mt-3">{error.message}</p>
-      ) : (
-        <>
-          <TableComponent data={formattedData} columns={mahasiswaColumns} />
-          <div className="flex justify-end mt-4 w-full">
-            <PaginationComponent
-              currentPage={currentPage}
-              pageSize={pageSize}
-              totalItems={data?.pagination.totalRecords || 0}
-              onPageChange={setPage}
-              onPageSizeChange={setPageSize}
-            />
+    <DashboardContainer pageTitle="Data Mahasiswa">
+      <div>
+        <BreadcrumbList>
+          <BreadcrumbList>
+            <BreadcrumbSeparator>
+              <Slash />
+            </BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                onClick={() => navigate('/students')}
+                className={
+                  currentPath == '/students'
+                    ? 'text-black font-medium hover:cursor-pointer'
+                    : ''
+                }
+              >
+                Mahasiswa
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </BreadcrumbList>
+      </div>
+      <div>
+        <DataManagementComponent onSearchChange={handleSearchChange} />
+        <FilterComponent
+          filterOptions={filterOptions}
+          onFilterChange={handleFilterChange}
+        />
+        {isLoading ? (
+          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
+            <LoadingComponent />
           </div>
-        </>
-      )}
+        ) : isError ? (
+          <p className="text-center text-red-500 mt-3">{error.message}</p>
+        ) : (
+          <>
+            <TableComponent
+              data={formattedData}
+              columns={studentColumns}
+              onSort={handleSortData}
+              pathDetail="students"
+            />
+            <div className="flex justify-end mt-4 w-full">
+              <PaginationComponent
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalItems={data?.pagination.totalRecords || 0}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize}
+              />
+            </div>
+          </>
+        )}
+      </div>
     </DashboardContainer>
   );
 };

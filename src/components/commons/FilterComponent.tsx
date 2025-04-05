@@ -24,7 +24,7 @@ type FilterOptionType = {
 
 type FilterComponentProps = {
   filterOptions: Record<string, FilterOptionType[]>;
-  onFilterChange: (filters: Record<string, any>) => void;
+  onFilterChange: (filters: any) => void;
 };
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
@@ -86,7 +86,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
             />
           ))}
         </div>
-        {/* Button Reset */}
         <Button
           type="button"
           variant="outline"

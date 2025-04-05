@@ -3,3 +3,9 @@ export type StudentFilter = {
   major: string;
   class: string;
 };
+
+export type StudentFilterParams = {
+  angkatan: string | null;
+  jurusan: string | null;
+  kelas: string | null;
+};

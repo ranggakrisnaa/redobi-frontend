@@ -65,6 +65,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({
               <PaginationPrevious
                 onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
                 aria-disabled={currentPage === 1}
+                className="hover:bg-blue-100"
               />
             </PaginationItem>
             {totalPages > 3 && currentPage > 2 && (
@@ -73,6 +74,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                   <PaginationLink
                     onClick={() => onPageChange(1)}
                     isActive={currentPage === 1}
+                    className="hover:bg-blue-100 px-3 py-1 rounded-md"
                   >
                     1
                   </PaginationLink>
@@ -87,6 +89,11 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                 <PaginationLink
                   onClick={() => onPageChange(page)}
                   isActive={currentPage === page}
+                  className={`${
+                    currentPage === page
+                      ? 'border border-blue-500 bg-blue-100 text-blue-700'
+                      : 'hover:bg-blue-100'
+                  } px-3 py-1 rounded-md`}
                 >
                   {page}
                 </PaginationLink>
@@ -101,6 +108,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                   <PaginationLink
                     onClick={() => onPageChange(totalPages)}
                     isActive={currentPage === totalPages}
+                    className="hover:bg-blue-100 px-3 py-1 rounded-md"
                   >
                     {totalPages}
                   </PaginationLink>
@@ -113,6 +121,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                   currentPage < totalPages && onPageChange(currentPage + 1)
                 }
                 aria-disabled={currentPage === totalPages}
+                className="hover:bg-blue-100"
               />
             </PaginationItem>
           </PaginationContent>
