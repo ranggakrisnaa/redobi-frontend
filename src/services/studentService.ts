@@ -18,6 +18,7 @@ export const fetchStudentsPagination = async (
   if (search) {
     params.append('search', search);
   }
+
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined && value !== '') {
       params.append(key, value.toString());
@@ -37,3 +38,11 @@ export const fetchStudentsPagination = async (
   );
   return response.data;
 };
+
+export const fetchStudentDetail = () => {};
+
+export const createStudent = () => {};
+
+export const updateStudent = () => {};
+
+export const deleteStudent = () => {};

@@ -40,3 +40,11 @@ export const useStudentsPagination = () => {
     staleTime: 0,
   });
 };
+
+export const useStudentDetail = () => {};
+
+export const useStudentCreate = () => {};
+
+export const useStudentUpdate = () => {};
+
+export const useStudentDelete = () => {};

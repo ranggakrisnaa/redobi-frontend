@@ -1,29 +1,23 @@
-import apiService from '@/api/apiService.ts';
 import { SignInSchema } from '@/commons/schema/sign-in.schema';
 import { SignInProps } from '@/commons/types/pages-props.type.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
 import SignInForm from '@/components/modules/auth/SignInForm';
+import { useAuthSignIn } from '@/hooks/useAuth.ts';
 import { useAuthStore } from '@/store/authStore.ts';
+import { useGlobalStore } from '@/store/globalStore.ts';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-type LoginResponse = {
-  id: string;
-  token: string;
-  email: string;
-};
-
 const SignInPage: React.FC<SignInProps> = () => {
-  const { login, rememberMe, user } = useAuthStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { mutate } = useAuthSignIn();
+  const { loading, error } = useGlobalStore();
 
   useEffect(() => {
-    console.log(user);
     if (user) {
       navigate('/verify', { replace: true });
     }
@@ -34,23 +28,7 @@ const SignInPage: React.FC<SignInProps> = () => {
   };
 
   const handleSuccess = async (data: SignInSchema) => {
-    setError(null);
-    setLoading(true);
-    try {
-      const response = await apiService.post<LoginResponse>(
-        '/auth/login',
-        data,
-      );
-      if (response.status === 200) {
-        login(response.data, rememberMe);
-        navigate('/verify');
-        return;
-      }
-    } catch {
-      setError('Login gagal. Periksa kembali email dan password Anda.');
-    } finally {
-      setLoading(false);
-    }
+    mutate(data);
   };
 
   return (
