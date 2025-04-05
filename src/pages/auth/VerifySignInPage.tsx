@@ -1,27 +1,25 @@
-import apiService from '@/api/apiService.ts';
 import { VerifySignInSchema } from '@/commons/schema/verify-sign-in.schema';
-import { ResendOtpResponse } from '@/commons/types/auth/resend-otp-res.type.ts';
 import { UserLoginData } from '@/commons/types/auth/user-login-data.type.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
 import VerifySignInForm from '@/components/modules/auth/VerifySignInForm';
+import {
+  useAuthResendOTPVerify,
+  useAuthVerifySignIn,
+} from '@/hooks/useAuth.ts';
 import { useAuthStore } from '@/store/authStore.ts';
+import { useGlobalStore } from '@/store/globalStore.ts';
 import { maskEmail } from '@/utils/utils.ts';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-type VerifyLoginResponse = {
-  accessToken: string;
-  refreshToken: string;
-  tokenExpires: number;
-};
-
 const VerifySignInPage = () => {
-  const { rememberMe, login, user, checkSession, setToken } = useAuthStore();
+  const { user, checkSession } = useAuthStore();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { error, loading } = useGlobalStore();
+  const { mutate: verifySignInMutate } = useAuthVerifySignIn();
+  const { mutate: resendOTPVerifyMutate } = useAuthResendOTPVerify();
 
   useEffect(() => {
     checkSession();
@@ -31,42 +29,11 @@ const VerifySignInPage = () => {
   }, [checkSession, user, navigate]);
 
   const handleResendOTP = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      const response = await apiService.post<ResendOtpResponse>(
-        '/auth/resend',
-        { userId: user?.id, email: user?.email },
-      );
-      if (response.status == 200) {
-        login(user as UserLoginData, rememberMe);
-        return;
-      }
-    } catch {
-      setError('Gagal mengirim ulang kode OTP. Coba lagi nanti.');
-    } finally {
-      setLoading(false);
-    }
+    resendOTPVerifyMutate(user as UserLoginData);
   };
 
   const handleSuccess = async (data: VerifySignInSchema) => {
-    setError(null);
-    setLoading(true);
-    try {
-      const response = await apiService.post<VerifyLoginResponse>(
-        '/auth/verify-login',
-        { userId: user?.id, otpCode: data.otpCode },
-      );
-      if (response.status === 200) {
-        setToken(response.data.accessToken, rememberMe);
-        navigate('/');
-        return;
-      }
-    } catch {
-      setError('Verifikasi OTP gagal. Cek kembali OTP yang dikirimkan');
-    } finally {
-      setLoading(false);
-    }
+    verifySignInMutate({ data, user: user as UserLoginData });
   };
 
   return (
