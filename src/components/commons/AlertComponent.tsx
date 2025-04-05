@@ -1,4 +1,4 @@
-import { AlertComponentProps } from '@/commons/types/component-container-props.type.ts';
+import { AlertComponentProps } from '@/commons/types/component-props.type.ts';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { AlertCircle } from 'lucide-react';
 import * as React from 'react';

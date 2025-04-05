@@ -1,32 +1,38 @@
 import apiService from '@/api/apiService.ts';
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
+import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';
 import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
 
-export type StudentResponse = {
-  data: IStudent[];
-  pagination: {
-    totalRecords: number;
-    totalPages: number;
-  };
-};
-
-export const fetchStudents = async (
+export const fetchStudentsPagination = async (
   page = 1,
   limit = 10,
   filters: StudentFilter,
-): Promise<StudentResponse> => {
+  search: string,
+  sortBy?: string,
+  sortOrder: 'asc' | 'desc' = 'desc',
+): Promise<StudentPaginationResponse> => {
   const params = new URLSearchParams();
 
   params.append('page', page.toString());
   params.append('limit', limit.toString());
 
+  if (search) {
+    params.append('search', search);
+  }
   Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
+    if (value !== undefined && value !== '') {
       params.append(key, value.toString());
     }
   });
 
-  const response = await apiService.get<StudentResponse>(
+  if (sortBy) {
+    params.append('sort', sortBy);
+    params.append('order', sortOrder.toUpperCase());
+  } else {
+    params.append('sort', 'full_name');
+    params.append('order', 'ASC');
+  }
+
+  const response = await apiService.get<StudentPaginationResponse>(
     `/students?${params.toString()}`,
   );
   return response.data;

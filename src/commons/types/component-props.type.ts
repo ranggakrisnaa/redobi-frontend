@@ -6,8 +6,13 @@ export type AuthContainerProps = {
 
 export type DashboardContainerProps = {
   children: ReactNode;
+  pageTitle: string;
 };
 
 export type AlertComponentProps = {
   children: ReactNode;
+};
+
+export type NavBreadCumbComponentProps = {
+  children?: ReactNode;
 };

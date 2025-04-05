@@ -7,4 +7,6 @@ export interface TableComponentProps<T extends TableComponentItem> {
   data: T[];
   columns: TableComponentColumnDef[];
   title?: string;
+  onSort?: (sort: string) => void;
+  pathDetail: string;
 }

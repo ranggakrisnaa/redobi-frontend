@@ -9,7 +9,7 @@ export type TableComponentItem = {
 
 export type TableComponentColumnDef = {
   accessorKey: string;
-  header: string;
+  header: (item?: any) => React.ReactNode;
   cell?: (item: any) => React.ReactNode;
   width?: string;
   minWidth?: string;

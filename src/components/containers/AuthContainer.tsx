@@ -2,7 +2,7 @@ import background from '@/assets/images/background.png';
 import icon from '@/assets/images/icon-batik.png';
 import ilustration from '@/assets/images/ilustration-login.png';
 import logo from '@/assets/images/redobi.png';
-import { AuthContainerProps } from '@/commons/types/component-container-props.type';
+import { AuthContainerProps } from '@/commons/types/component-props.type.ts';
 import * as React from 'react';
 
 const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {

@@ -1,5 +1,5 @@
 import { signInSchema, SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInFormProps } from '@/commons/types/auth/sign-in-prop.type.ts';
+import { SignInProps } from '@/commons/types/pages-props.type.ts';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -17,7 +17,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
+const SignInForm: React.FC<SignInProps> = ({ onSuccess, onClick }) => {
   const { rememberMe, setRememberMe } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const form = useForm<SignInSchema>({
@@ -51,7 +51,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
                     placeholder="Masukkan Email"
                     {...field}
                     autoComplete="email"
-                    className="focus:border-primary-500 bg-primary-000 min-h-11"
+                    className="focus:border-primary-500 bg-primary-O00 min-h-11 pr-10 autofill:bg-transparent"
                   />
                 </FormControl>
                 <FormMessage />
@@ -71,7 +71,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
                       placeholder="Masukkan Password"
                       {...field}
                       autoComplete="current-password"
-                      className="focus:border-primary-500 bg-primary-000 min-h-11 pr-10"
+                      className="focus:border-primary-500 bg-primary-O00 min-h-11 pr-10"
                     />
                     <button
                       type="button"
@@ -91,7 +91,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
             )}
           />
         </div>
-        <div className="flex justify-between items-center w-full mt-4">
+        <div className="flex justify-between items-center w-full mt-4 relative">
           <div className="flex items-center justify-center gap-2">
             <Checkbox
               id="terms"
@@ -106,7 +106,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onClick }) => {
               Ingat Saya?
             </label>
           </div>
-          <div>
+          <div className="absolute right-0 z-10">
             <p
               className="text-sm font-medium text-primary-500 cursor-pointer select-none"
               onClick={onClick}

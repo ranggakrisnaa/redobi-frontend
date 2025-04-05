@@ -1,6 +1,6 @@
 import apiService from '@/api/apiService.ts';
 import { SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInFormProps } from '@/commons/types/auth/sign-in-prop.type.ts';
+import { SignInProps } from '@/commons/types/pages-props.type.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';
@@ -16,7 +16,7 @@ type LoginResponse = {
   email: string;
 };
 
-const SignInPage: React.FC<SignInFormProps> = () => {
+const SignInPage: React.FC<SignInProps> = () => {
   const { login, rememberMe, user } = useAuthStore();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +25,7 @@ const SignInPage: React.FC<SignInFormProps> = () => {
   useEffect(() => {
     console.log(user);
     if (user) {
-      navigate('/verify');
+      navigate('/verify', { replace: true });
     }
   }, [user, navigate]);
 
