@@ -1,9 +1,9 @@
 import { TableComponentProps } from '@/commons/interfaces/table-component.interface.ts';
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useGlobalStore } from '@/store/globalStore.ts';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import * as React from 'react';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Table,
@@ -20,19 +20,23 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   pathDetail,
 }) => {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<number[]>([]);
-  const isAllSelected = selected.length === data.length;
+  const { selected, setSelected } = useGlobalStore();
+  const isAllSelected =
+    data.length > 0 && selected.length === data.map((item) => item.id).length;
+
+  const toggleSelect = (id: string) => {
+    if (selected.includes(id)) {
+      setSelected(selected.filter((itemId) => itemId !== id));
+    } else {
+      setSelected([...selected, id]);
+    }
+  };
 
   const toggleSelectAll = () => {
-    setSelected(isAllSelected ? [] : data.map((_item, index) => index));
+    const allIds = data.map((item) => item.id);
+    setSelected(isAllSelected ? [] : allIds);
   };
-
-  const toggleSelect = (id: number) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
-  };
-
+  console.log(selected);
   return (
     <div className="rounded-lg mt-10 overflow-hidden border-b-4">
       <div className="relative max-h-full overflow-y-auto">
@@ -60,13 +64,13 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
             </TableRow>
           </TableHeader>
           <TableBody className="">
-            {data.map((item, index) => (
+            {data.map((item) => (
               <TableRow key={item.id} className="border-b hover:bg-gray-50">
                 <TableCell className="text-center">
                   <Checkbox
-                    checked={selected.includes(index)}
-                    onCheckedChange={() => toggleSelect(index)}
-                    className="border-[#fffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 size-5 data-[state=checked]:text-primary-foreground"
+                    checked={selected.includes(item.id)}
+                    onCheckedChange={() => toggleSelect(item.id)}
+                    className="border-[#ffffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
                   />
                 </TableCell>
                 {columns.map((column, colIndex) => (

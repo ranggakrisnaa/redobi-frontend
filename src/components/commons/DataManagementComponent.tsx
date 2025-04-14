@@ -8,10 +8,12 @@ import { Input } from '../ui/input';
 
 type DataManagementComponentProps = {
   onSearchChange: (value: string) => void;
+  onClickCreate: () => void;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onSearchChange,
+  onClickCreate,
 }) => {
   const form = useForm({
     defaultValues: {
@@ -48,7 +50,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
             )}
           />
         </form>
-        <Button className="bg-primary-500">
+        <Button className="bg-primary-500" onClick={onClickCreate}>
           <Plus className="w-4 h-4 mr-1" /> Tambah Data
         </Button>
         <Button className="bg-success-500">

@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
         case 401:
           localStorage.removeItem('auth-token');
           localStorage.removeItem('auth-data');
-          localStorage.removeItem('auth-storage');
+          window.location.href = '/sign-in';
           break;
         case 500:
           console.error('Server error occurred:', error);
@@ -55,33 +55,51 @@ const apiService = {
   get: <T>(
     endpoint: string,
     params?: Record<string, any>,
+    config?: { headers?: Record<string, string> },
   ): Promise<AxiosResponse<T>> => {
-    return apiClient.get<T>(endpoint, { params });
+    return apiClient.get<T>(endpoint, {
+      params,
+      headers: config?.headers,
+    });
   },
 
   post: <T>(
     endpoint: string,
     data?: Record<string, any>,
+    config?: { headers?: Record<string, string> },
   ): Promise<AxiosResponse<T>> => {
-    return apiClient.post<T>(endpoint, data);
+    return apiClient.post<T>(endpoint, data, {
+      headers: config?.headers,
+    });
   },
 
   put: <T>(
     endpoint: string,
     data?: Record<string, any>,
+    config?: { headers?: Record<string, string> },
   ): Promise<AxiosResponse<T>> => {
-    return apiClient.put<T>(endpoint, data);
+    return apiClient.put<T>(endpoint, data, {
+      headers: config?.headers,
+    });
   },
 
   patch: <T>(
     endpoint: string,
     data?: Record<string, any>,
+    config?: { headers?: Record<string, string> },
   ): Promise<AxiosResponse<T>> => {
-    return apiClient.patch<T>(endpoint, data);
+    return apiClient.patch<T>(endpoint, data, {
+      headers: config?.headers,
+    });
   },
 
-  delete: <T>(endpoint: string): Promise<AxiosResponse<T>> => {
-    return apiClient.delete<T>(endpoint);
+  delete: <T>(
+    endpoint: string,
+    config?: { headers?: Record<string, string> },
+  ): Promise<AxiosResponse<T>> => {
+    return apiClient.delete<T>(endpoint, {
+      headers: config?.headers,
+    });
   },
 };
 

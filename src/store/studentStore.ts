@@ -4,6 +4,8 @@ import { create } from 'zustand';
 
 type StudentStore = {
   studentData: IStudent[];
+  studentDetail: IStudent | null;
+  studentId: string | null;
   currentPage: number;
   pageSize: number;
   sortBy: string | null;
@@ -12,12 +14,17 @@ type StudentStore = {
   filters: StudentFilter;
   totalRecords: number;
   totalPages: number;
-  setStudentData: (data: Record<string, any>) => void;
+  photoFile?: File;
+  photoPreview?: string;
+  setStudentData: (data: Record<any, any>) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   setFilters: (filters: StudentFilter) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
+  setStudentId: (id: string) => void;
+  setStudentDetail: (data: IStudent) => void;
+  setPhoto: (file: File | null) => void;
 };
 
 export const useStudentStore = create<StudentStore>((set) => ({
@@ -30,6 +37,11 @@ export const useStudentStore = create<StudentStore>((set) => ({
   search: null,
   sortBy: null,
   sortOrder: 'asc',
+  studentId: null,
+  studentDetail: null,
+  imagePreview: undefined,
+  photoPreview: undefined,
+  photoFile: undefined,
 
   setStudentData: ({ data, pagination }) =>
     set({
@@ -48,4 +60,14 @@ export const useStudentStore = create<StudentStore>((set) => ({
       sortOrder:
         state.sortBy === column && state.sortOrder === 'desc' ? 'asc' : 'desc',
     })),
+  setStudentId: (id: string) => set({ studentId: id }),
+  setStudentDetail: (data: IStudent) => set({ studentDetail: data }),
+  setPhoto: (file: File | null) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    set(() => ({
+      photoFile: file,
+      photoPreview: file ? URL.createObjectURL(file) : '',
+    }));
+  },
 }));

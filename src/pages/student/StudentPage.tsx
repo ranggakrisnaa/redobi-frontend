@@ -71,6 +71,7 @@ const StudentPage = () => {
     })) || [];
 
   const handleFilterChange = (filters: StudentFilterParams) => {
+    setPage(1);
     setFilters({
       tahun_masuk: filters.angkatan ?? '',
       major: filters.jurusan ?? '',
@@ -85,11 +86,13 @@ const StudentPage = () => {
   };
 
   const handleSearchChange = (search: string) => {
+    setPage(1);
     setSearch(search);
     updateURL({ search });
   };
 
   const handleSortData = (sort: string) => {
+    setPage(1);
     setSortData(sort);
   };
 
@@ -117,13 +120,16 @@ const StudentPage = () => {
         </BreadcrumbList>
       </div>
       <div>
-        <DataManagementComponent onSearchChange={handleSearchChange} />
+        <DataManagementComponent
+          onSearchChange={handleSearchChange}
+          onClickCreate={() => navigate('/students/create')}
+        />
         <FilterComponent
           filterOptions={filterOptions}
           onFilterChange={handleFilterChange}
         />
         {isLoading ? (
-          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
+          <div className="flex justify-center items-center min-h-[200px]">
             <LoadingComponent />
           </div>
         ) : isError ? (
