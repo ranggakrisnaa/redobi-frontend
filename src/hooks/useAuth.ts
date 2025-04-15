@@ -8,22 +8,18 @@ import {
   authVerifySignIn,
 } from '@/services/authService.ts';
 import { useAuthStore } from '@/store/authStore.ts';
-import { useGlobalStore } from '@/store/globalStore.ts';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useAuthSignIn = () => {
-  const { setLoading, setError } = useGlobalStore();
   const { login, rememberMe } = useAuthStore();
-  const navigate = useNavigate();
+  const { handleError, handleMutate, handleSettled, navigate } =
+    UseBaseMutationHandler();
 
   return useMutation({
     mutationFn: (data: SignInSchema) => authSignIn(data),
 
-    onMutate: () => {
-      setLoading(true);
-      setError(null);
-    },
+    onMutate: handleMutate,
 
     onSuccess: (response: any) => {
       login(response, rememberMe);
@@ -31,33 +27,30 @@ export const useAuthSignIn = () => {
     },
 
     onError: (error: any) => {
-      console.error(error);
       if (error.status == 422) {
-        setError('Login gagal. Periksa kembali email dan password Anda.');
+        handleError(
+          error,
+          'Login gagal. Periksa kembali email dan password Anda.',
+        );
       } else {
-        setError('Login gagal. Terjadi kesalahan sistem.');
+        handleError(error, 'Login gagal. Terjadi kesalahan sistem.');
       }
     },
 
-    onSettled: () => {
-      setLoading(false);
-    },
+    onSettled: handleSettled,
   });
 };
 
 export const useAuthVerifySignIn = () => {
-  const { setLoading, setError } = useGlobalStore();
   const { rememberMe, setToken } = useAuthStore();
-  const navigate = useNavigate();
+  const { handleError, handleMutate, handleSettled, navigate } =
+    UseBaseMutationHandler();
 
   return useMutation({
     mutationFn: ({ data, user }: VerifySignInParams) =>
       authVerifySignIn({ data, user }),
 
-    onMutate: () => {
-      setLoading(true);
-      setError(null);
-    },
+    onMutate: handleMutate,
 
     onSuccess: (response: any) => {
       setToken(response.accessToken, rememberMe);
@@ -65,39 +58,30 @@ export const useAuthVerifySignIn = () => {
     },
 
     onError: (error: any) => {
-      console.error(error);
-      setError('Verifikasi OTP gagal. Silakan coba lagi.');
+      handleError(error, 'Verifikasi OTP gagal. Silakan coba lagi.');
     },
 
-    onSettled: () => {
-      setLoading(false);
-    },
+    onSettled: handleSettled,
   });
 };
 
 export const useAuthResendOTPVerify = () => {
-  const { setLoading, setError } = useGlobalStore();
+  const { handleError, handleMutate, handleSettled } = UseBaseMutationHandler();
   const { login, user, rememberMe } = useAuthStore();
 
   return useMutation({
     mutationFn: (user: UserLoginData) => authResendOTPVerify(user),
 
-    onMutate: () => {
-      setLoading(true);
-      setError(null);
-    },
+    onMutate: handleMutate,
 
     onSuccess: () => {
       login(user as UserLoginData, rememberMe);
     },
 
     onError: (error: any) => {
-      console.error(error);
-      setError('Gagal mengirim ulang kode OTP. Coba lagi nanti.');
+      handleError(error, 'Gagal mengirim ulang kode OTP. Coba lagi nanti.');
     },
 
-    onSettled: () => {
-      setLoading(false);
-    },
+    onSettled: handleSettled,
   });
 };

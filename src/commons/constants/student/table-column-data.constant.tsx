@@ -36,7 +36,7 @@ export const studentColumns: TableComponentColumnDef[] = [
     cell: (item) => (
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={item.imageUrl ?? ''} alt={item.name} />
+          <AvatarImage src={item.imageUrl} alt={item.name} />
           <AvatarFallback />
         </Avatar>
         <span className="whitespace-pre-line">{item.name}</span>

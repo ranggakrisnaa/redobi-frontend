@@ -19,7 +19,7 @@ const StudentCreatePage = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const navigate = useNavigate();
-  const { mutate } = useStudentCreate();
+  const { mutate, isPending } = useStudentCreate();
   const { error, loading } = useGlobalStore();
 
   const handleSuccess = async (data: CreateStudentSchema) => {
@@ -63,7 +63,7 @@ const StudentCreatePage = () => {
       <div className="mt-4">
         <Card>
           <CardContent className="relative">
-            {loading && (
+            {loading && !isPending && (
               <div className="absolute inset-0 bg-white bg-opacity-60 z-10 flex justify-center items-center rounded-md">
                 <LoadingComponent />
               </div>

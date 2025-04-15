@@ -1,6 +1,7 @@
 import apiService from '@/api/apiService.ts';
 import { IStudent } from '@/commons/interface-model/student.interface.ts';
 import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
+import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
 import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';
 import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
 
@@ -58,19 +59,39 @@ export const createStudent = async (data: CreateStudentSchema) => {
     }
   });
 
-  if (data.file instanceof File) {
-    formData.append('file', data.file);
-  }
-
-  const response = await apiService.post<IStudent>('/students', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-
+  const response = await apiService.post<IStudent>('/students', formData);
   return response.data;
 };
 
-export const updateStudent = () => {};
+export const updateStudent = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: UpdateStudentSchema;
+}) => {
+  console.log(data, id);
 
-export const deleteStudent = () => {};
+  const formData = new FormData();
+
+  (Object.keys(data) as (keyof IStudent)[]).forEach((key) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const value = data[key];
+
+    if (value !== undefined && value !== null) {
+      formData.append(key, value instanceof File ? value : String(value));
+    }
+  });
+
+  const response = await apiService.put<IStudent>(`/students/${id}`, formData);
+  return response.data;
+};
+
+export const deleteStudent = async (ids: string[], id?: string) => {
+  const url = id ? `/students/${id}` : '/students';
+  const config = id ? {} : { studentIds: ids };
+
+  const response = await apiService.delete<IStudent | IStudent[]>(url, config);
+  return response.data;
+};

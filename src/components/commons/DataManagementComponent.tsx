@@ -1,19 +1,22 @@
 import { FormControl, FormField } from '@/components/ui/form';
-import { FileDown, Plus, Search, Trash2, Upload } from 'lucide-react';
+import { FileDown, Plus, Search, Upload } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import DeleteConfirmationComponent from './DeleteConfirmationComponent';
 
 type DataManagementComponentProps = {
   onSearchChange: (value: string) => void;
   onClickCreate: () => void;
+  onClickDelete: () => void;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onSearchChange,
   onClickCreate,
+  onClickDelete,
 }) => {
   const form = useForm({
     defaultValues: {
@@ -59,9 +62,10 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
         <Button className="bg-warning-900">
           <Upload className="w-4 h-4 mr-1" /> Import Excel
         </Button>
-        <Button className="bg-error-500">
-          <Trash2 className="w-4 h-4 mr-1" /> Hapus Data
-        </Button>
+        <DeleteConfirmationComponent
+          onConfirm={onClickDelete}
+          isSingle={false}
+        />
       </div>
     </FormProvider>
   );

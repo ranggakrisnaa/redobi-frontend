@@ -2,7 +2,7 @@ import { TableComponentProps } from '@/commons/interfaces/table-component.interf
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useGlobalStore } from '@/store/globalStore.ts';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { Eye, Pencil } from 'lucide-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -13,11 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
+import DeleteConfirmationComponent from './DeleteConfirmationComponent';
 
 const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   data,
   columns,
   pathDetail,
+  onDelete,
 }) => {
   const navigate = useNavigate();
   const { selected, setSelected } = useGlobalStore();
@@ -36,7 +38,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
     const allIds = data.map((item) => item.id);
     setSelected(isAllSelected ? [] : allIds);
   };
-  console.log(selected);
+
   return (
     <div className="rounded-lg mt-10 overflow-hidden border-b-4">
       <div className="relative max-h-full overflow-y-auto">
@@ -86,12 +88,20 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     >
                       <Eye size={18} />
                     </button>
-                    <button className="text-yellow-600 hover:text-yellow-800">
+                    <button
+                      className="text-yellow-600 hover:text-yellow-800"
+                      onClick={() =>
+                        navigate(`/${pathDetail}/${item.id}/update`)
+                      }
+                    >
                       <Pencil size={18} />
                     </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      <Trash2 size={18} />
-                    </button>
+                    <DeleteConfirmationComponent
+                      isSingle={true}
+                      onConfirm={() => {
+                        onDelete(item.id);
+                      }}
+                    />
                   </div>
                 </TableCell>
               </TableRow>

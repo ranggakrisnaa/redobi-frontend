@@ -1,16 +1,17 @@
 import { IStudent } from '@/commons/interface-model/student.interface.ts';
 import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
+import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
 import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';
-import { useToast } from '@/hooks/use-toast.ts';
 import {
   createStudent,
+  deleteStudent,
   fetchStudentDetail,
   fetchStudentsPagination,
+  updateStudent,
 } from '@/services/studentService.ts';
-import { useGlobalStore } from '@/store/globalStore.ts';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useStudentsPagination = () => {
   const {
@@ -65,24 +66,21 @@ export const useStudentDetail = () => {
 };
 
 export const useStudentCreate = () => {
-  const { setLoading, setError } = useGlobalStore();
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
   return useMutation({
     mutationFn: (data: CreateStudentSchema) => createStudent(data),
 
-    onMutate: () => {
-      setLoading(true);
-      setError(null);
-    },
+    onMutate: handleMutate,
 
     onSuccess: () => {
-      toast({
-        title: 'Berhasil!',
-        description: 'Data mahasiswa berhasil ditambahkan.',
-      });
-
-      navigate('/students');
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 
     onError: (error: any) => {
@@ -91,18 +89,79 @@ export const useStudentCreate = () => {
         error.code == 'ERR_BAD_REQUEST' &&
         error.response.data.message == 'Student data already exist.'
       ) {
-        setError('Gagal! Data mahasiswa ini sudah ada.');
+        handleError(error, 'Gagal! Data mahasiswa ini sudah ada.');
       } else {
-        setError(`Gagal!, ${error}`);
+        handleError(error, `Gagal!, ${error}`);
       }
     },
 
-    onSettled: () => {
-      setLoading(false);
-    },
+    onSettled: handleSettled,
   });
 };
 
-export const useStudentUpdate = () => {};
+export const useStudentUpdate = () => {
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
 
-export const useStudentDelete = () => {};
+  return useMutation<
+    IStudent,
+    Error,
+    { id: string; data: UpdateStudentSchema }
+  >({
+    mutationFn: ({ data, id }) => updateStudent({ data, id }),
+
+    onMutate: handleMutate,
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['student-detail', variables.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      handleSuccess('Data mahasiswa berhasil diperbarui.', '/students');
+    },
+
+    onError: (error: any) => {
+      console.error(error);
+      if (error) {
+        handleError(error, 'Gagal memperbarui data mahasiswa!.');
+      } else {
+        handleError(error, `Gagal!, ${error}`);
+      }
+    },
+
+    onSettled: handleSettled,
+  });
+};
+
+export const useStudentDelete = () => {
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => deleteStudent(ids),
+
+    onMutate: handleMutate,
+
+    onError: (error: any) => {
+      console.error(error);
+      handleError(error, 'Gagal menghapus data mahasiswa!');
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      handleSuccess('Data mahasiswa berhasil dihapus.', '/students');
+    },
+
+    onSettled: handleSettled,
+  });
+};

@@ -13,7 +13,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb.tsx';
-import { useStudentsPagination } from '@/hooks/useStudent.ts';
+import { useStudentDelete, useStudentsPagination } from '@/hooks/useStudent.ts';
+import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { Slash } from 'lucide-react';
 import { useEffect } from 'react';
@@ -30,10 +31,12 @@ const StudentPage = () => {
     setSortData,
   } = useStudentStore();
   const { data, isLoading, isError, error } = useStudentsPagination();
+  const { selected } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const { mutate } = useStudentDelete();
 
   useEffect(() => {
     setFilters({
@@ -96,6 +99,18 @@ const StudentPage = () => {
     setSortData(sort);
   };
 
+  const handleMultipleDelete = () => {
+    if (selected) {
+      mutate(selected);
+    }
+  };
+
+  const handleSingleD1elete = (id: string) => {
+    if (id) {
+      mutate([id]);
+    }
+  };
+
   return (
     <DashboardContainer pageTitle="Data Mahasiswa">
       <div>
@@ -121,6 +136,7 @@ const StudentPage = () => {
       </div>
       <div>
         <DataManagementComponent
+          onClickDelete={handleMultipleDelete}
           onSearchChange={handleSearchChange}
           onClickCreate={() => navigate('/students/create')}
         />
@@ -141,6 +157,7 @@ const StudentPage = () => {
               columns={studentColumns}
               onSort={handleSortData}
               pathDetail="students"
+              onDelete={handleSingleD1elete}
             />
             <div className="flex justify-end mt-4 w-full">
               <PaginationComponent
