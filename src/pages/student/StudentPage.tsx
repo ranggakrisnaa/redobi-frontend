@@ -13,7 +13,12 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb.tsx';
-import { useStudentDelete, useStudentsPagination } from '@/hooks/useStudent.ts';
+import {
+  useStudentDelete,
+  useStudentImportExcel,
+  useStudentsPagination,
+} from '@/hooks/useStudent.ts';
+import { downloadExcelTemplateStudent } from '@/services/studentService';
 import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { Slash } from 'lucide-react';
@@ -37,6 +42,7 @@ const StudentPage = () => {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { mutate } = useStudentDelete();
+  const { mutate: importExcelMutate } = useStudentImportExcel();
 
   useEffect(() => {
     setFilters({
@@ -111,6 +117,10 @@ const StudentPage = () => {
     }
   };
 
+  const handleImportExcel = (file: File) => {
+    importExcelMutate(file);
+  };
+
   return (
     <DashboardContainer pageTitle="Data Mahasiswa">
       <div>
@@ -136,6 +146,8 @@ const StudentPage = () => {
       </div>
       <div>
         <DataManagementComponent
+          onClickImport={handleImportExcel}
+          onClickDownload={downloadExcelTemplateStudent}
           onClickDelete={handleMultipleDelete}
           onSearchChange={handleSearchChange}
           onClickCreate={() => navigate('/students/create')}

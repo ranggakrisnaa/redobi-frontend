@@ -83,7 +83,11 @@ const StudentUpdatePage = () => {
             </div>
           ) : data ? (
             <Card>
-              {error && <AlertComponent>{error}</AlertComponent>}
+              {error && (
+                <div className="px-2 pt-2">
+                  <AlertComponent>{error}</AlertComponent>
+                </div>
+              )}
               <CardContent>
                 <UpdateStudentForm onSuccess={handleSuccess} data={data} />
               </CardContent>

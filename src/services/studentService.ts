@@ -1,4 +1,5 @@
 import apiService from '@/api/apiService.ts';
+import { DefaultEnum } from '@/commons/enums/enum';
 import { IStudent } from '@/commons/interface-model/student.interface.ts';
 import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
 import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
@@ -93,5 +94,30 @@ export const deleteStudent = async (ids: string[], id?: string) => {
   const config = id ? {} : { studentIds: ids };
 
   const response = await apiService.delete<IStudent | IStudent[]>(url, config);
+  return response.data;
+};
+
+export const downloadExcelTemplateStudent = async () => {
+  const url = `${DefaultEnum.CLOUDCUBE_BASE_URL}/1744813264876-template_mahasiswa.xlsx`;
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.setAttribute('download', 'template_mahasiswa.xlsx');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objectUrl);
+};
+
+export const importEcxelStudent = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await apiService.post<IStudent[]>(
+    '/students/templates',
+    formData,
+  );
   return response.data;
 };

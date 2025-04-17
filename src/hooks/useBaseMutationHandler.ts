@@ -18,7 +18,7 @@ export const UseBaseMutationHandler = () => {
     toast({
       title: 'Berhasil!',
       description,
-      duration: 1000,
+      duration: 2000,
     });
     navigate(pathNavigate);
   };

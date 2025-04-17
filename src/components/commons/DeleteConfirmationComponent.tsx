@@ -29,7 +29,7 @@ const DeleteConfirmationComponent: React.FC<DeleteConfirmationDialogProps> = ({
             <Trash2 size={18} />
           </button>
         ) : (
-          <Button className="bg-error-500">
+          <Button className="bg-error-500 hover:!bg-[#d87824] transition-all duration-200">
             <Trash2 className="w-4 h-4 mr-1" /> Hapus Data
           </Button>
         )}

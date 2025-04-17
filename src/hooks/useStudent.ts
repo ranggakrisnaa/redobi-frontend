@@ -7,6 +7,7 @@ import {
   deleteStudent,
   fetchStudentDetail,
   fetchStudentsPagination,
+  importEcxelStudent,
   updateStudent,
 } from '@/services/studentService.ts';
 import { useStudentStore } from '@/store/studentStore.ts';
@@ -160,6 +161,34 @@ export const useStudentDelete = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
       handleSuccess('Data mahasiswa berhasil dihapus.', '/students');
+    },
+
+    onSettled: handleSettled,
+  });
+};
+
+export const useStudentImportExcel = () => {
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
+
+  return useMutation({
+    mutationFn: (file: File) => importEcxelStudent(file),
+
+    onMutate: handleMutate,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
+    },
+
+    onError: (error: any) => {
+      console.error(error);
+      handleError(error, 'Gagal mengimpor data mahasiswa!');
     },
 
     onSettled: handleSettled,

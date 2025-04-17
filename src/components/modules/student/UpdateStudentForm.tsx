@@ -98,16 +98,20 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
               />
               <AvatarFallback />
             </Avatar>
-            <Button
-              type="button"
-              className="absolute bottom-0 top-[60px] right-[5px] w-[102px] h-[55px] rounded-t-none rounded-b-full opacity-45 flex items-center justify-center"
-              onClick={() => inputRef.current?.click()}
-            >
-              <div className="relative">
-                <CameraIcon className="scale-[2.2]" />
-                <PlusIcon className="absolute -bottom-[10px] -right-[15px] bg-white rounded-full text-neutral-700" />
-              </div>
-            </Button>
+            {photoPreview ? (
+              ''
+            ) : (
+              <Button
+                type="button"
+                className="absolute bottom-0 top-[60px] right-[5px] w-[102px] h-[55px] rounded-t-none rounded-b-full opacity-45 flex items-center justify-center"
+                onClick={() => inputRef.current?.click()}
+              >
+                <div className="relative">
+                  <CameraIcon className="scale-[2.2]" />
+                  <PlusIcon className="absolute -bottom-[10px] -right-[15px] bg-white rounded-full text-neutral-700" />
+                </div>
+              </Button>
+            )}
             <input
               ref={inputRef}
               type="file"

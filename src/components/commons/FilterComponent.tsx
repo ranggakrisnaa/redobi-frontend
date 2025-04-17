@@ -51,7 +51,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 
   return (
     <FormProvider {...form}>
-      <form className="mt-10 flex gap-4 items-end">
+      <form className="mt-6 flex gap-4 items-end">
         <div className="flex gap-4 w-full">
           {Object.entries(filterOptions).map(([key, options]) => (
             <FormField
