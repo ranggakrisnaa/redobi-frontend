@@ -14,7 +14,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
       <div className="fixed h-screen flex z-40">
         <SideBarComponent />
       </div>
-      <main className="flex-1 pb-4 px-4 overflow-y-auto min-h-screen pl-72 relative overflow-x-hidden">
+      <main className="flex-1 pb-4 px-6 overflow-y-auto min-h-screen pl-[284px] relative overflow-x-hidden">
         <NavBreadCumbComponent>{childrenArray[0]}</NavBreadCumbComponent>
         <div className="absolute left-[255px] w-full border-t"></div>
         <h1 className="text-2xl font-bold w-full mt-4">{pageTitle}</h1>

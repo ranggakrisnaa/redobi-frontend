@@ -33,22 +33,29 @@ const SideBarComponent = () => {
       </div>
       <ScrollArea className="flex-1">
         <nav className="p-4 space-y-2">
-          {menuItems.map((item, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              onClick={() => navigate(item.path)}
-              className={cn(
-                'w-full flex justify-start gap-2 text-muted-foreground transition-colors',
-                location.pathname === item.path
-                  ? 'bg-primary-100 text-primary-700 hover:bg-primary-100'
-                  : 'hover:bg-primary/20 hover:text-primary-700 text-black',
-              )}
-            >
-              <item.icon className="w-5 h-5" />
-              {item.name}
-            </Button>
-          ))}
+          {menuItems.map((item, index) => {
+            const isActive =
+              item.path === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(item.path);
+
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                onClick={() => navigate(item.path)}
+                className={cn(
+                  'w-full flex justify-start gap-2 text-muted-foreground transition-colors',
+                  isActive
+                    ? 'bg-primary-100 text-primary-700 hover:bg-primary-100'
+                    : 'hover:bg-primary/20 hover:text-primary-700 text-black',
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                {item.name}
+              </Button>
+            );
+          })}
         </nav>
       </ScrollArea>
       <div className="p-4 border-t flex items-center gap-3">

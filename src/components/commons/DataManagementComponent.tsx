@@ -1,17 +1,27 @@
 import { FormControl, FormField } from '@/components/ui/form';
-import { FileDown, Plus, Search, Trash2, Upload } from 'lucide-react';
+import { FileDown, Plus, Search } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import DeleteConfirmationComponent from './DeleteConfirmationComponent';
+import ImportDrawerComponent from './ImportDialogComponent';
 
 type DataManagementComponentProps = {
   onSearchChange: (value: string) => void;
+  onClickCreate: () => void;
+  onClickDelete: () => void;
+  onClickDownload: () => void;
+  onClickImport: (file: File) => void;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onSearchChange,
+  onClickCreate,
+  onClickDownload,
+  onClickDelete,
+  onClickImport,
 }) => {
   const form = useForm({
     defaultValues: {
@@ -29,7 +39,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
 
   return (
     <FormProvider {...form}>
-      <div className="flex gap-2 mt-9 relative">
+      <div className="flex gap-2 mt-6 relative">
         <form className="flex items-center w-full">
           <FormField
             control={form.control}
@@ -48,18 +58,23 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
             )}
           />
         </form>
-        <Button className="bg-primary-500">
+        <Button
+          className="bg-primary-500 hover:!bg-blue-500 transition-all duration-200"
+          onClick={onClickCreate}
+        >
           <Plus className="w-4 h-4 mr-1" /> Tambah Data
         </Button>
-        <Button className="bg-success-500">
+        <Button
+          className="bg-success-500 hover:!bg-[#13B14E] transition-all duration-200"
+          onClick={onClickDownload}
+        >
           <FileDown className="w-4 h-4 mr-1" /> Download Excel
         </Button>
-        <Button className="bg-warning-900">
-          <Upload className="w-4 h-4 mr-1" /> Import Excel
-        </Button>
-        <Button className="bg-error-500">
-          <Trash2 className="w-4 h-4 mr-1" /> Hapus Data
-        </Button>
+        <ImportDrawerComponent onImport={onClickImport} />
+        <DeleteConfirmationComponent
+          onConfirm={onClickDelete}
+          isSingle={false}
+        />
       </div>
     </FormProvider>
   );

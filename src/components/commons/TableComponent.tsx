@@ -1,9 +1,9 @@
 import { TableComponentProps } from '@/commons/interfaces/table-component.interface.ts';
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { useGlobalStore } from '@/store/globalStore.ts';
+import { Eye, Pencil } from 'lucide-react';
 import * as React from 'react';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Table,
@@ -13,24 +13,30 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
+import DeleteConfirmationComponent from './DeleteConfirmationComponent';
 
 const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   data,
   columns,
   pathDetail,
+  onDelete,
 }) => {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<number[]>([]);
-  const isAllSelected = selected.length === data.length;
+  const { selected, setSelected } = useGlobalStore();
+  const isAllSelected =
+    data.length > 0 && selected.length === data.map((item) => item.id).length;
 
-  const toggleSelectAll = () => {
-    setSelected(isAllSelected ? [] : data.map((_item, index) => index));
+  const toggleSelect = (id: string) => {
+    if (selected.includes(id)) {
+      setSelected(selected.filter((itemId) => itemId !== id));
+    } else {
+      setSelected([...selected, id]);
+    }
   };
 
-  const toggleSelect = (id: number) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
+  const toggleSelectAll = () => {
+    const allIds = data.map((item) => item.id);
+    setSelected(isAllSelected ? [] : allIds);
   };
 
   return (
@@ -60,13 +66,13 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
             </TableRow>
           </TableHeader>
           <TableBody className="">
-            {data.map((item, index) => (
+            {data.map((item) => (
               <TableRow key={item.id} className="border-b hover:bg-gray-50">
                 <TableCell className="text-center">
                   <Checkbox
-                    checked={selected.includes(index)}
-                    onCheckedChange={() => toggleSelect(index)}
-                    className="border-[#fffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 size-5 data-[state=checked]:text-primary-foreground"
+                    checked={selected.includes(item.id)}
+                    onCheckedChange={() => toggleSelect(item.id)}
+                    className="border-[#ffffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
                   />
                 </TableCell>
                 {columns.map((column, colIndex) => (
@@ -82,12 +88,20 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     >
                       <Eye size={18} />
                     </button>
-                    <button className="text-yellow-600 hover:text-yellow-800">
+                    <button
+                      className="text-yellow-600 hover:text-yellow-800"
+                      onClick={() =>
+                        navigate(`/${pathDetail}/${item.id}/update`)
+                      }
+                    >
                       <Pencil size={18} />
                     </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      <Trash2 size={18} />
-                    </button>
+                    <DeleteConfirmationComponent
+                      isSingle={true}
+                      onConfirm={() => {
+                        onDelete(item.id);
+                      }}
+                    />
                   </div>
                 </TableCell>
               </TableRow>

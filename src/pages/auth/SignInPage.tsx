@@ -1,5 +1,5 @@
 import { SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInProps } from '@/commons/types/pages-props.type.ts';
+import { SignInProps } from '@/commons/types/auth/sign-in-props.ts';
 import AlertComponent from '@/components/commons/AlertComponent.tsx';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
 import AuthContainer from '@/components/containers/AuthContainer';

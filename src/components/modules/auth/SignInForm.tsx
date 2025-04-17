@@ -1,5 +1,5 @@
 import { signInSchema, SignInSchema } from '@/commons/schema/sign-in.schema';
-import { SignInProps } from '@/commons/types/pages-props.type.ts';
+import { SignInProps } from '@/commons/types/auth/sign-in-props.ts';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -30,7 +30,6 @@ const SignInForm: React.FC<SignInProps> = ({ onSuccess, onClick }) => {
   });
 
   const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
-    console.log('Form Submitted:', data);
     if (onSuccess) {
       onSuccess(data);
     }

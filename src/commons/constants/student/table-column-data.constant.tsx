@@ -18,7 +18,7 @@ export const studentColumns: TableComponentColumnDef[] = [
       return (
         <div
           onClick={() => setSortData('full_name')}
-          className="flex gap-[5px] items-center cursor-pointer px-4 border-l border-gray-300"
+          className="flex gap-[5px] items-center justify-between cursor-pointer pl-4 border-l border-gray-300"
         >
           <span>Nama Mahasiswa</span>
           {isActive ? (
@@ -36,7 +36,7 @@ export const studentColumns: TableComponentColumnDef[] = [
     cell: (item) => (
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={item.imageUrl ?? ''} alt={item.name} />
+          <AvatarImage src={item.imageUrl} alt={item.name} />
           <AvatarFallback />
         </Avatar>
         <span className="whitespace-pre-line">{item.name}</span>
@@ -46,28 +46,28 @@ export const studentColumns: TableComponentColumnDef[] = [
   },
   {
     accessorKey: 'nim',
-    header: () => <div className="border-l px-4 border-gray-300">NIM</div>,
+    header: () => <div className="border-l pl-4 border-gray-300">NIM</div>,
     width: 'w-[120px]',
   },
   {
     accessorKey: 'tahunMasuk',
-    header: () => <div className="border-l px-4 border-gray-300">Angkatan</div>,
+    header: () => <div className="border-l pl-4 border-gray-300">Angkatan</div>,
     width: 'w-[100px]',
   },
   {
     accessorKey: 'major',
-    header: () => <div className="border-l px-4 border-gray-300">Jurusan</div>,
+    header: () => <div className="border-l pl-4 border-gray-300">Jurusan</div>,
     width: 'w-[106px]',
   },
   {
     accessorKey: 'kelas',
-    header: () => <div className="border-l px-4 border-gray-300">Kelas</div>,
+    header: () => <div className="border-l pl-4 border-gray-300">Kelas</div>,
     width: 'w-[115px]',
   },
   {
     accessorKey: 'judulSkripsi',
     header: () => (
-      <div className="border-l border-r px-4 border-gray-300">
+      <div className="border-l border-r pl-4 border-gray-300">
         Judul Skripsi
       </div>
     ),

@@ -13,7 +13,13 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb.tsx';
-import { useStudentsPagination } from '@/hooks/useStudent.ts';
+import {
+  useStudentDelete,
+  useStudentImportExcel,
+  useStudentsPagination,
+} from '@/hooks/useStudent.ts';
+import { downloadExcelTemplateStudent } from '@/services/studentService';
+import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { Slash } from 'lucide-react';
 import { useEffect } from 'react';
@@ -30,10 +36,13 @@ const StudentPage = () => {
     setSortData,
   } = useStudentStore();
   const { data, isLoading, isError, error } = useStudentsPagination();
+  const { selected } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const { mutate } = useStudentDelete();
+  const { mutate: importExcelMutate } = useStudentImportExcel();
 
   useEffect(() => {
     setFilters({
@@ -71,6 +80,7 @@ const StudentPage = () => {
     })) || [];
 
   const handleFilterChange = (filters: StudentFilterParams) => {
+    setPage(1);
     setFilters({
       tahun_masuk: filters.angkatan ?? '',
       major: filters.jurusan ?? '',
@@ -85,12 +95,30 @@ const StudentPage = () => {
   };
 
   const handleSearchChange = (search: string) => {
+    setPage(1);
     setSearch(search);
     updateURL({ search });
   };
 
   const handleSortData = (sort: string) => {
+    setPage(1);
     setSortData(sort);
+  };
+
+  const handleMultipleDelete = () => {
+    if (selected) {
+      mutate(selected);
+    }
+  };
+
+  const handleSingleD1elete = (id: string) => {
+    if (id) {
+      mutate([id]);
+    }
+  };
+
+  const handleImportExcel = (file: File) => {
+    importExcelMutate(file);
   };
 
   return (
@@ -117,13 +145,19 @@ const StudentPage = () => {
         </BreadcrumbList>
       </div>
       <div>
-        <DataManagementComponent onSearchChange={handleSearchChange} />
+        <DataManagementComponent
+          onClickImport={handleImportExcel}
+          onClickDownload={downloadExcelTemplateStudent}
+          onClickDelete={handleMultipleDelete}
+          onSearchChange={handleSearchChange}
+          onClickCreate={() => navigate('/students/create')}
+        />
         <FilterComponent
           filterOptions={filterOptions}
           onFilterChange={handleFilterChange}
         />
         {isLoading ? (
-          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
+          <div className="flex justify-center items-center min-h-[200px]">
             <LoadingComponent />
           </div>
         ) : isError ? (
@@ -135,6 +169,7 @@ const StudentPage = () => {
               columns={studentColumns}
               onSort={handleSortData}
               pathDetail="students"
+              onDelete={handleSingleD1elete}
             />
             <div className="flex justify-end mt-4 w-full">
               <PaginationComponent
