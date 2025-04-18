@@ -11,9 +11,9 @@ import ImportDrawerComponent from './ImportDialogComponent';
 type DataManagementComponentProps = {
   onSearchChange: (value: string) => void;
   onClickCreate: () => void;
-  onClickDelete: () => void;
+  onClickDelete: () => Promise<boolean>;
   onClickDownload: () => void;
-  onClickImport: (file: File) => void;
+  onClickImport: (file: File) => Promise<boolean>;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({

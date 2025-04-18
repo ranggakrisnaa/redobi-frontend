@@ -83,7 +83,6 @@ const StudentDetailPage = () => {
                     <AvatarFallback />
                   </Avatar>
                 </div>
-
                 <Card>
                   <CardContent className="space-y-4 pt-6">
                     <div>

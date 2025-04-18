@@ -15,7 +15,6 @@ export const authVerifySignIn = async ({
   data,
   user,
 }: VerifySignInParams): Promise<VerifySignInResponse> => {
-  console.log(user);
   const response = await apiService.post<VerifySignInResponse>(
     '/auth/verify-login',
     {
@@ -31,5 +30,10 @@ export const authResendOTPVerify = async (user: UserLoginData) => {
     userId: user?.id,
     email: user?.email,
   });
+  return response.data;
+};
+
+export const authLogout = async () => {
+  const response = await apiService.post('/auth/logout');
   return response.data;
 };

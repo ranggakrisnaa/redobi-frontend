@@ -5,9 +5,10 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from '@/components/ui/breadcrumb.tsx';
-import { Bell, House, LogOut, Settings } from 'lucide-react';
+import { Bell, House, Settings } from 'lucide-react';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ExitConfirmationComponent from './ExitConfirmationComponent';
 
 const NavBreadCumbComponent: React.FC<NavBreadCumbComponentProps> = ({
   children,
@@ -46,10 +47,7 @@ const NavBreadCumbComponent: React.FC<NavBreadCumbComponentProps> = ({
           <Settings className="w-4 h-4" />
           Pengaturan
         </button>
-        <button className="flex items-center gap-1 px-4 py-2 rounded-full bg-red-100 text-red-700 text-sm font-medium hover:bg-red-200 transition">
-          <LogOut className="w-4 h-4" />
-          Keluar
-        </button>
+        <ExitConfirmationComponent />
       </div>
     </div>
   );

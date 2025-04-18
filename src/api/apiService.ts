@@ -15,7 +15,9 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = localStorage.getItem('auth-token');
+    const token =
+      localStorage.getItem('auth-token') ||
+      sessionStorage.getItem('auth-token');
     if (token) {
       config.headers = {
         ...config.headers,
