@@ -41,8 +41,8 @@ const StudentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
-  const { mutate } = useStudentDelete();
-  const { mutate: importExcelMutate } = useStudentImportExcel();
+  const { mutateAsync: deleteMutate } = useStudentDelete();
+  const { mutateAsync: importExcelMutate } = useStudentImportExcel();
 
   useEffect(() => {
     setFilters({
@@ -105,20 +105,34 @@ const StudentPage = () => {
     setSortData(sort);
   };
 
-  const handleMultipleDelete = () => {
-    if (selected) {
-      mutate(selected);
+  const handleMultipleDelete = async () => {
+    try {
+      await deleteMutate(selected);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   };
 
-  const handleSingleD1elete = (id: string) => {
-    if (id) {
-      mutate([id]);
+  const handleSingleD1elete = async (id: string) => {
+    try {
+      await deleteMutate([id]);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   };
 
-  const handleImportExcel = (file: File) => {
-    importExcelMutate(file);
+  const handleImportExcel = async (file: File) => {
+    try {
+      await importExcelMutate(file);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
 
   return (

@@ -98,8 +98,9 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     </button>
                     <DeleteConfirmationComponent
                       isSingle={true}
-                      onConfirm={() => {
-                        onDelete(item.id);
+                      onConfirm={async () => {
+                        await onDelete(item.id);
+                        return true;
                       }}
                     />
                   </div>

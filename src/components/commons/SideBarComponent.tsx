@@ -28,8 +28,8 @@ const SideBarComponent = () => {
   const navigate = useNavigate();
   return (
     <div className="w-64 bg-[#ECEFF3] flex flex-col border-r">
-      <div className="p-4 border-b flex items-center gap-2">
-        <img src={logo} alt="ReDoBi" className="h-[40px] w-[110px]" />
+      <div className="p-[21.1px] border-b flex items-center gap-2">
+        <img src={logo} alt="ReDoBi" className="h-auto w-[109.6px]" />
       </div>
       <ScrollArea className="flex-1">
         <nav className="p-4 space-y-2">

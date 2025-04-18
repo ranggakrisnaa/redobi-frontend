@@ -15,18 +15,17 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const VerifySignInPage = () => {
-  const { user, checkSession } = useAuthStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const { error, loading } = useGlobalStore();
   const { mutate: verifySignInMutate } = useAuthVerifySignIn();
   const { mutate: resendOTPVerifyMutate } = useAuthResendOTPVerify();
 
   useEffect(() => {
-    checkSession();
     if (!user) {
       navigate('/sign-in');
     }
-  }, [checkSession, user, navigate]);
+  }, [user, navigate]);
 
   const handleResendOTP = async () => {
     resendOTPVerifyMutate(user as UserLoginData);

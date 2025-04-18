@@ -188,7 +188,12 @@ export const useStudentImportExcel = () => {
 
     onError: (error: any) => {
       console.error(error);
-      handleError(error, 'Gagal mengimpor data mahasiswa!');
+      if (
+        error.code == 'ERR_BAD_RESPONSE' &&
+        error.response.data.message == 'Missing data in Excel.'
+      ) {
+        handleError(error, 'Gagal! Data Excel tidak ada.');
+      }
     },
 
     onSettled: handleSettled,

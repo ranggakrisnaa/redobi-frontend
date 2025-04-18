@@ -3,6 +3,7 @@ import { SignInSchema } from '@/commons/schema/sign-in.schema.ts';
 import { UserLoginData } from '@/commons/types/auth/user-login-data.type.ts';
 import { VerifySignInParams } from '@/commons/types/auth/verify-sign-in-params.type.ts';
 import {
+  authLogout,
   authResendOTPVerify,
   authSignIn,
   authVerifySignIn,
@@ -80,6 +81,27 @@ export const useAuthResendOTPVerify = () => {
 
     onError: (error: any) => {
       handleError(error, 'Gagal mengirim ulang kode OTP. Coba lagi nanti.');
+    },
+
+    onSettled: handleSettled,
+  });
+};
+
+export const useAuthLogout = () => {
+  const { handleError, handleMutate, handleSettled, navigate } =
+    UseBaseMutationHandler();
+
+  return useMutation({
+    mutationFn: () => authLogout(),
+
+    onMutate: handleMutate,
+
+    onSuccess: () => {
+      navigate('/sign-in');
+    },
+
+    onError: (error: any) => {
+      handleError(error, 'Logout gagal. Silakan coba lagi.');
     },
 
     onSettled: handleSettled,
