@@ -1,22 +1,18 @@
-import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
+import { filterOptions } from '@/commons/constants/lecturer/filter-option-lecturer.constant';
 import {
-  updateStudentSchema,
-  UpdateStudentSchema,
-} from '@/commons/schema/update-student.schema';
-import { UpdateStudentProps } from '@/commons/types/student/update-student-props.type';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar.tsx';
-import { Button } from '@/components/ui/button.tsx';
+  createLecturerSchema,
+  CreateLecturerSchema,
+} from '@/commons/schema/create-lecturer.schema';
+import { CreateLecturerProps } from '@/commons/types/lecturer/create-lecturer-props.type';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form.tsx';
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -24,38 +20,42 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select.tsx';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/ui/select';
 import { useGlobalStore } from '@/store/globalStore';
-import { useStudentStore } from '@/store/studentStore.ts';
+import { useLecturerStore } from '@/store/lecturerStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CameraIcon, Loader2, PlusIcon } from 'lucide-react';
-import * as React from 'react';
 import { useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
-  onSuccess,
-  data,
-}) => {
-  const form = useForm<UpdateStudentSchema>({
-    resolver: zodResolver(updateStudentSchema),
+const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
+  const form = useForm<CreateLecturerSchema>({
+    resolver: zodResolver(createLecturerSchema),
     mode: 'onChange',
     defaultValues: {
-      fullName: data.fullName ?? '',
-      nim: data.nim ?? '',
-      class: data.class ?? '',
-      abstract: data.abstract ?? '',
-      judulSkripsi: data.judulSkripsi ?? '',
-      major: data.major ?? '',
-      tahunMasuk: String(data.tahunMasuk ?? ''),
-      file: data.imageUrl ?? undefined,
+      fullName: '',
+      nidn: '',
+      tipePembimbing: '',
+      prodi: '',
+      kuotaBimbingan: '',
+      file: '',
+      jumlahBimbingan: '',
     },
   });
-  const { photoPreview, setPhoto, photoFile } = useStudentStore();
-  const values: UpdateStudentSchema = form.watch();
   const { loading } = useGlobalStore();
+  const { photoPreview, setPhoto, photoFile } = useLecturerStore();
+  const values: CreateLecturerSchema = form.watch();
+  const isEmpty = (val: number | string | undefined) => !val;
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleCancelForm = () => {
+    form.reset();
+    setPhoto(undefined);
+
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,23 +64,18 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
     }
   };
 
-  const handleCancelForm = () => {
-    form.reset();
-    setPhoto(undefined);
-    if (inputRef.current) inputRef.current.value = '';
+  const onSubmit: SubmitHandler<CreateLecturerSchema> = (
+    data: CreateLecturerSchema,
+  ) => {
+    if (onSuccess) {
+      data = {
+        ...data,
+        file: photoFile,
+      };
+      setPhoto(undefined);
+      onSuccess(data);
+    }
   };
-
-  const isEmpty = (val: number | string | undefined) => !val;
-
-  const onSubmit: SubmitHandler<UpdateStudentSchema> = (formData) => {
-    const updatedData = {
-      ...formData,
-      file: photoFile,
-    };
-    setPhoto(undefined);
-    if (onSuccess) onSuccess(updatedData);
-  };
-
   return (
     <FormProvider {...form}>
       <FormField
@@ -92,10 +87,9 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
               <AvatarImage
                 src={
                   photoPreview ||
-                  data.imageUrl ||
                   'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
                 }
-                alt="Foto Mahasiswa"
+                alt="Foto Dosen Pembimbing"
               />
               <AvatarFallback />
             </Avatar>
@@ -126,7 +120,7 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
       />
       <form className="space-y-3" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex gap-2 mt-3">
-          <div className="w-1/2">
+          <div className="w-1/3">
             <FormField
               control={form.control}
               name="fullName"
@@ -136,38 +130,50 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
                     {isEmpty(values.fullName) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Nama Mahasiswa
+                    Nama Dosen
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan Nama Mahasiswa" />
+                    <Input {...field} placeholder="Masukkan Nama Dosen" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="w-1/2">
+          <div className="w-1/3">
             <FormField
-              name="nim"
+              control={form.control}
+              name="nidn"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.nim) && (
+                    {isEmpty(values.nidn) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    NIM
+                    NIDN
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Masukkan NIM"
-                      inputMode="numeric"
-                      onKeyDown={(e) => {
-                        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
-                          e.preventDefault();
-                        }
-                      }}
-                    />
+                    <Input {...field} placeholder="Masukkan NIDN" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-1/3">
+            <FormField
+              control={form.control}
+              name="kuotaBimbingan"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {isEmpty(values.kuotaBimbingan) && (
+                      <span className="text-red-500">*</span>
+                    )}{' '}
+                    Kuota Bimbingan
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Masukkan Kuota Bimbingan" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,25 +181,26 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
             />
           </div>
         </div>
-        <div className="flex gap-2">
-          <div className="w-full">
+        <div className="flex gap-2 mt-3">
+          <div className="w-1/3">
             <FormField
-              name="tahunMasuk"
+              control={form.control}
+              name="prodi"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.tahunMasuk) && (
+                    {isEmpty(values.prodi) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Angkatan
+                    Prodi
                   </FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih angkatan" />
+                        <SelectValue placeholder="Pilih Prodi" />
                       </SelectTrigger>
                       <SelectContent>
-                        {filterOptions.angkatan.map((option) => (
+                        {filterOptions.prodi.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -206,24 +213,25 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
               )}
             />
           </div>
-          <div className="w-full">
+          <div className="w-1/3">
             <FormField
-              name="major"
+              control={form.control}
+              name="tipePembimbing"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.major) && (
+                    {isEmpty(values.tipePembimbing) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Jurusan
+                    Tipe Pembimbing
                   </FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih jurusan" />
+                        <SelectValue placeholder="Pilih Tipe Pembimbing" />
                       </SelectTrigger>
                       <SelectContent>
-                        {filterOptions.jurusan.map((option) => (
+                        {filterOptions.tipePembimbing.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -236,77 +244,21 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
               )}
             />
           </div>
-          <div className="w-full">
+          <div className="w-1/3">
             <FormField
-              name="class"
+              control={form.control}
+              name="jumlahBimbingan"
+              disabled={true}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.class) && (
+                    {isEmpty(values.fullName) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Kelas
+                    Jumlah Bimbingan
                   </FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih kelas" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.kelas.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="w-full">
-            <FormField
-              name="judulSkripsi"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {' '}
-                    {isEmpty(values.judulSkripsi) && (
-                      <span className="text-red-500">*</span>
-                    )}{' '}
-                    Judul Skripsi
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Masukkan Judul Skripsi" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="w-full">
-            <FormField
-              name="abstract"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {isEmpty(values.abstract) && (
-                      <span className="text-red-500">*</span>
-                    )}{' '}
-                    Abstrak
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Masukkan Abstrak"
-                      className="h-[140px]"
-                    />
+                    <Input {...field} value="-" className="bg-neutral-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -318,8 +270,12 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
           <Button type="button" variant="outline" onClick={handleCancelForm}>
             Batal
           </Button>
-          <Button disabled={loading} className="w-18 flex justify-center">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Ubah'}
+          <Button
+            type="submit"
+            disabled={loading}
+            className="-w-18 bg-primary-500 text-white flex justify-center"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Simpan'}
           </Button>
         </div>
       </form>
@@ -327,4 +283,4 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
   );
 };
 
-export default UpdateStudentForm;
+export default CreateLecturerForm;

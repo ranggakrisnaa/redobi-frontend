@@ -1,51 +1,51 @@
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
-import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
+import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { LecturerFilter } from '@/commons/types/lecturer/lecturer-filter-data.type';
 import { create } from 'zustand';
 
-type StudentStore = {
-  studentData: IStudent[];
-  studentDetail: IStudent | null;
-  studentId: string | null;
+type LecturerStore = {
+  lecturerData: ILecturer[];
+  lecturerDetail: ILecturer | null;
+  lecturerId: string | null;
   currentPage: number;
   pageSize: number;
   sortBy: string | null;
   search: string | null;
   sortOrder: string;
-  filters: StudentFilter;
+  filters: LecturerFilter;
   totalRecords: number;
   totalPages: number;
   photoFile?: File;
   photoPreview?: string;
-  setStudentData: (data: Record<any, any>) => void;
+  setLecturerData: (data: Record<any, any>) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
-  setFilters: (filters: StudentFilter) => void;
+  setFilters: (filters: LecturerFilter) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
-  setStudentId: (id: string) => void;
-  setStudentDetail: (data: IStudent) => void;
+  setLecturerId: (id: string) => void;
+  setLecturerDetail: (data: ILecturer) => void;
   setPhoto: (file: File | undefined) => void;
 };
 
-export const useStudentStore = create<StudentStore>((set) => ({
-  studentData: [],
+export const useLecturerStore = create<LecturerStore>((set) => ({
+  lecturerData: [],
   currentPage: 1,
   pageSize: 10,
   totalRecords: 0,
-  filters: {} as StudentFilter,
+  filters: {} as LecturerFilter,
   totalPages: 0,
   search: null,
   sortBy: null,
   sortOrder: 'asc',
-  studentId: null,
-  studentDetail: null,
+  lecturerId: null,
+  lecturerDetail: null,
   imagePreview: undefined,
   photoPreview: undefined,
   photoFile: undefined,
 
-  setStudentData: ({ data, pagination }) =>
+  setLecturerData: ({ data, pagination }) =>
     set({
-      studentData: data,
+      lecturerData: data,
       totalRecords: pagination.totalRecords,
       totalPages: pagination.totalPages,
     }),
@@ -60,8 +60,8 @@ export const useStudentStore = create<StudentStore>((set) => ({
       sortOrder:
         state.sortBy === column && state.sortOrder === 'desc' ? 'asc' : 'desc',
     })),
-  setStudentId: (id: string) => set({ studentId: id }),
-  setStudentDetail: (data: IStudent) => set({ studentDetail: data }),
+  setLecturerId: (id: string) => set({ lecturerId: id }),
+  setLecturerDetail: (data: ILecturer) => set({ lecturerDetail: data }),
   setPhoto: (file: File | undefined) => {
     set(() => ({
       photoFile: file,

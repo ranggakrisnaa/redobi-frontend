@@ -14,6 +14,7 @@ type DataManagementComponentProps = {
   onClickDelete: () => Promise<boolean>;
   onClickDownload: () => void;
   onClickImport: (file: File) => Promise<boolean>;
+  titleDialog: string;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
@@ -22,6 +23,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onClickDownload,
   onClickDelete,
   onClickImport,
+  titleDialog,
 }) => {
   const form = useForm({
     defaultValues: {
@@ -70,7 +72,10 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
         >
           <FileDown className="w-4 h-4 mr-1" /> Download Excel
         </Button>
-        <ImportDrawerComponent onImport={onClickImport} />
+        <ImportDrawerComponent
+          onImport={onClickImport}
+          titleDialog={titleDialog}
+        />
         <DeleteConfirmationComponent
           onConfirm={onClickDelete}
           isSingle={false}

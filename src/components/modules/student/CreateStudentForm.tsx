@@ -64,7 +64,7 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
 
   const handleCancelForm = () => {
     form.reset();
-    setPhoto(null);
+    setPhoto(undefined);
 
     if (inputRef.current) {
       inputRef.current.value = '';
@@ -74,12 +74,12 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
   const onSubmit: SubmitHandler<CreateStudentSchema> = (
     data: CreateStudentSchema,
   ) => {
-    console.log('Form submitted:', data);
     if (onSuccess) {
       data = {
         ...data,
         file: photoFile,
       };
+      setPhoto(undefined);
       onSuccess(data);
     }
   };

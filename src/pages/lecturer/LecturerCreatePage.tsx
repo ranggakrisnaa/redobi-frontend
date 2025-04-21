@@ -1,45 +1,44 @@
-import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
-import AlertComponent from '@/components/commons/AlertComponent.tsx';
-import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
-import DashboardContainer from '@/components/containers/DashboardContainer.tsx';
-import CreateStudentForm from '@/components/modules/student/CreateStudentForm.tsx';
+import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
+import AlertComponent from '@/components/commons/AlertComponent';
+import LoadingComponent from '@/components/commons/LoadingComponent';
+import DashboardContainer from '@/components/containers/DashboardContainer';
+import CreateLecturerForm from '@/components/modules/lecturer/CreateLecturerForm';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb.tsx';
-import { Card, CardContent } from '@/components/ui/card.tsx';
-import { useStudentCreate } from '@/hooks/useStudent.ts';
-import { useGlobalStore } from '@/store/globalStore.ts';
-import { Slash } from 'lucide-react';
+} from '@/components/ui/breadcrumb';
+import { Card, CardContent } from '@/components/ui/card';
+import { useLecturerCreate } from '@/hooks/useLecturer';
+import { useGlobalStore } from '@/store/globalStore';
+import { Slash, SlashIcon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const StudentCreatePage = () => {
+const LecturerCreatePage = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-  const navigate = useNavigate();
-  const { mutate, isPending } = useStudentCreate();
   const { error, loading } = useGlobalStore();
+  const { mutate, isPending } = useLecturerCreate();
 
-  const handleSuccess = (data: CreateStudentSchema) => {
+  const handleSuccess = (data: CreateLecturerSchema) => {
     mutate(data);
   };
-
   return (
     <DashboardContainer pageTitle="Tambah Data Mahasiswa">
       <div>
         <BreadcrumbList>
           <BreadcrumbList>
             <BreadcrumbSeparator>
-              <Slash />
+              <SlashIcon />
             </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink
-                onClick={() => navigate('/students')}
+                onClick={() => navigate('/lecturers')}
                 className="hover:cursor-pointer"
               >
-                Mahasiswa
+                Dosen Pembimbing
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>
@@ -47,14 +46,14 @@ const StudentCreatePage = () => {
             </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink
-                onClick={() => navigate(`/students/create`)}
+                onClick={() => navigate(`/lecturers/create`)}
                 className={
-                  currentPath == `/students/create`
+                  currentPath == `/lecturers/create`
                     ? 'text-black font-medium hover:cursor-pointer'
                     : ''
                 }
               >
-                Tambah Data Mahasiswa
+                Tambah Data Dosen Pembimbing
               </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -75,7 +74,7 @@ const StudentCreatePage = () => {
                 </AlertComponent>
               </div>
             )}
-            <CreateStudentForm onSuccess={handleSuccess} />
+            <CreateLecturerForm onSuccess={handleSuccess} />
           </CardContent>
         </Card>
       </div>
@@ -83,4 +82,4 @@ const StudentCreatePage = () => {
   );
 };
 
-export default StudentCreatePage;
+export default LecturerCreatePage;
