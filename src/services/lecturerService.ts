@@ -2,6 +2,7 @@ import apiService from '@/api/apiService';
 import { DefaultEnum } from '@/commons/enums/enum';
 import { ILecturer } from '@/commons/interface-model/lecturer.interface';
 import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
+import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
 import { LecturerPaginationResponse } from '@/commons/types/lecturer/lecturer-fetch-api.type';
 import { LecturerFilter } from '@/commons/types/lecturer/lecturer-filter-data.type';
 
@@ -41,6 +42,11 @@ export const fetchLecturerPagination = async (
   return response.data;
 };
 
+export const fetchLecturerDetail = async (id: string) => {
+  const response = await apiService.get<ILecturer>(`/lecturers/${id}`);
+  return response.data;
+};
+
 export const deleteLecturer = async (ids: string[], id?: string) => {
   const url = id ? `/lecturers/${id}` : '/lecturers';
   const config = id ? {} : { lecturerIds: ids };
@@ -63,6 +69,31 @@ export const createLecturer = async (data: CreateLecturerSchema) => {
     }
   });
   const response = await apiService.post<ILecturer>('/lecturers', data);
+  return response.data;
+};
+
+export const updateLecturer = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: UpdateLecturerSchema;
+}) => {
+  const formData = new FormData();
+
+  Object.keys(data as keyof ILecturer[]).forEach((key) => {
+    const value = data[key as keyof UpdateLecturerSchema];
+
+    if (value !== undefined && value !== null) {
+      formData.append(key, value instanceof File ? value : String(value));
+    }
+  });
+  console.log(data);
+
+  const response = await apiService.put<ILecturer>(
+    `/lecturers/${id}`,
+    formData,
+  );
   return response.data;
 };
 

@@ -29,7 +29,7 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CameraIcon, Loader2, PlusIcon } from 'lucide-react';
+import { CameraIcon, Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
 import * as React from 'react';
 import { useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -318,13 +318,20 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
         </div>
         <div className="flex justify-end gap-2 mt-3">
           <Button type="button" variant="outline" onClick={handleCancelForm}>
-            Batal
+            <RotateCcw /> Reset
           </Button>
           <Button
             disabled={loading}
-            className="-w-18 bg-primary-500 text-white flex justify-center"
+            className="w-18 bg-primary-500 text-white flex justify-center hover:bg-blue-500 transition-all duration-200"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Simpan'}
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Save />
+                Simpan
+              </>
+            )}
           </Button>
         </div>
       </form>

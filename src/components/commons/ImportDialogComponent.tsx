@@ -107,7 +107,7 @@ const ImportDialogComponent: React.FC<ImportDialogComponentProps> = ({
     >
       <DialogTrigger asChild>
         <Button
-          className="bg-warning-900 text-white hover:!bg-[#E29A04] transition-all duration-200"
+          className="bg-warning-900 text-white hover:bg-[#E29A04] transition-all duration-200"
           onClick={() => setOpen(true)}
         >
           <UploadCloud className="w-4 h-4 mr-2" />

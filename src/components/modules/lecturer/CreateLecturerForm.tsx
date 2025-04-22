@@ -24,7 +24,7 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { useLecturerStore } from '@/store/lecturerStore';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CameraIcon, Loader2, PlusIcon } from 'lucide-react';
+import { CameraIcon, Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
 import { useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
@@ -153,7 +153,16 @@ const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
                     NIDN
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan NIDN" />
+                    <Input
+                      {...field}
+                      placeholder="Masukkan NIDN"
+                      inputMode="numeric"
+                      onKeyDown={(e) => {
+                        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -268,14 +277,21 @@ const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
         </div>
         <div className="flex justify-end gap-2 mt-3">
           <Button type="button" variant="outline" onClick={handleCancelForm}>
-            Batal
+            <RotateCcw /> Reset
           </Button>
           <Button
             type="submit"
             disabled={loading}
-            className="-w-18 bg-primary-500 text-white flex justify-center"
+            className="w-18 bg-primary-500 text-white flex justify-center hover:bg-blue-500 transition-all duration-200"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Simpan'}
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Save />
+                Simpan
+              </>
+            )}
           </Button>
         </div>
       </form>

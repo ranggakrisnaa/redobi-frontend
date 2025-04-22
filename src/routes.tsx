@@ -8,7 +8,9 @@ import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
 import HomePage from './pages/home/HomePage';
 import LecturerCreatePage from './pages/lecturer/LecturerCreatePage';
+import LecturerDetailPage from './pages/lecturer/LecturerDetailPage';
 import LecturerPage from './pages/lecturer/LecturerPage';
+import LecturerUpdatePage from './pages/lecturer/LecturerUpdatePage';
 import StudentPage from './pages/student/StudentPage';
 import StudentUpdatePage from './pages/student/StudentUpdatePage';
 
@@ -29,6 +31,11 @@ const AppRoutes = () => {
           <Route path="/students/:id/update" element={<StudentUpdatePage />} />
           <Route path="/lecturers" element={<LecturerPage />} />
           <Route path="/lecturers/create" element={<LecturerCreatePage />} />
+          <Route path="/lecturers/:id" element={<LecturerDetailPage />} />
+          <Route
+            path="/lecturers/:id/update"
+            element={<LecturerUpdatePage />}
+          />
         </Route>
       </Routes>
     </Router>

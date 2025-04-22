@@ -1,10 +1,14 @@
+import { ILecturer } from '@/commons/interface-model/lecturer.interface';
 import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
+import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
 import { LecturerPaginationResponse } from '@/commons/types/lecturer/lecturer-fetch-api.type';
 import {
   createLecturer,
   deleteLecturer,
+  fetchLecturerDetail,
   fetchLecturerPagination,
   importEcxelLecturer,
+  updateLecturer,
 } from '@/services/lecturerService';
 import { useLecturerStore } from '@/store/lecturerStore';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -75,6 +79,60 @@ export const useLecturerCreate = () => {
         error.response.data.message == 'Lecturer data already exist.'
       ) {
         handleError(error, 'Gagal! Data Dosen Pembimbing ini sudah ada.');
+      } else {
+        handleError(error, `Gagal!, ${error}`);
+      }
+    },
+
+    onSettled: handleSettled,
+  });
+};
+
+export const useLecturerDetail = () => {
+  const { lecturerId, setLecturerDetail } = useLecturerStore();
+
+  return useQuery({
+    queryKey: ['lecturer-detail', lecturerId],
+    queryFn: async () => {
+      const data = await fetchLecturerDetail(lecturerId as string);
+      setLecturerDetail(data as unknown as ILecturer);
+      return data;
+    },
+    enabled: !!lecturerId,
+    staleTime: 0,
+  });
+};
+
+export const useLecturerUpdate = () => {
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
+
+  return useMutation<
+    ILecturer,
+    Error,
+    { id: string; data: UpdateLecturerSchema }
+  >({
+    mutationFn: ({ data, id }) => updateLecturer({ data, id }),
+
+    onMutate: handleMutate,
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['lecturer-detail', variables.id],
+      });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      handleSuccess('Data dosen pembimbing berhasil diperbarui.', '/lecturers');
+    },
+
+    onError: (error: any) => {
+      console.error(error);
+      if (error) {
+        handleError(error, 'Gagal memperbarui data dosen pembimbing!.');
       } else {
         handleError(error, `Gagal!, ${error}`);
       }
