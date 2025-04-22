@@ -22,10 +22,12 @@ type FormValues = {
 
 type ImportDialogComponentProps = {
   onImport: (file: File) => Promise<boolean>;
+  titleDialog: string;
 };
 
 const ImportDialogComponent: React.FC<ImportDialogComponentProps> = ({
   onImport,
+  titleDialog,
 }) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,7 +107,7 @@ const ImportDialogComponent: React.FC<ImportDialogComponentProps> = ({
     >
       <DialogTrigger asChild>
         <Button
-          className="bg-warning-900 text-white hover:!bg-[#E29A04] transition-all duration-200"
+          className="bg-warning-900 text-white hover:bg-[#E29A04] transition-all duration-200"
           onClick={() => setOpen(true)}
         >
           <UploadCloud className="w-4 h-4 mr-2" />
@@ -115,11 +117,11 @@ const ImportDialogComponent: React.FC<ImportDialogComponentProps> = ({
       <DialogContent className="sm:max-w-md rounded-xl px-6 py-5">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-center">
-            Import Excel Mahasiswa
+            Import Excel {titleDialog}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground text-center">
-            Unggah file Excel berisi data mahasiswa. Pastikan file sesuai format
-            yang telah ditentukan.
+            Unggah file Excel berisi data {titleDialog}. Pastikan file sesuai
+            format yang telah ditentukan.
           </DialogDescription>
         </DialogHeader>
         {open && globalError && (

@@ -51,9 +51,7 @@ export const createStudent = async (data: CreateStudentSchema) => {
   const formData = new FormData();
 
   (Object.keys(data) as (keyof IStudent)[]).forEach((key) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const value = data[key];
+    const value = data[key as keyof CreateStudentSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));
@@ -71,14 +69,10 @@ export const updateStudent = async ({
   id: string;
   data: UpdateStudentSchema;
 }) => {
-  console.log(data, id);
-
   const formData = new FormData();
 
   (Object.keys(data) as (keyof IStudent)[]).forEach((key) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const value = data[key];
+    const value = data[key as keyof UpdateStudentSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));

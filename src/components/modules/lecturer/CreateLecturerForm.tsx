@@ -1,66 +1,52 @@
-import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
+import { filterOptions } from '@/commons/constants/lecturer/filter-option-lecturer.constant';
 import {
-  createStudentSchema,
-  CreateStudentSchema,
-} from '@/commons/schema/create-student.schema.ts';
-import { CreateStudentProps } from '@/commons/types/student/create-student-props.type.ts';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar.tsx';
-import { Button } from '@/components/ui/button.tsx';
+  createLecturerSchema,
+  CreateLecturerSchema,
+} from '@/commons/schema/create-lecturer.schema';
+import { CreateLecturerProps } from '@/commons/types/lecturer/create-lecturer-props.type';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form.tsx';
-import { Input } from '@/components/ui/input.tsx';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select.tsx';
-import { Textarea } from '@/components/ui/textarea.tsx';
+} from '@/components/ui/select';
 import { useGlobalStore } from '@/store/globalStore';
-import { useStudentStore } from '@/store/studentStore.ts';
+import { useLecturerStore } from '@/store/lecturerStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CameraIcon, Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
-import * as React from 'react';
 import { useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
-  const form = useForm<CreateStudentSchema>({
-    resolver: zodResolver(createStudentSchema),
+const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
+  const form = useForm<CreateLecturerSchema>({
+    resolver: zodResolver(createLecturerSchema),
     mode: 'onChange',
     defaultValues: {
       fullName: '',
-      nim: '',
-      class: '',
-      abstract: '',
-      judulSkripsi: '',
-      major: '',
-      tahunMasuk: '',
+      nidn: '',
+      tipePembimbing: '',
+      prodi: '',
+      kuotaBimbingan: '',
       file: '',
+      jumlahBimbingan: '',
     },
   });
   const { loading } = useGlobalStore();
-  const { photoPreview, setPhoto, photoFile } = useStudentStore();
-  const values: CreateStudentSchema = form.watch();
+  const { photoPreview, setPhoto, photoFile } = useLecturerStore();
+  const values: CreateLecturerSchema = form.watch();
   const isEmpty = (val: number | string | undefined) => !val;
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPhoto(file);
-    }
-  };
 
   const handleCancelForm = () => {
     form.reset();
@@ -71,8 +57,15 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
     }
   };
 
-  const onSubmit: SubmitHandler<CreateStudentSchema> = (
-    data: CreateStudentSchema,
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhoto(file);
+    }
+  };
+
+  const onSubmit: SubmitHandler<CreateLecturerSchema> = (
+    data: CreateLecturerSchema,
   ) => {
     if (onSuccess) {
       data = {
@@ -83,7 +76,6 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
       onSuccess(data);
     }
   };
-
   return (
     <FormProvider {...form}>
       <FormField
@@ -97,7 +89,7 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
                   photoPreview ||
                   'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
                 }
-                alt="Foto Mahasiswa"
+                alt="Foto Dosen Pembimbing"
               />
               <AvatarFallback />
             </Avatar>
@@ -128,7 +120,7 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
       />
       <form className="space-y-3" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex gap-2 mt-3">
-          <div className="w-1/2">
+          <div className="w-1/3">
             <FormField
               control={form.control}
               name="fullName"
@@ -138,31 +130,32 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
                     {isEmpty(values.fullName) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Nama Mahasiswa
+                    Nama Dosen
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan Nama Mahasiswa" />
+                    <Input {...field} placeholder="Masukkan Nama Dosen" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="w-1/2">
+          <div className="w-1/3">
             <FormField
-              name="nim"
+              control={form.control}
+              name="nidn"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.nim) && (
+                    {isEmpty(values.nidn) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    NIM
+                    NIDN
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Masukkan NIM"
+                      placeholder="Masukkan NIDN"
                       inputMode="numeric"
                       onKeyDown={(e) => {
                         if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
@@ -176,26 +169,47 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
               )}
             />
           </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="w-full">
+          <div className="w-1/3">
             <FormField
-              name="tahunMasuk"
+              control={form.control}
+              name="kuotaBimbingan"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.tahunMasuk) && (
+                    {isEmpty(values.kuotaBimbingan) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Angkatan
+                    Kuota Bimbingan
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Masukkan Kuota Bimbingan" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="flex gap-2 mt-3">
+          <div className="w-1/3">
+            <FormField
+              control={form.control}
+              name="prodi"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {isEmpty(values.prodi) && (
+                      <span className="text-red-500">*</span>
+                    )}{' '}
+                    Prodi
                   </FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih angkatan" />
+                        <SelectValue placeholder="Pilih Prodi" />
                       </SelectTrigger>
                       <SelectContent>
-                        {filterOptions.angkatan.map((option) => (
+                        {filterOptions.prodi.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -208,24 +222,25 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
               )}
             />
           </div>
-          <div className="w-full">
+          <div className="w-1/3">
             <FormField
-              name="major"
+              control={form.control}
+              name="tipePembimbing"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.major) && (
+                    {isEmpty(values.tipePembimbing) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Jurusan
+                    Tipe Pembimbing
                   </FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Pilih jurusan" />
+                        <SelectValue placeholder="Pilih Tipe Pembimbing" />
                       </SelectTrigger>
                       <SelectContent>
-                        {filterOptions.jurusan.map((option) => (
+                        {filterOptions.tipePembimbing.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -238,77 +253,21 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
               )}
             />
           </div>
-          <div className="w-full">
+          <div className="w-1/3">
             <FormField
-              name="class"
+              control={form.control}
+              name="jumlahBimbingan"
+              disabled={true}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.class) && (
+                    {isEmpty(values.fullName) && (
                       <span className="text-red-500">*</span>
                     )}{' '}
-                    Kelas
+                    Jumlah Bimbingan
                   </FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih kelas" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {filterOptions.kelas.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="w-full">
-            <FormField
-              name="judulSkripsi"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {' '}
-                    {isEmpty(values.judulSkripsi) && (
-                      <span className="text-red-500">*</span>
-                    )}{' '}
-                    Judul Skripsi
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Masukkan Judul Skripsi" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="w-full">
-            <FormField
-              name="abstract"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {isEmpty(values.abstract) && (
-                      <span className="text-red-500">*</span>
-                    )}{' '}
-                    Abstrak
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Masukkan Abstrak"
-                      className="h-[140px]"
-                    />
+                    <Input {...field} value="-" className="bg-neutral-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -321,6 +280,7 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
             <RotateCcw /> Reset
           </Button>
           <Button
+            type="submit"
             disabled={loading}
             className="w-18 bg-primary-500 text-white flex justify-center hover:bg-blue-500 transition-all duration-200"
           >
@@ -339,4 +299,4 @@ const CreateStudentForm: React.FC<CreateStudentProps> = ({ onSuccess }) => {
   );
 };
 
-export default CreateStudentForm;
+export default CreateLecturerForm;

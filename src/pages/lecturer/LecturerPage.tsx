@@ -1,11 +1,11 @@
-import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
-import { studentColumns } from '@/commons/constants/student/table-column-data.constant.tsx';
-import { IStudent } from '@/commons/interface-model/student.interface';
-import { StudentFilterParams } from '@/commons/types/student/student-filter-data.type.ts';
+import { filterOptions } from '@/commons/constants/lecturer/filter-option-lecturer.constant';
+import { lecturerColumns } from '@/commons/constants/lecturer/table-column-data.constant';
+import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { LecturerFilterParams } from '@/commons/types/lecturer/lecturer-filter-data.type';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
-import LoadingComponent from '@/components/commons/LoadingComponent.tsx';
-import PaginationComponent from '@/components/commons/PaginationComponent.tsx';
+import LoadingComponent from '@/components/commons/LoadingComponent';
+import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
 import {
@@ -13,20 +13,19 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb.tsx';
+} from '@/components/ui/breadcrumb';
 import {
-  useStudentDelete,
-  useStudentImportExcel,
-  useStudentsPagination,
-} from '@/hooks/useStudent.ts';
-import { downloadExcelTemplateStudent } from '@/services/studentService';
+  useLecturerDelete,
+  useLecturerImportExcel,
+  useLecturerPagination,
+} from '@/hooks/useLecturer';
+import { downloadExcelTemplateLecturer } from '@/services/lecturerService';
 import { useGlobalStore } from '@/store/globalStore';
-import { useStudentStore } from '@/store/studentStore.ts';
+import { useLecturerStore } from '@/store/lecturerStore';
 import { Slash } from 'lucide-react';
-import { useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-const StudentPage = () => {
+const LecturerPage = () => {
   const {
     currentPage,
     pageSize,
@@ -35,25 +34,27 @@ const StudentPage = () => {
     setFilters,
     setSearch,
     setSortData,
-  } = useStudentStore();
-  const { data, isLoading, isError, error } = useStudentsPagination();
+  } = useLecturerStore();
+  const { data, isLoading, isError, error } = useLecturerPagination();
+  const { mutateAsync: importExcelMutate } = useLecturerImportExcel();
+  const { mutateAsync: deleteMutate } = useLecturerDelete();
+  const location = useLocation();
   const { selected } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
-  const { mutateAsync: deleteMutate } = useStudentDelete();
-  const { mutateAsync: importExcelMutate } = useStudentImportExcel();
 
-  useEffect(() => {
-    setFilters({
-      tahun_masuk: searchParams.get('angkatan') || '',
-      major: searchParams.get('jurusan') || '',
-      class: searchParams.get('kelas') || '',
-    });
-
-    setSearch(searchParams.get('search') || '');
-  }, [searchParams, setFilters, setSearch]);
+  const formattedData =
+    data?.data.map((lecturer: ILecturer) => ({
+      id: lecturer.id,
+      nidn: lecturer.nidn,
+      name: lecturer.fullName,
+      jumlahBimbingan: lecturer.jumlahBimbingan,
+      kuotaBimbingan: lecturer.kuotaBimbingan,
+      tipePembimbing: lecturer.tipePembimbing,
+      prodi: lecturer.prodi,
+      imageUrl: lecturer.imageUrl,
+    })) || [];
 
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams);
@@ -68,42 +69,20 @@ const StudentPage = () => {
     setSearchParams(newParams, { replace: true });
   };
 
-  const formattedData =
-    data?.data.map((student: IStudent) => ({
-      id: student.id,
-      name: student.fullName,
-      nim: student.nim,
-      tahunMasuk: student.tahunMasuk,
-      major: student.major.toString(),
-      judulSkripsi: student.judulSkripsi,
-      kelas: student.class.toString(),
-      imageUrl: student.imageUrl,
-    })) || [];
-
-  const handleFilterChange = (filters: StudentFilterParams) => {
-    setPage(1);
-    setFilters({
-      tahun_masuk: filters.angkatan ?? '',
-      major: filters.jurusan ?? '',
-      class: filters.kelas ?? '',
-    });
-
-    updateURL({
-      angkatan: filters.angkatan || '',
-      jurusan: filters.jurusan || '',
-      kelas: filters.kelas || '',
-    });
-  };
-
-  const handleSearchChange = (search: string) => {
+  const handleSearcChange = (search: string) => {
     setPage(1);
     setSearch(search);
     updateURL({ search });
   };
 
-  const handleSortData = (sort: string) => {
-    setPage(1);
-    setSortData(sort);
+  const handleImportExcel = async (file: File) => {
+    try {
+      await importExcelMutate(file);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
 
   const handleMultipleDelete = async () => {
@@ -126,18 +105,26 @@ const StudentPage = () => {
     }
   };
 
-  const handleImportExcel = async (file: File) => {
-    try {
-      await importExcelMutate(file);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+  const handleSortData = (sort: string) => {
+    setPage(1);
+    setSortData(sort);
+  };
+
+  const handleFilterChange = (filters: LecturerFilterParams) => {
+    setPage(1);
+    setFilters({
+      prodi: filters.prodi || '',
+      tipe_pembimbing: filters.tipePembimbing || '',
+    });
+
+    updateURL({
+      prodi: filters.prodi || '',
+      tipePembimbing: filters.tipePembimbing || '',
+    });
   };
 
   return (
-    <DashboardContainer pageTitle="Data Mahasiswa">
+    <DashboardContainer pageTitle="Data Dosen Pembimbing">
       <div>
         <BreadcrumbList>
           <BreadcrumbList>
@@ -146,14 +133,14 @@ const StudentPage = () => {
             </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink
-                onClick={() => navigate('/students')}
+                onClick={() => navigate('/lecturers')}
                 className={
-                  currentPath == '/students'
+                  currentPath == '/lecturers'
                     ? 'text-black font-medium hover:cursor-pointer'
                     : ''
                 }
               >
-                Mahasiswa
+                Dosen Pembimbing
               </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -161,12 +148,12 @@ const StudentPage = () => {
       </div>
       <div>
         <DataManagementComponent
-          onClickImport={handleImportExcel}
-          onClickDownload={downloadExcelTemplateStudent}
+          onClickCreate={() => navigate('/lecturers/create')}
           onClickDelete={handleMultipleDelete}
-          onSearchChange={handleSearchChange}
-          onClickCreate={() => navigate('/students/create')}
-          titleDialog="Mahasiswa"
+          onClickImport={handleImportExcel}
+          onSearchChange={handleSearcChange}
+          onClickDownload={downloadExcelTemplateLecturer}
+          titleDialog="Dosen Pembimbing"
         />
         <FilterComponent
           filterOptions={filterOptions}
@@ -182,10 +169,10 @@ const StudentPage = () => {
           <>
             <TableComponent
               data={formattedData}
-              columns={studentColumns}
-              onSort={handleSortData}
-              pathDetail="students"
+              columns={lecturerColumns}
+              pathDetail="lecturers"
               onDelete={handleSingleDelete}
+              onSort={handleSortData}
             />
             <div className="flex justify-end mt-4 w-full">
               <PaginationComponent
@@ -202,5 +189,4 @@ const StudentPage = () => {
     </DashboardContainer>
   );
 };
-
-export default StudentPage;
+export default LecturerPage;

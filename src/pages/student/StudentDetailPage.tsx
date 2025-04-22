@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush.ts';
 import { useStudentDetail } from '@/hooks/useStudent.ts';
 import { useStudentStore } from '@/store/studentStore.ts';
-import { Slash } from 'lucide-react';
+import { FilePenLine, Slash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -74,11 +74,11 @@ const StudentDetailPage = () => {
             <LoadingComponent />
           </div>
         ) : (
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="space-y-6">
                 <div className="flex justify-center">
-                  <Avatar className="w-[200px] h-[200px] border-4 border-white ring-2 ring-red-600">
+                  <Avatar className="w-[210px] h-[210px] border-4 border-white">
                     <AvatarImage src={data?.imageUrl} alt="Foto Mahasiswa" />
                     <AvatarFallback />
                   </Avatar>
@@ -89,22 +89,48 @@ const StudentDetailPage = () => {
                       <p className="font-medium border-b p-2">
                         Dosen Pembimbing 1
                       </p>
-                      <div className="p-2">
-                        <p className="text-sm text-muted-foreground mb-1">
-                          Nama Dosen :
-                        </p>
-                        <p className="text-sm text-muted-foreground">NIP :</p>
+                      <div className="p-2 flex items-center gap-4">
+                        <div>
+                          <Avatar className="w-[54px] h-[54px] border-4 border-white">
+                            <AvatarImage
+                              src={
+                                'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
+                              }
+                              alt="Foto Dosen Pembimbing"
+                            />
+                            <AvatarFallback />
+                          </Avatar>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            Nama Dosen :
+                          </p>
+                          <p className="text-sm text-muted-foreground">NIP :</p>
+                        </div>
                       </div>
                     </div>
                     <div>
                       <p className="font-medium border-b p-2">
                         Dosen Pembimbing 2
                       </p>
-                      <div className="p-2">
-                        <p className="text-sm text-muted-foreground mb-1">
-                          Nama Dosen :
-                        </p>
-                        <p className="text-sm text-muted-foreground">NIP :</p>
+                      <div className="p-2 flex items-center gap-4">
+                        <div>
+                          <Avatar className="w-[54px] h-[54px] border-4 border-white">
+                            <AvatarImage
+                              src={
+                                'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
+                              }
+                              alt="Foto Dosen Pembimbing"
+                            />
+                            <AvatarFallback />
+                          </Avatar>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            Nama Dosen :
+                          </p>
+                          <p className="text-sm text-muted-foreground">NIP :</p>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -171,7 +197,13 @@ const StudentDetailPage = () => {
                       </TableBody>
                     </Table>
                     <div className="text-end">
-                      <Button>Edit</Button>
+                      <Button
+                        onClick={() => navigate(`/students/${id}/update`)}
+                        className="bg-primary-500 hover:bg-blue-500 transition-all duration-200"
+                      >
+                        <FilePenLine />
+                        Edit
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

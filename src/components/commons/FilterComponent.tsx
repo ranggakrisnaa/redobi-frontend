@@ -27,6 +27,12 @@ type FilterComponentProps = {
   onFilterChange: (filters: any) => void;
 };
 
+function toLabel(key: string): string {
+  return key
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase());
+}
+
 const FilterComponent: React.FC<FilterComponentProps> = ({
   filterOptions,
   onFilterChange,
@@ -60,16 +66,14 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
               name={key}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </FormLabel>
+                  <FormLabel>{toLabel(key)}</FormLabel>
                   <Select
                     onValueChange={(value) => field.onChange(value)}
                     value={field.value || ''}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={`Pilih ${key}`} />
+                        <SelectValue placeholder={`Pilih ${toLabel(key)}`} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

@@ -29,7 +29,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CameraIcon, Loader2, PlusIcon } from 'lucide-react';
+import {
+  CameraIcon,
+  FilePenLine,
+  Loader2,
+  PlusIcon,
+  RotateCcw,
+} from 'lucide-react';
 import * as React from 'react';
 import { useRef } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -66,7 +72,7 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
 
   const handleCancelForm = () => {
     form.reset();
-    setPhoto(null);
+    setPhoto(undefined);
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -77,6 +83,7 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
       ...formData,
       file: photoFile,
     };
+    setPhoto(undefined);
     if (onSuccess) onSuccess(updatedData);
   };
 
@@ -315,10 +322,20 @@ const UpdateStudentForm: React.FC<UpdateStudentProps> = ({
         </div>
         <div className="flex justify-end gap-2 mt-3">
           <Button type="button" variant="outline" onClick={handleCancelForm}>
-            Batal
+            <RotateCcw /> Reset
           </Button>
-          <Button disabled={loading} className="w-18 flex justify-center">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Ubah'}
+          <Button
+            disabled={loading}
+            className="w-18 bg-primary-500 flex justify-center hover:bg-blue-500 transition-all duration-200"
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <FilePenLine />
+                Ubah
+              </>
+            )}
           </Button>
         </div>
       </form>

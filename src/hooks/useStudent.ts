@@ -85,7 +85,6 @@ export const useStudentCreate = () => {
     },
 
     onError: (error: any) => {
-      console.error(error);
       if (
         error.code == 'ERR_BAD_REQUEST' &&
         error.response.data.message == 'Student data already exist.'
@@ -154,7 +153,6 @@ export const useStudentDelete = () => {
     onMutate: handleMutate,
 
     onError: (error: any) => {
-      console.error(error);
       handleError(error, 'Gagal menghapus data mahasiswa!');
     },
 
@@ -187,7 +185,6 @@ export const useStudentImportExcel = () => {
     },
 
     onError: (error: any) => {
-      console.error(error);
       if (
         error.code == 'ERR_BAD_RESPONSE' &&
         error.response.data.message == 'Missing data in Excel.'
