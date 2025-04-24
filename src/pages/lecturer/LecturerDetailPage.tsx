@@ -66,7 +66,7 @@ const LecturerDetailPage = () => {
                   className={
                     currentPath == `/lecturers/${id}`
                       ? 'text-black font-medium hover:cursor-pointer'
-                      : ''
+                      : 'hover:cursor-pointer'
                   }
                 >
                   Profil Dosen Pembimbing
@@ -216,7 +216,7 @@ const LecturerDetailPage = () => {
               </div>
               <div className="text-end">
                 <Button
-                  onClick={() => navigate(`/students/${id}/update`)}
+                  onClick={() => navigate(`/lecturers/${id}/update`)}
                   className="bg-primary-500 hover:bg-blue-500 transition-all duration-200"
                 >
                   <FilePenLine />

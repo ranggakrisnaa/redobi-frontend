@@ -21,7 +21,7 @@ type FormValues = {
 };
 
 type ImportDialogComponentProps = {
-  onImport: (file: File) => Promise<boolean>;
+  onImport?: (file: File) => Promise<boolean>;
   titleDialog: string;
 };
 
@@ -85,7 +85,7 @@ const ImportDialogComponent: React.FC<ImportDialogComponentProps> = ({
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     const file = data.file?.[0];
-    const success = await onImport(file);
+    const success = await onImport?.(file);
     setIsSubmitting(false);
     if (success) {
       setOpen(false);

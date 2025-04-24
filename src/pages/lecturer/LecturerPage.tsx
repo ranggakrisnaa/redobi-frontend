@@ -87,7 +87,7 @@ const LecturerPage = () => {
 
   const handleMultipleDelete = async () => {
     try {
-      await deleteMutate(selected);
+      await deleteMutate(selected as unknown as string[]);
       return true;
     } catch (error) {
       console.error(error);

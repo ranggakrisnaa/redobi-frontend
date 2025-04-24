@@ -18,7 +18,7 @@ const menuItems = [
   { name: 'Dashboard', icon: Home, path: '/' },
   { name: 'Mahasiswa', icon: Users, path: '/students' },
   { name: 'Dosen Pembimbing', icon: GraduationCap, path: '/lecturers' },
-  { name: 'Kriteria & Sub-kriteria', icon: ClipboardList, path: '/kriteria' },
+  { name: 'Kriteria & Sub-kriteria', icon: ClipboardList, path: '/criteria' },
   { name: 'Penilaian Dosen', icon: FilePenLine, path: '/penilaian' },
   { name: 'Judul Skripsi', icon: Book, path: '/judul' },
   { name: 'Hasil Rekomendasi', icon: FileUser, path: '/hasil' },

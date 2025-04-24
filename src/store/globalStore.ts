@@ -4,7 +4,7 @@ type GlobalState = {
   loading: boolean;
   error: string | null;
   scrollY: number;
-  selected: string[];
+  selected: string[] | number[];
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setScrollY: (y: number) => void;

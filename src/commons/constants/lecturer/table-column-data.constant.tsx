@@ -62,17 +62,12 @@ export const lecturerColumns: TableComponentColumnDef[] = [
     width: 'w-[180px]',
   },
   {
-    accessorKey: 'kuotaBimbingan',
-    header: () => (
-      <div className="border-l pl-4 border-gray-300">Kuota Bimbingan</div>
-    ),
-  },
-  {
     accessorKey: 'jumlahBimbingan',
     header: () => (
-      <div className="border-l border-r pl-4 border-gray-300">
+      <div className="border-l border-r pl-4 pr-4 border-gray-300">
         Jumlah Bimbingan
       </div>
     ),
+    width: 'w-[180px]',
   },
 ];

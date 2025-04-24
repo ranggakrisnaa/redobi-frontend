@@ -1,10 +1,9 @@
-import { UUID } from 'crypto';
 import * as React from 'react';
 
 export type TableComponentItem = {
-  id: UUID;
+  id: any;
   avatar?: string;
-  [key: string]: string | number | boolean | null | undefined;
+  [key: string]: string | number | boolean | null | undefined | JSX.Element[];
 };
 
 export type TableComponentColumnDef = {

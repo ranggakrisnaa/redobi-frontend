@@ -67,7 +67,7 @@ const StudentUpdatePage = () => {
                   className={
                     currentPath == `/students/${studentId}/update`
                       ? 'text-black font-medium hover:cursor-pointer'
-                      : ''
+                      : 'hover:cursor-pointer'
                   }
                 >
                   Edit Data Mahasiswa

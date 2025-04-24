@@ -65,7 +65,7 @@ const LecturerUpdatePage = () => {
                 <BreadcrumbLink
                   onClick={() => navigate(`/lecturers/${lecturerId}/update`)}
                   className={
-                    currentPath == `/students/${lecturerId}/update`
+                    currentPath == `/lecturers/${lecturerId}/update`
                       ? 'text-black font-medium hover:cursor-pointer'
                       : ''
                   }

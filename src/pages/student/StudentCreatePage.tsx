@@ -51,7 +51,7 @@ const StudentCreatePage = () => {
                 className={
                   currentPath == `/students/create`
                     ? 'text-black font-medium hover:cursor-pointer'
-                    : ''
+                    : 'hover:cursor-pointer'
                 }
               >
                 Tambah Data Mahasiswa

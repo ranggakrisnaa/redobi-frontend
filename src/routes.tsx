@@ -6,6 +6,8 @@ import StudentDetailPage from '@/pages/student/StudentDetailPage.tsx';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
+import CriteriaCreatePage from './pages/criteria/CriteriaCreatePage';
+import CriteriaPage from './pages/criteria/CriteriaPage';
 import HomePage from './pages/home/HomePage';
 import LecturerCreatePage from './pages/lecturer/LecturerCreatePage';
 import LecturerDetailPage from './pages/lecturer/LecturerDetailPage';
@@ -36,6 +38,8 @@ const AppRoutes = () => {
             path="/lecturers/:id/update"
             element={<LecturerUpdatePage />}
           />
+          <Route path="/criteria" element={<CriteriaPage />} />
+          <Route path="/criteria/create" element={<CriteriaCreatePage />} />
         </Route>
       </Routes>
     </Router>

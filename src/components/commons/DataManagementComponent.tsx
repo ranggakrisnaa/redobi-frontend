@@ -1,5 +1,5 @@
 import { FormControl, FormField } from '@/components/ui/form';
-import { FileDown, Plus, Search } from 'lucide-react';
+import { FileDown, Plus, Search, X } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,9 +12,10 @@ type DataManagementComponentProps = {
   onSearchChange: (value: string) => void;
   onClickCreate: () => void;
   onClickDelete: () => Promise<boolean>;
-  onClickDownload: () => void;
-  onClickImport: (file: File) => Promise<boolean>;
+  onClickDownload?: () => void;
+  onClickImport?: (file: File) => Promise<boolean>;
   titleDialog: string;
+  excludeImportExport?: boolean;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
@@ -24,6 +25,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onClickDelete,
   onClickImport,
   titleDialog,
+  excludeImportExport,
 }) => {
   const form = useForm({
     defaultValues: {
@@ -55,6 +57,15 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
                     placeholder="Search"
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 w-full"
                   />
+                  {field.value && (
+                    <button
+                      type="button"
+                      onClick={() => form.setValue('search', '')}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X />
+                    </button>
+                  )}
                 </div>
               </FormControl>
             )}
@@ -66,16 +77,21 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
         >
           <Plus className="w-4 h-4 mr-1" /> Tambah Data
         </Button>
-        <Button
-          className="bg-success-500 hover:bg-[#13B14E] transition-all duration-200"
-          onClick={onClickDownload}
-        >
-          <FileDown className="w-4 h-4 mr-1" /> Download Excel
-        </Button>
-        <ImportDrawerComponent
-          onImport={onClickImport}
-          titleDialog={titleDialog}
-        />
+        {!excludeImportExport && (
+          <>
+            <Button
+              className="bg-success-500 hover:bg-[#13B14E] transition-all duration-200"
+              onClick={onClickDownload}
+            >
+              <FileDown className="w-4 h-4 mr-1" /> Download Excel
+            </Button>
+            <ImportDrawerComponent
+              onImport={onClickImport}
+              titleDialog={titleDialog}
+            />
+          </>
+        )}
+
         <DeleteConfirmationComponent
           onConfirm={onClickDelete}
           isSingle={false}
