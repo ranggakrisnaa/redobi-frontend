@@ -26,7 +26,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   const isAllSelected =
     data.length > 0 && selected.length === data.map((item) => item.id).length;
 
-  const toggleSelect = (id: any) => {
+  const toggleSelect = (id: string | number) => {
     if (selected.includes(id)) {
       setSelected(selected.filter((itemId) => itemId !== id));
     } else {
