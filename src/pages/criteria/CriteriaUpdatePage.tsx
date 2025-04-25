@@ -1,49 +1,49 @@
-import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
+import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import AlertComponent from '@/components/commons/AlertComponent';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
-import UpdateStudentForm from '@/components/modules/student/UpdateStudentForm';
+import CriteriaUpdateForm from '@/components/modules/criteria/CriteriaUpdateForm';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb.tsx';
+} from '@/components/ui/breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
+import { useCriteriaDetail, useCriteriaUpdate } from '@/hooks/useCriteria';
 import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
-import { useStudentDetail, useStudentUpdate } from '@/hooks/useStudent';
+import { useCriteriaStore } from '@/store/criteriaStore';
 import { useGlobalStore } from '@/store/globalStore';
-import { useStudentStore } from '@/store/studentStore';
 import { Slash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const StudentUpdatePage = () => {
+const CriteriaUpdatePage = () => {
   const { id } = useParams();
-  const { mutate } = useStudentUpdate();
-  const { error } = useGlobalStore();
-  const { setStudentId, studentId } = useStudentStore();
-  const navigate = useNavigate();
-  const { data, isLoading } = useStudentDetail();
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
+  const { data, isLoading } = useCriteriaDetail();
+  const { setCriteriaId, criteriaId } = useCriteriaStore();
+  const { error } = useGlobalStore();
+  const { mutate } = useCriteriaUpdate();
   const detailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (id) {
-      setStudentId(id);
+      setCriteriaId(+id);
     }
-  }, [id, setStudentId]);
+  }, [id, setCriteriaId]);
 
   useScrollToTopOnPush(detailRef, [isLoading]);
 
-  const handleSuccess = async (data: UpdateStudentSchema) => {
-    mutate({ data, id: studentId as string });
+  const handleSuccess = async (data: UpdateCriteriaSchema) => {
+    mutate({ data, id: criteriaId as number });
   };
 
   return (
-    <div ref={detailRef}>
-      <DashboardContainer pageTitle="Edit Data Mahasiswa">
+    <div>
+      <DashboardContainer pageTitle="Edit Data Kriteria dan Sub-Kriteria">
         <div>
           <BreadcrumbList>
             <BreadcrumbList>
@@ -52,10 +52,10 @@ const StudentUpdatePage = () => {
               </BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  onClick={() => navigate('/students')}
+                  onClick={() => navigate('/criteria')}
                   className="hover:cursor-pointer"
                 >
-                  Mahasiswa
+                  Kriteria & Sub-Kriteria
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>
@@ -63,14 +63,14 @@ const StudentUpdatePage = () => {
               </BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  onClick={() => navigate(`/students/${studentId}/update`)}
+                  onClick={() => navigate(`/criteria/${criteriaId}/update`)}
                   className={
-                    currentPath == `/students/${studentId}/update`
+                    currentPath == `/criteria/${criteriaId}/update`
                       ? 'text-black font-medium hover:cursor-pointer'
                       : 'hover:cursor-pointer'
                   }
                 >
-                  Edit Data Mahasiswa
+                  Edit Data Kriteria & Sub-Kriteria
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -89,7 +89,7 @@ const StudentUpdatePage = () => {
                 </div>
               )}
               <CardContent>
-                <UpdateStudentForm onSuccess={handleSuccess} data={data} />
+                <CriteriaUpdateForm data={data} onSuccess={handleSuccess} />
               </CardContent>
             </Card>
           ) : null}
@@ -99,4 +99,4 @@ const StudentUpdatePage = () => {
   );
 };
 
-export default StudentUpdatePage;
+export default CriteriaUpdatePage;

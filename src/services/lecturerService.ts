@@ -88,7 +88,6 @@ export const updateLecturer = async ({
       formData.append(key, value instanceof File ? value : String(value));
     }
   });
-  console.log(data);
 
   const response = await apiService.put<ILecturer>(
     `/lecturers/${id}`,

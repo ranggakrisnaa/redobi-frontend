@@ -40,8 +40,9 @@ const LecturerDetailPage = () => {
   }, [id, setLecturerId]);
 
   useScrollToTopOnPush(detailRef, [isLoading]);
+
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Profil Dosen Pembimbing">
         <div>
           <BreadcrumbList>
@@ -66,7 +67,7 @@ const LecturerDetailPage = () => {
                   className={
                     currentPath == `/lecturers/${id}`
                       ? 'text-black font-medium hover:cursor-pointer'
-                      : ''
+                      : 'hover:cursor-pointer'
                   }
                 >
                   Profil Dosen Pembimbing
@@ -81,7 +82,7 @@ const LecturerDetailPage = () => {
               <LoadingComponent />
             </div>
           ) : (
-            <div className="p-6 space-y-6 mt-6 border-2 border-gray-200 rounded-md">
+            <div className="p-6 space-y-6 mt-6 border-2 border-gray-200 rounded-xl">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="space-y-6 flex justify-center items-center">
                   <div className="flex justify-center">
@@ -216,7 +217,7 @@ const LecturerDetailPage = () => {
               </div>
               <div className="text-end">
                 <Button
-                  onClick={() => navigate(`/students/${id}/update`)}
+                  onClick={() => navigate(`/lecturers/${id}/update`)}
                   className="bg-primary-500 hover:bg-blue-500 transition-all duration-200"
                 >
                   <FilePenLine />

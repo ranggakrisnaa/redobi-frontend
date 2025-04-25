@@ -95,7 +95,7 @@ export const useLecturerDetail = () => {
     queryKey: ['lecturer-detail', lecturerId],
     queryFn: async () => {
       const data = await fetchLecturerDetail(lecturerId as string);
-      setLecturerDetail(data as unknown as ILecturer);
+      setLecturerDetail(data);
       return data;
     },
     enabled: !!lecturerId,

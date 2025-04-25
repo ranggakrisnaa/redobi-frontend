@@ -108,7 +108,7 @@ const StudentPage = () => {
 
   const handleMultipleDelete = async () => {
     try {
-      await deleteMutate(selected);
+      await deleteMutate(selected as unknown as string[]);
       return true;
     } catch (error) {
       console.error(error);
@@ -150,7 +150,7 @@ const StudentPage = () => {
                 className={
                   currentPath == '/students'
                     ? 'text-black font-medium hover:cursor-pointer'
-                    : ''
+                    : 'hover:cursor-pointer'
                 }
               >
                 Mahasiswa

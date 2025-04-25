@@ -1,8 +1,8 @@
-import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
+import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
 import AlertComponent from '@/components/commons/AlertComponent';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
-import CreateLecturerForm from '@/components/modules/lecturer/CreateLecturerForm';
+import CreateCriteriaForm from '@/components/modules/criteria/CreateCriteriaForm';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
@@ -10,36 +10,36 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
-import { useLecturerCreate } from '@/hooks/useLecturer';
+import { useCriteriaCreate } from '@/hooks/useCriteria';
 import { useGlobalStore } from '@/store/globalStore';
-import { Slash, SlashIcon } from 'lucide-react';
+import { Slash } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const LecturerCreatePage = () => {
-  const navigate = useNavigate();
+const CriteriaCreatePage = () => {
   const location = useLocation();
-  const currentPath = location.pathname;
+  const navigate = useNavigate();
   const { error, loading } = useGlobalStore();
-  const { mutate, isPending } = useLecturerCreate();
+  const currentPath = location.pathname;
+  const { mutate, isPending } = useCriteriaCreate();
 
-  const handleSuccess = (data: CreateLecturerSchema) => {
+  const handleSuccess = (data: CreateCriteriaSchema) => {
     mutate(data);
   };
 
   return (
-    <DashboardContainer pageTitle="Tambah Data Mahasiswa">
+    <DashboardContainer pageTitle="Tambah Data Kriteria dan Sub-kriteria">
       <div>
         <BreadcrumbList>
           <BreadcrumbList>
             <BreadcrumbSeparator>
-              <SlashIcon />
+              <Slash />
             </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink
-                onClick={() => navigate('/lecturers')}
+                onClick={() => navigate('/criteria')}
                 className="hover:cursor-pointer"
               >
-                Dosen Pembimbing
+                Kriteria & Sub-Kriteria
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>
@@ -47,14 +47,14 @@ const LecturerCreatePage = () => {
             </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink
-                onClick={() => navigate(`/lecturers/create`)}
+                onClick={() => navigate('/criteria/create')}
                 className={
-                  currentPath == `/lecturers/create`
+                  currentPath == '/criteria/create'
                     ? 'text-black font-medium hover:cursor-pointer'
                     : 'hover:cursor-pointer'
                 }
               >
-                Tambah Data Dosen Pembimbing
+                Tambah Data Kriteria & Sub-Kriteria
               </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -75,7 +75,7 @@ const LecturerCreatePage = () => {
                 </AlertComponent>
               </div>
             )}
-            <CreateLecturerForm onSuccess={handleSuccess} />
+            <CreateCriteriaForm onSuccess={handleSuccess} />
           </CardContent>
         </Card>
       </div>
@@ -83,4 +83,4 @@ const LecturerCreatePage = () => {
   );
 };
 
-export default LecturerCreatePage;
+export default CriteriaCreatePage;

@@ -2,7 +2,7 @@ import { TableComponentProps } from '@/commons/interfaces/table-component.interf
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useGlobalStore } from '@/store/globalStore.ts';
-import { Eye, Pencil } from 'lucide-react';
+import { Eye, PencilLine } from 'lucide-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -26,7 +26,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   const isAllSelected =
     data.length > 0 && selected.length === data.map((item) => item.id).length;
 
-  const toggleSelect = (id: string) => {
+  const toggleSelect = (id: string | number) => {
     if (selected.includes(id)) {
       setSelected(selected.filter((itemId) => itemId !== id));
     } else {
@@ -94,7 +94,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                         navigate(`/${pathDetail}/${item.id}/update`)
                       }
                     >
-                      <Pencil size={18} />
+                      <PencilLine size={18} />
                     </button>
                     <DeleteConfirmationComponent
                       isSingle={true}

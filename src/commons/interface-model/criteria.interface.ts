@@ -7,5 +7,5 @@ export interface ICriteria {
   weight: number;
   type: CriteriaTypeEnum;
   subCriteriaId?: number;
-  subCriteria?: ISubCriteria;
+  subCriteria?: ISubCriteria[];
 }

@@ -60,7 +60,7 @@ const StudentDetailPage = () => {
                   className={
                     currentPath == `/students/${id}`
                       ? 'text-black font-medium hover:cursor-pointer'
-                      : ''
+                      : 'hover:cursor-pointer'
                   }
                 >
                   Profil Mahasiswa
