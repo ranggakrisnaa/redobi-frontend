@@ -1,5 +1,5 @@
 import { ICriteria } from '@/commons/interface-model/criteria.interface';
-import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
+import { CriteriaFilter } from '@/commons/types/criteria/criteria-filter-data.type';
 import { create } from 'zustand';
 
 type CriteriaStore = {
@@ -11,16 +11,16 @@ type CriteriaStore = {
   sortBy: string | null;
   search: string | null;
   sortOrder: string;
-  filters: StudentFilter;
+  filters: CriteriaFilter;
   totalRecords: number;
   totalPages: number;
   setCriteriaData: (data: Record<any, any>) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
-  setFilters: (filters: StudentFilter) => void;
+  setFilters: (filters: CriteriaFilter) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
-  setCriteriaId: (id: string) => void;
+  setCriteriaId: (id: number) => void;
   setCriteriaDetail: (data: ICriteria) => void;
 };
 
@@ -29,7 +29,7 @@ export const useCriteriaStore = create<CriteriaStore>((set) => ({
   currentPage: 1,
   pageSize: 10,
   totalRecords: 0,
-  filters: {} as StudentFilter,
+  filters: {} as CriteriaFilter,
   totalPages: 0,
   search: null,
   sortBy: null,
@@ -54,6 +54,6 @@ export const useCriteriaStore = create<CriteriaStore>((set) => ({
       sortOrder:
         state.sortBy === column && state.sortOrder === 'desc' ? 'asc' : 'desc',
     })),
-  setCriteriaId: (id: string) => set({ criteriaId: id }),
+  setCriteriaId: (id: number) => set({ criteriaId: id }),
   setCriteriaDetail: (data: ICriteria) => set({ criteriaDetail: data }),
 }));

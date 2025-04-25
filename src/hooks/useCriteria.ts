@@ -38,7 +38,7 @@ export const useCriteriaPagination = () => {
       const data = await fetchCriteriaPagination(
         currentPage,
         pageSize,
-        // filters,
+        filters,
         search as string,
         sortBy as string,
         sortOrder as 'asc',

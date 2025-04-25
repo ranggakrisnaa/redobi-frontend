@@ -7,6 +7,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
 import CriteriaCreatePage from './pages/criteria/CriteriaCreatePage';
+import CriteriaDetailPage from './pages/criteria/CriteriaDetailPage';
 import CriteriaPage from './pages/criteria/CriteriaPage';
 import CriteriaUpdatePage from './pages/criteria/CriteriaUpdatePage';
 import HomePage from './pages/home/HomePage';
@@ -42,6 +43,7 @@ const AppRoutes = () => {
           <Route path="/criteria" element={<CriteriaPage />} />
           <Route path="/criteria/create" element={<CriteriaCreatePage />} />
           <Route path="/criteria/:id/update" element={<CriteriaUpdatePage />} />
+          <Route path="/criteria/:id" element={<CriteriaDetailPage />} />
         </Route>
       </Routes>
     </Router>

@@ -1,5 +1,8 @@
+import { filterOptions } from '@/commons/constants/criteria/filter-option-criteria.constant';
 import { criteriaColumns } from '@/commons/constants/criteria/table-column-data.constant';
+import { CriteriaFilterParams } from '@/commons/types/criteria/criteria-filter-data.type';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
+import FilterComponent from '@/components/commons/FilterComponent';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
@@ -14,7 +17,7 @@ import { useCriteriaDelete, useCriteriaPagination } from '@/hooks/useCriteria';
 import { useCriteriaStore } from '@/store/criteriaStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const CriteriaPage = () => {
   const location = useLocation();
@@ -26,16 +29,17 @@ const CriteriaPage = () => {
     pageSize,
     setPage,
     setPageSize,
-    // setFilters,
-    // setSearch,
-    // setSortData,
+    setFilters,
+    setSearch,
+    setSortData,
   } = useCriteriaStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { mutateAsync: deleteMutate } = useCriteriaDelete();
   const { selected } = useGlobalStore();
 
   const formattedData =
     data?.data?.map((criteria) => ({
-      id: criteria.id || '',
+      id: criteria.id,
       name: criteria.name,
       type: criteria.type,
       criteriaWeight: criteria.weight,
@@ -61,9 +65,35 @@ const CriteriaPage = () => {
     }
   };
 
-  const handleSearchChange = () => {};
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
 
-  const handleSortData = () => {};
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (search: string) => {
+    setPage(1);
+    setSearch(search);
+    updateURL({ search });
+  };
+
+  const handleSortData = (sort: string) => {
+    setPage(1);
+    setSortData(sort);
+  };
+
+  const handleFilterChange = (type: CriteriaFilterParams) => {
+    setPage(1);
+    setFilters({ type: type.tipeKriteria || '' });
+    updateURL({ type: type.tipeKriteria || '' });
+  };
 
   const handleSingleDelete = async (id: number) => {
     try {
@@ -106,6 +136,10 @@ const CriteriaPage = () => {
             onSearchChange={handleSearchChange}
             titleDialog="Criteria"
             excludeImportExport={true}
+          />
+          <FilterComponent
+            filterOptions={filterOptions}
+            onFilterChange={handleFilterChange}
           />
           {isLoading ? (
             <div className="flex justify-center items-center min-h-[200px]">

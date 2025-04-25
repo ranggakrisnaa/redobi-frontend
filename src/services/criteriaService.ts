@@ -3,11 +3,12 @@ import { ICriteria } from '@/commons/interface-model/criteria.interface';
 import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
 import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';
+import { CriteriaFilter } from '@/commons/types/criteria/criteria-filter-data.type';
 
 export const fetchCriteriaPagination = async (
   page = 1,
   limit = 10,
-  //   filters: LecturerFilter,
+  filters: CriteriaFilter,
   search: string,
   sortBy?: string,
   sortOrder: 'asc' | 'desc' = 'desc',
@@ -20,11 +21,11 @@ export const fetchCriteriaPagination = async (
     params.append('search', search);
   }
 
-  //   Object.entries(filters).forEach(([key, value]) => {
-  //     if (value !== undefined && value !== '') {
-  //       params.append(key, value.toString());
-  //     }
-  //   });
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') {
+      params.append(key, value.toString());
+    }
+  });
 
   if (sortBy) {
     params.append('sort', sortBy);

@@ -31,7 +31,7 @@ const CriteriaUpdatePage = () => {
 
   useEffect(() => {
     if (id) {
-      setCriteriaId(id);
+      setCriteriaId(+id);
     }
   }, [id, setCriteriaId]);
 
@@ -43,7 +43,7 @@ const CriteriaUpdatePage = () => {
 
   return (
     <div>
-      <DashboardContainer pageTitle="">
+      <DashboardContainer pageTitle="Edit Data Kriteria dan Sub-Kriteria">
         <div>
           <BreadcrumbList>
             <BreadcrumbList>
@@ -63,14 +63,14 @@ const CriteriaUpdatePage = () => {
               </BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  onClick={() => navigate('/criteria/update')}
+                  onClick={() => navigate(`/criteria/${criteriaId}/update`)}
                   className={
-                    currentPath == '/criteria/update'
+                    currentPath == `/criteria/${criteriaId}/update`
                       ? 'text-black font-medium hover:cursor-pointer'
                       : 'hover:cursor-pointer'
                   }
                 >
-                  Update Data Kriteria & Sub-Kriteria
+                  Edit Data Kriteria & Sub-Kriteria
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
