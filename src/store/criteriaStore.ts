@@ -5,7 +5,7 @@ import { create } from 'zustand';
 type CriteriaStore = {
   criteriaData: ICriteria[];
   criteriaDetail: ICriteria | null;
-  criteriaId: string | null;
+  criteriaId: number | null;
   currentPage: number;
   pageSize: number;
   sortBy: string | null;

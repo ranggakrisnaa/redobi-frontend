@@ -1,8 +1,8 @@
 import {
-  createCriteriaSchema,
-  CreateCriteriaSchema,
-} from '@/commons/schema/create-criteria.schema';
-import { CreateCriteriaProps } from '@/commons/types/criteria/create-criteria-props.type';
+  updateCriteriaSchema,
+  UpdateCriteriaSchema,
+} from '@/commons/schema/update-criteria.schema';
+import { UpdateCriteriaProps } from '@/commons/types/criteria/update-criteria-props.type';
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
@@ -22,7 +22,6 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, PlusIcon, RotateCcw, Save, Trash2 } from 'lucide-react';
-import React from 'react';
 import {
   FormProvider,
   SubmitHandler,
@@ -30,18 +29,24 @@ import {
   useForm,
 } from 'react-hook-form';
 
-const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
-  const form = useForm<CreateCriteriaSchema>({
-    resolver: zodResolver(createCriteriaSchema),
+const CriteriaUpdateForm: React.FC<UpdateCriteriaProps> = ({
+  onSuccess,
+  data,
+}) => {
+  const form = useForm<UpdateCriteriaSchema>({
+    resolver: zodResolver(updateCriteriaSchema),
     mode: 'onChange',
     defaultValues: {
-      name: '',
-      weight: '',
-      type: '',
-      subCriteria: [{ name: '', weight: '' }],
+      name: data.name ?? '',
+      weight: (String(data.weight) as unknown as string) ?? '',
+      type: data.type ?? '',
+      subCriteria: data.subCriteria?.map((s) => ({
+        name: s.name ?? '',
+        weight: (String(s.weight) as unknown as string) ?? '',
+      })),
     },
   });
-  const values: CreateCriteriaSchema = form.watch();
+  const values: UpdateCriteriaSchema = form.watch();
   const isEmpty = (val: number | string | undefined | string[]) => !val;
   const { loading } = useGlobalStore();
   const { fields, append, remove } = useFieldArray({
@@ -49,8 +54,8 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
     name: 'subCriteria',
   });
 
-  const onSubmit: SubmitHandler<CreateCriteriaSchema> = (
-    data: CreateCriteriaSchema,
+  const onSubmit: SubmitHandler<UpdateCriteriaSchema> = (
+    data: UpdateCriteriaSchema,
   ) => {
     if (onSuccess) {
       onSuccess(data);
@@ -151,7 +156,7 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
                     <FormLabel>
                       {index == 0 && (
                         <>
-                          {values.subCriteria.some((s) => !s.name.trim()) && (
+                          {values.subCriteria?.some((s) => !s.name?.trim()) && (
                             <span className="text-red-500">*</span>
                           )}{' '}
                           Nama Sub-Kriteria
@@ -174,7 +179,7 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
                     <FormLabel>
                       {index == 0 && (
                         <div>
-                          {values.subCriteria.some((s) => !s.weight) && (
+                          {values.subCriteria?.some((s) => !s.weight) && (
                             <span className="text-red-500">*</span>
                           )}{' '}
                           Bobot Sub-Kriteria
@@ -236,4 +241,4 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
   );
 };
 
-export default CreateCriteriaForm;
+export default CriteriaUpdateForm;

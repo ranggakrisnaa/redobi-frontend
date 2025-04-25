@@ -1,6 +1,7 @@
 import apiService from '@/api/apiService';
 import { ICriteria } from '@/commons/interface-model/criteria.interface';
 import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
+import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';
 
 export const fetchCriteriaPagination = async (
@@ -39,8 +40,24 @@ export const fetchCriteriaPagination = async (
   return response.data;
 };
 
+export const fetchCriteriaDetail = async (id: number) => {
+  const response = await apiService.get<ICriteria>(`/criteria/${id}`);
+  return response.data;
+};
+
 export const createCriteria = async (data: CreateCriteriaSchema) => {
   const response = await apiService.post<ICriteria>('/criteria', data);
+  return response.data;
+};
+
+export const updateCriteria = async ({
+  id,
+  data,
+}: {
+  id: number;
+  data: UpdateCriteriaSchema;
+}) => {
+  const response = await apiService.put<ICriteria>(`/criteria/${id}`, data);
   return response.data;
 };
 

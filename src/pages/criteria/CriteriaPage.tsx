@@ -118,7 +118,7 @@ const CriteriaPage = () => {
               <TableComponent
                 data={formattedData}
                 columns={criteriaColumns}
-                pathDetail="lecturers"
+                pathDetail="criteria"
                 onDelete={handleSingleDelete}
                 onSort={handleSortData}
               />

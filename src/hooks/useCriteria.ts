@@ -1,9 +1,13 @@
+import { ICriteria } from '@/commons/interface-model/criteria.interface';
 import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
+import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';
 import {
   createCriteria,
   deleteCriteria,
+  fetchCriteriaDetail,
   fetchCriteriaPagination,
+  updateCriteria,
 } from '@/services/criteriaService';
 import { useCriteriaStore } from '@/store/criteriaStore';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -46,6 +50,20 @@ export const useCriteriaPagination = () => {
   });
 };
 
+export const useCriteriaDetail = () => {
+  const { criteriaId, setCriteriaDetail } = useCriteriaStore();
+
+  return useQuery({
+    queryKey: ['criteria', criteriaId],
+    queryFn: async () => {
+      const data = await fetchCriteriaDetail(criteriaId as number);
+      setCriteriaDetail(data);
+      return data;
+    },
+    enabled: !!criteriaId,
+  });
+};
+
 export const useCriteriaDelete = () => {
   const {
     handleMutate,
@@ -67,6 +85,47 @@ export const useCriteriaDelete = () => {
 
     onError: (error: any) => {
       handleError(error, 'Gagal menghapus data criteria.');
+    },
+
+    onSettled: handleSettled,
+  });
+};
+
+export const useCriteriaUpdate = () => {
+  const {
+    handleMutate,
+    queryClient,
+    handleError,
+    handleSuccess,
+    handleSettled,
+  } = UseBaseMutationHandler();
+
+  return useMutation<
+    ICriteria,
+    Error,
+    { id: number; data: UpdateCriteriaSchema }
+  >({
+    mutationFn: ({ data, id }) => updateCriteria({ data, id }),
+
+    onMutate: handleMutate,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['criteria'] });
+      handleSuccess(
+        'Data Kriteria dan Sub-Kriteria berhasil diperbarui.',
+        '/criteria',
+      );
+    },
+
+    onError: (error: any) => {
+      if (
+        error.code == 'ERR_BAD_REQUEST' &&
+        error.response.data.message == 'Criteria data already exist.'
+      ) {
+        handleError(error, 'Gagal! Data Dosen Pembimbing ini sudah ada.');
+      } else {
+        handleError(error, `Gagal!, ${error}`);
+      }
     },
 
     onSettled: handleSettled,

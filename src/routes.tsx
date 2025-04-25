@@ -8,6 +8,7 @@ import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
 import CriteriaCreatePage from './pages/criteria/CriteriaCreatePage';
 import CriteriaPage from './pages/criteria/CriteriaPage';
+import CriteriaUpdatePage from './pages/criteria/CriteriaUpdatePage';
 import HomePage from './pages/home/HomePage';
 import LecturerCreatePage from './pages/lecturer/LecturerCreatePage';
 import LecturerDetailPage from './pages/lecturer/LecturerDetailPage';
@@ -40,6 +41,7 @@ const AppRoutes = () => {
           />
           <Route path="/criteria" element={<CriteriaPage />} />
           <Route path="/criteria/create" element={<CriteriaCreatePage />} />
+          <Route path="/criteria/:id/update" element={<CriteriaUpdatePage />} />
         </Route>
       </Routes>
     </Router>
