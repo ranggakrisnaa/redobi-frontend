@@ -10,13 +10,14 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
   const childrenArray = React.Children.toArray(children);
 
   return (
-    <div className="flex w-full min-h-screen">
-      <div className="fixed h-screen flex z-40">
+    <div className="grid grid-cols-[284px_1fr] min-h-screen w-full">
+      <aside className="w-auto sticky top-0 z-40 bg-gray-100">
         <SideBarComponent />
-      </div>
-      <main className="flex-1 pb-4 px-6 overflow-y-auto min-h-screen pl-[284px] relative overflow-x-hidden">
+      </aside>
+
+      <main className="overflow-y-auto min-h-screen relative overflow-x-hidden px-6">
         <NavBreadCumbComponent>{childrenArray[0]}</NavBreadCumbComponent>
-        <div className="absolute left-[255px] w-full border-t"></div>
+        <div className="w-full border-t left-0 absolute"></div>
         <h1 className="text-2xl font-bold w-full mt-4">{pageTitle}</h1>
         {childrenArray[1]}
       </main>

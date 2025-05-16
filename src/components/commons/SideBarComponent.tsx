@@ -27,7 +27,7 @@ const menuItems = [
 const SideBarComponent = () => {
   const navigate = useNavigate();
   return (
-    <div className="w-64 bg-[#ECEFF3] flex flex-col border-r">
+    <div className="w-auto flex flex-col border-r h-screen">
       <div className="p-[21.1px] border-b flex items-center gap-2">
         <img src={logo} alt="ReDoBi" className="h-auto w-[109.6px]" />
       </div>
