@@ -1,10 +1,9 @@
-import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import { LecturerFilter } from '@/commons/types/lecturer/lecturer-filter-data.type';
 import { create } from 'zustand';
 
 type LecturerStore = {
-  lecturerData: ILecturer[];
-  lecturerDetail: ILecturer | null;
+  lecturerData: ILecturer[] | null;
   lecturerId: string | null;
   currentPage: number;
   pageSize: number;
@@ -16,19 +15,17 @@ type LecturerStore = {
   totalPages: number;
   photoFile?: File;
   photoPreview?: string;
-  setLecturerData: (data: Record<any, any>) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   setFilters: (filters: LecturerFilter) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
   setLecturerId: (id: string) => void;
-  setLecturerDetail: (data: ILecturer) => void;
+  setLecturerData: (data: ILecturer[]) => void;
   setPhoto: (file: File | undefined) => void;
 };
 
 export const useLecturerStore = create<LecturerStore>((set) => ({
-  lecturerData: [],
   currentPage: 1,
   pageSize: 10,
   totalRecords: 0,
@@ -38,17 +35,10 @@ export const useLecturerStore = create<LecturerStore>((set) => ({
   sortBy: null,
   sortOrder: 'asc',
   lecturerId: null,
-  lecturerDetail: null,
   imagePreview: undefined,
   photoPreview: undefined,
   photoFile: undefined,
-
-  setLecturerData: ({ data, pagination }) =>
-    set({
-      lecturerData: data,
-      totalRecords: pagination.totalRecords,
-      totalPages: pagination.totalPages,
-    }),
+  lecturerData: null,
 
   setPage: (page) => set({ currentPage: page }),
   setPageSize: (size) => set({ pageSize: size, currentPage: 1 }),
@@ -60,12 +50,12 @@ export const useLecturerStore = create<LecturerStore>((set) => ({
       sortOrder:
         state.sortBy === column && state.sortOrder === 'desc' ? 'asc' : 'desc',
     })),
-  setLecturerId: (id: string) => set({ lecturerId: id }),
-  setLecturerDetail: (data: ILecturer) => set({ lecturerDetail: data }),
-  setPhoto: (file: File | undefined) => {
+  setLecturerId: (id) => set({ lecturerId: id }),
+  setPhoto: (file) => {
     set(() => ({
       photoFile: file,
       photoPreview: file ? URL.createObjectURL(file) : '',
     }));
   },
+  setLecturerData: (data) => set({ lecturerData: data }),
 }));

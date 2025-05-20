@@ -43,14 +43,14 @@ export const criteriaColumns: TableComponentColumnDef[] = [
         Pembobotan Sub-Kriteria
       </div>
     ),
-    width: 'w-[350px]',
+    width: 'w-[370px]',
   },
   {
     accessorKey: 'type',
     header: () => (
       <div className="border-l px-4 border-gray-300">Tipe Kriteria</div>
     ),
-    width: 'w-[180px]',
+    width: 'w-[190px]',
   },
   {
     accessorKey: 'criteriaWeight',

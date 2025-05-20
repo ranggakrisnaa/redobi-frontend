@@ -23,7 +23,7 @@ export const useAuthSignIn = () => {
     onMutate: handleMutate,
 
     onSuccess: (response: any) => {
-      login(response, rememberMe);
+      login(response.data, rememberMe);
       navigate('/verify');
     },
 
@@ -54,7 +54,7 @@ export const useAuthVerifySignIn = () => {
     onMutate: handleMutate,
 
     onSuccess: (response: any) => {
-      setToken(response.accessToken, rememberMe);
+      setToken(response.data.accessToken, rememberMe);
       navigate('/');
     },
 

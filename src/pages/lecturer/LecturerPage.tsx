@@ -1,6 +1,6 @@
 import { filterOptions } from '@/commons/constants/lecturer/filter-option-lecturer.constant';
 import { lecturerColumns } from '@/commons/constants/lecturer/table-column-data.constant';
-import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import { LecturerFilterParams } from '@/commons/types/lecturer/lecturer-filter-data.type';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
@@ -46,14 +46,14 @@ const LecturerPage = () => {
 
   const formattedData =
     data?.data.map((lecturer: ILecturer) => ({
-      id: lecturer.id,
-      nidn: lecturer.nidn,
-      name: lecturer.fullName,
-      jumlahBimbingan: lecturer.jumlahBimbingan,
-      kuotaBimbingan: lecturer.kuotaBimbingan,
-      tipePembimbing: lecturer.tipePembimbing,
-      prodi: lecturer.prodi,
-      imageUrl: lecturer.imageUrl,
+      id: lecturer.id ?? null,
+      nidn: lecturer.nidn ?? '-',
+      name: lecturer.fullName ?? '-',
+      jumlahBimbingan: lecturer.jumlahBimbingan ?? '-',
+      kuotaBimbingan: lecturer.kuotaBimbingan ?? '-',
+      tipePembimbing: lecturer.tipePembimbing ?? '-',
+      prodi: lecturer.prodi ?? '-',
+      imageUrl: lecturer.imageUrl ?? '-',
     })) || [];
 
   const updateURL = (params: Record<string, string>) => {

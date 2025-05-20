@@ -1,4 +1,4 @@
-import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
 import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
 import { LecturerPaginationResponse } from '@/commons/types/lecturer/lecturer-fetch-api.type';
@@ -15,15 +15,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useLecturerPagination = () => {
-  const {
-    currentPage,
-    pageSize,
-    setLecturerData,
-    filters,
-    search,
-    sortOrder,
-    sortBy,
-  } = useLecturerStore();
+  const { currentPage, pageSize, filters, search, sortOrder, sortBy } =
+    useLecturerStore();
 
   return useQuery({
     queryKey: [
@@ -44,7 +37,6 @@ export const useLecturerPagination = () => {
         sortBy as string,
         sortOrder as 'asc',
       );
-      setLecturerData(data);
       return data;
     },
     staleTime: 0,
@@ -89,13 +81,12 @@ export const useLecturerCreate = () => {
 };
 
 export const useLecturerDetail = () => {
-  const { lecturerId, setLecturerDetail } = useLecturerStore();
+  const { lecturerId } = useLecturerStore();
 
   return useQuery({
     queryKey: ['lecturer-detail', lecturerId],
     queryFn: async () => {
       const data = await fetchLecturerDetail(lecturerId as string);
-      setLecturerDetail(data);
       return data;
     },
     enabled: !!lecturerId,
@@ -196,6 +187,8 @@ export const useLecturerImportExcel = () => {
         error.response.data.message == 'Missing data in Excel.'
       ) {
         handleError(error, 'Gagal! Data Excel tidak ada.');
+      } else {
+        handleError(error, 'Gagal! Error pada file excel.');
       }
     },
 

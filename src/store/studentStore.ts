@@ -1,10 +1,7 @@
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
 import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
 import { create } from 'zustand';
 
 type StudentStore = {
-  studentData: IStudent[];
-  studentDetail: IStudent | null;
   studentId: string | null;
   currentPage: number;
   pageSize: number;
@@ -16,19 +13,16 @@ type StudentStore = {
   totalPages: number;
   photoFile?: File;
   photoPreview?: string;
-  setStudentData: (data: Record<any, any>) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   setFilters: (filters: StudentFilter) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
   setStudentId: (id: string) => void;
-  setStudentDetail: (data: IStudent) => void;
   setPhoto: (file: File | undefined) => void;
 };
 
 export const useStudentStore = create<StudentStore>((set) => ({
-  studentData: [],
   currentPage: 1,
   pageSize: 10,
   totalRecords: 0,
@@ -43,13 +37,6 @@ export const useStudentStore = create<StudentStore>((set) => ({
   photoPreview: undefined,
   photoFile: undefined,
 
-  setStudentData: ({ data, pagination }) =>
-    set({
-      studentData: data,
-      totalRecords: pagination.totalRecords,
-      totalPages: pagination.totalPages,
-    }),
-
   setPage: (page) => set({ currentPage: page }),
   setPageSize: (size) => set({ pageSize: size, currentPage: 1 }),
   setFilters: (newFilters) => set({ filters: { ...newFilters } }),
@@ -60,9 +47,8 @@ export const useStudentStore = create<StudentStore>((set) => ({
       sortOrder:
         state.sortBy === column && state.sortOrder === 'desc' ? 'asc' : 'desc',
     })),
-  setStudentId: (id: string) => set({ studentId: id }),
-  setStudentDetail: (data: IStudent) => set({ studentDetail: data }),
-  setPhoto: (file: File | undefined) => {
+  setStudentId: (id) => set({ studentId: id }),
+  setPhoto: (file) => {
     set(() => ({
       photoFile: file,
       photoPreview: file ? URL.createObjectURL(file) : '',

@@ -1,3 +1,4 @@
+import { ISubCriteria } from '@/commons/interface-model/sub-criteria-entity.entity';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
 import {
@@ -128,7 +129,7 @@ const CriteriaDetailPage = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {data?.subCriteria?.map((subCriteria) => (
+                        {data?.subCriteria?.map((subCriteria: ISubCriteria) => (
                           <>
                             <TableRow>
                               <TableCell>{subCriteria.name}</TableCell>

@@ -32,7 +32,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
   const pageNumbers = useMemo(() => {
     if (totalPages <= 3) {
@@ -48,14 +48,18 @@ const PaginationComponent: React.FC<PaginationProps> = ({
     }
   }, [totalPages, currentPage]);
 
+  const start = (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, totalItems);
+
   return (
-    <div className="flex items-center justify-end mt-4 gap-4 cursor-pointer">
+    <div className="flex items-center justify-end gap-4 cursor-pointer">
       <div className="w-full text-end">
         <span>
-          {`${(currentPage - 1) * pageSize + 1} - ${Math.min(
-            currentPage * pageSize,
-            totalItems,
-          )} dari ${totalItems} data`}
+          <span>
+            {totalItems === 0
+              ? '0 - 0 dari 0 data'
+              : `${start} - ${end} dari ${totalItems} data`}
+          </span>
         </span>
       </div>
       <div className="">

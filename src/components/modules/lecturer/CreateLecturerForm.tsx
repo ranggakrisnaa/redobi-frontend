@@ -57,8 +57,8 @@ const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageChange = () => {
+    const file = inputRef.current?.files?.[0];
     if (file) {
       setPhoto(file);
     }
@@ -73,6 +73,9 @@ const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
         file: photoFile,
       };
       setPhoto(undefined);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
       onSuccess(data);
     }
   };

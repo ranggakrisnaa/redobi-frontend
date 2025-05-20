@@ -70,14 +70,14 @@ const StudentPage = () => {
 
   const formattedData =
     data?.data.map((student: IStudent) => ({
-      id: student.id,
-      name: student.fullName,
-      nim: student.nim,
-      tahunMasuk: student.tahunMasuk,
-      major: student.major.toString(),
-      judulSkripsi: student.judulSkripsi,
-      kelas: student.class.toString(),
-      imageUrl: student.imageUrl,
+      id: student.id ?? null,
+      name: student.fullName ?? '-',
+      nim: student.nim ?? '-',
+      tahunMasuk: student.tahunMasuk ?? '-',
+      major: student.major.toString() ?? '-',
+      judulSkripsi: student.judulSkripsi ?? '-',
+      kelas: student.class.toString() ?? '-',
+      imageUrl: student.imageUrl ?? '-',
     })) || [];
 
   const handleFilterChange = (filters: StudentFilterParams) => {

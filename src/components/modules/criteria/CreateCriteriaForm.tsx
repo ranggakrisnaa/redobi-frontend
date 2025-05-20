@@ -140,7 +140,7 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
             />
           </div>
         </div>
-        <div className="">
+        <div>
           {fields.map((field, index) => (
             <div key={field.id} className="flex gap-2 items-end">
               <FormField

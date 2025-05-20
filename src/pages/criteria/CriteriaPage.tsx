@@ -1,5 +1,6 @@
 import { filterOptions } from '@/commons/constants/criteria/filter-option-criteria.constant';
 import { criteriaColumns } from '@/commons/constants/criteria/table-column-data.constant';
+import { ISubCriteria } from '@/commons/interface-model/sub-criteria-entity.entity';
 import { CriteriaFilterParams } from '@/commons/types/criteria/criteria-filter-data.type';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
@@ -38,22 +39,37 @@ const CriteriaPage = () => {
   const { selected } = useGlobalStore();
 
   const formattedData =
-    data?.data?.map((criteria) => ({
-      id: criteria.id,
-      name: criteria.name,
-      type: criteria.type,
-      criteriaWeight: criteria.weight,
-      subKriteria: criteria.subCriteria?.map((sub, index) => (
-        <span key={index} className="block mb-2">
-          {sub.name}
-        </span>
-      )),
-      subCriteriaWeight: criteria.subCriteria?.map((sub, index) => (
-        <span key={index} className="block mb-2">
-          {parseFloat(sub.weight.toString())}
-        </span>
-      )),
-    })) || [];
+    data?.data?.map((criteria) => {
+      const subCriteriaList = criteria.subCriteria ?? [];
+
+      const subKriteriaElements: JSX.Element[] = [];
+      const subCriteriaWeightElements: JSX.Element[] = [];
+
+      subCriteriaList.forEach((sub: ISubCriteria, index: number) => {
+        subKriteriaElements.push(
+          <span key={`name-${index}`} className="block mb-2">
+            {sub.name}
+          </span>,
+        );
+        subCriteriaWeightElements.push(
+          <span key={`weight-${index}`} className="block mb-2">
+            {parseFloat(sub.weight.toString())}
+          </span>,
+        );
+      });
+
+      return {
+        id: criteria.id ?? null,
+        name: criteria.name ?? '-',
+        type: criteria.type ?? '-',
+        criteriaWeight: criteria.weight ?? '-',
+        subKriteria: subKriteriaElements.length > 0 ? subKriteriaElements : '-',
+        subCriteriaWeight:
+          subCriteriaWeightElements.length > 0
+            ? subCriteriaWeightElements
+            : '-',
+      };
+    }) || [];
 
   const handleMultipleDelete = async () => {
     try {
