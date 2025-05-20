@@ -1,5 +1,5 @@
 import apiService from '@/api/apiService';
-import { ICriteria } from '@/commons/interface-model/criteria.interface';
+import { ICriteria } from '@/commons/interface-model/criteria-entity.interface';
 import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
 import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';

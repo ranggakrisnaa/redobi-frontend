@@ -4,6 +4,8 @@ import PublicRoute from '@/middlewares/publicRoute.tsx';
 import StudentCreatePage from '@/pages/student/StudentCreatePage.tsx';
 import StudentDetailPage from '@/pages/student/StudentDetailPage.tsx';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import AssessmentCreatePage from './pages/assessment/AsessmentCreatePage';
+import AssessmentPage from './pages/assessment/AssesmentPage';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
 import CriteriaCreatePage from './pages/criteria/CriteriaCreatePage';
@@ -44,6 +46,11 @@ const AppRoutes = () => {
           <Route path="/criteria/create" element={<CriteriaCreatePage />} />
           <Route path="/criteria/:id/update" element={<CriteriaUpdatePage />} />
           <Route path="/criteria/:id" element={<CriteriaDetailPage />} />
+          <Route path="/assessments" element={<AssessmentPage />} />
+          <Route
+            path="/assessments/create"
+            element={<AssessmentCreatePage />}
+          />
         </Route>
       </Routes>
     </Router>

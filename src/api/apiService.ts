@@ -10,7 +10,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     Accept: 'application/json',
   },
-  timeout: 1000,
+  timeout: 10000,
   withCredentials: true,
 });
 

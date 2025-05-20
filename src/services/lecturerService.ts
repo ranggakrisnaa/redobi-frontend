@@ -1,6 +1,6 @@
 import apiService from '@/api/apiService';
 import { DefaultEnum } from '@/commons/enums/enum';
-import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
 import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
 import { LecturerPaginationResponse } from '@/commons/types/lecturer/lecturer-fetch-api.type';

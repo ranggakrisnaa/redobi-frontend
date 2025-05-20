@@ -15,15 +15,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useStudentsPagination = () => {
-  const {
-    currentPage,
-    pageSize,
-    setStudentData,
-    filters,
-    search,
-    sortOrder,
-    sortBy,
-  } = useStudentStore();
+  const { currentPage, pageSize, filters, search, sortOrder, sortBy } =
+    useStudentStore();
 
   return useQuery({
     queryKey: [
@@ -44,7 +37,6 @@ export const useStudentsPagination = () => {
         sortBy as string,
         sortOrder as 'asc',
       );
-      setStudentData(data);
       return data;
     },
     staleTime: 0,
@@ -52,13 +44,12 @@ export const useStudentsPagination = () => {
 };
 
 export const useStudentDetail = () => {
-  const { studentId, setStudentDetail } = useStudentStore();
+  const { studentId } = useStudentStore();
 
   return useQuery({
     queryKey: ['student-detail', studentId],
     queryFn: async () => {
       const data = await fetchStudentDetail(studentId as string);
-      setStudentDetail(data as unknown as IStudent);
       return data;
     },
     enabled: !!studentId,

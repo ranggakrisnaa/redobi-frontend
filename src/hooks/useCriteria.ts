@@ -1,4 +1,4 @@
-import { ICriteria } from '@/commons/interface-model/criteria.interface';
+import { ICriteria } from '@/commons/interface-model/criteria-entity.interface';
 import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
 import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';
@@ -14,15 +14,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useCriteriaPagination = () => {
-  const {
-    currentPage,
-    pageSize,
-    setCriteriaData,
-    filters,
-    search,
-    sortOrder,
-    sortBy,
-  } = useCriteriaStore();
+  const { currentPage, pageSize, filters, search, sortOrder, sortBy } =
+    useCriteriaStore();
 
   return useQuery({
     queryKey: [
@@ -43,7 +36,6 @@ export const useCriteriaPagination = () => {
         sortBy as string,
         sortOrder as 'asc',
       );
-      setCriteriaData(data);
       return data;
     },
     staleTime: 0,
@@ -51,13 +43,12 @@ export const useCriteriaPagination = () => {
 };
 
 export const useCriteriaDetail = () => {
-  const { criteriaId, setCriteriaDetail } = useCriteriaStore();
+  const { criteriaId } = useCriteriaStore();
 
   return useQuery({
     queryKey: ['criteria', criteriaId],
     queryFn: async () => {
       const data = await fetchCriteriaDetail(criteriaId as number);
-      setCriteriaDetail(data);
       return data;
     },
     enabled: !!criteriaId,
@@ -164,6 +155,7 @@ export const useCriteriaCreate = () => {
         handleError(error, `Gagal!, ${error}`);
       }
     },
+
     onSettled: handleSettled,
   });
 };
