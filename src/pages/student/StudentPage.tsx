@@ -14,6 +14,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb.tsx';
+import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import {
   useStudentDelete,
   useStudentImportExcel,
@@ -23,7 +24,7 @@ import { downloadExcelTemplateStudent } from '@/services/studentService';
 import { useGlobalStore } from '@/store/globalStore';
 import { useStudentStore } from '@/store/studentStore.ts';
 import { Slash } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const StudentPage = () => {
@@ -44,6 +45,8 @@ const StudentPage = () => {
   const currentPath = location.pathname;
   const { mutateAsync: deleteMutate } = useStudentDelete();
   const { mutateAsync: importExcelMutate } = useStudentImportExcel();
+  const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
 
   useEffect(() => {
     setFilters({
@@ -137,69 +140,67 @@ const StudentPage = () => {
   };
 
   return (
-    <DashboardContainer pageTitle="Data Mahasiswa">
-      <div>
+    <div>
+      <DashboardContainer pageTitle="Data Mahasiswa">
         <BreadcrumbList>
-          <BreadcrumbList>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate('/students')}
-                className={
-                  currentPath == '/students'
-                    ? 'text-black font-medium hover:cursor-pointer'
-                    : 'hover:cursor-pointer'
-                }
-              >
-                Mahasiswa
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/students')}
+              className={
+                currentPath == '/students'
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Mahasiswa
+            </BreadcrumbLink>
+          </BreadcrumbItem>
         </BreadcrumbList>
-      </div>
-      <div>
-        <DataManagementComponent
-          onClickImport={handleImportExcel}
-          onClickDownload={downloadExcelTemplateStudent}
-          onClickDelete={handleMultipleDelete}
-          onSearchChange={handleSearchChange}
-          onClickCreate={() => navigate('/students/create')}
-          titleDialog="Mahasiswa"
-        />
-        <FilterComponent
-          filterOptions={filterOptions}
-          onFilterChange={handleFilterChange}
-        />
-        {isLoading ? (
-          <div className="flex justify-center items-center min-h-[200px]">
-            <LoadingComponent />
-          </div>
-        ) : isError ? (
-          <p className="text-center text-red-500 mt-3">{error.message}</p>
-        ) : (
-          <>
-            <TableComponent
-              data={formattedData}
-              columns={studentColumns}
-              onSort={handleSortData}
-              pathDetail="students"
-              onDelete={handleSingleDelete}
-            />
-            <div className="flex justify-end mt-4 w-full">
-              <PaginationComponent
-                currentPage={currentPage}
-                pageSize={pageSize}
-                totalItems={data?.pagination.totalRecords || 0}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
+        <div>
+          <DataManagementComponent
+            onClickImport={handleImportExcel}
+            onClickDownload={downloadExcelTemplateStudent}
+            onClickDelete={handleMultipleDelete}
+            onSearchChange={handleSearchChange}
+            onClickCreate={() => navigate('/students/create')}
+            titleDialog="Mahasiswa"
+          />
+          <FilterComponent
+            filterOptions={filterOptions}
+            onFilterChange={handleFilterChange}
+          />
+          {isLoading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <LoadingComponent />
             </div>
-          </>
-        )}
-      </div>
-    </DashboardContainer>
+          ) : isError ? (
+            <p className="text-center text-red-500 mt-3">{error.message}</p>
+          ) : (
+            <>
+              <TableComponent
+                data={formattedData}
+                columns={studentColumns}
+                onSort={handleSortData}
+                pathDetail="students"
+                onDelete={handleSingleDelete}
+              />
+              <div className="flex justify-end mt-4 w-full">
+                <PaginationComponent
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalItems={data?.pagination.totalRecords || 0}
+                  onPageChange={setPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </DashboardContainer>
+    </div>
   );
 };
 

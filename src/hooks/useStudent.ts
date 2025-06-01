@@ -39,7 +39,7 @@ export const useStudentsPagination = () => {
       );
       return data;
     },
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -53,7 +53,7 @@ export const useStudentDetail = () => {
       return data;
     },
     enabled: !!studentId,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -70,7 +70,10 @@ export const useStudentCreate = () => {
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
+    onSuccess: (newStudent) => {
+      queryClient.invalidateQueries({
+        queryKey: ['student-detail', newStudent.data.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['students'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
@@ -104,13 +107,16 @@ export const useStudentUpdate = () => {
     Error,
     { id: string; data: UpdateStudentSchema }
   >({
-    mutationFn: ({ data, id }) => updateStudent({ data, id }),
+    mutationFn: async ({ data, id }) => {
+      const response = await updateStudent({ payload: data, id });
+      return response.data;
+    },
 
     onMutate: handleMutate,
 
-    onSuccess: (_, variables) => {
+    onSuccess: (newStudent) => {
       queryClient.invalidateQueries({
-        queryKey: ['student-detail', variables.id],
+        queryKey: ['student-detail', newStudent.id],
       });
       queryClient.invalidateQueries({ queryKey: ['students'] });
       handleSuccess('Data mahasiswa berhasil diperbarui.', '/students');

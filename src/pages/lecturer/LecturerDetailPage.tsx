@@ -32,6 +32,7 @@ const LecturerDetailPage = () => {
   const currentPath = location.pathname;
   const { data, isLoading } = useLecturerDetail();
   const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
 
   useEffect(() => {
     if (id) {
@@ -39,43 +40,37 @@ const LecturerDetailPage = () => {
     }
   }, [id, setLecturerId]);
 
-  useScrollToTopOnPush(detailRef, [isLoading]);
-
   return (
-    <div ref={detailRef}>
+    <div>
       <DashboardContainer pageTitle="Profil Dosen Pembimbing">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/lecturers')}
-                  className="hover:cursor-pointer"
-                >
-                  Dosen Pembimbing
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate(`/lecturers/${id}`)}
-                  className={
-                    currentPath == `/lecturers/${id}`
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Profil Dosen Pembimbing
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/lecturers')}
+              className="hover:cursor-pointer"
+            >
+              Dosen Pembimbing
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate(`/lecturers/${id}`)}
+              className={
+                currentPath == `/lecturers/${id}`
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Profil Dosen Pembimbing
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div>
           {isLoading ? (
             <div className="flex justify-center items-center min-h-[200px]">

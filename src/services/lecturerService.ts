@@ -5,6 +5,7 @@ import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
 import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
 import { LecturerPaginationResponse } from '@/commons/types/lecturer/lecturer-fetch-api.type';
 import { LecturerFilter } from '@/commons/types/lecturer/lecturer-filter-data.type';
+import { ResponseData } from '@/utils/responseData';
 
 export const fetchLecturerPagination = async (
   page = 1,
@@ -36,64 +37,68 @@ export const fetchLecturerPagination = async (
     params.append('order', 'ASC');
   }
 
-  const response = await apiService.get<LecturerPaginationResponse>(
+  const { data } = await apiService.get<LecturerPaginationResponse>(
     `/lecturers?${params.toString()}`,
   );
-  return response.data;
+  return data;
 };
 
 export const fetchLecturerDetail = async (id: string) => {
-  const response = await apiService.get<ILecturer>(`/lecturers/${id}`);
-  return response.data;
+  const { data } = await apiService.get<ResponseData<ILecturer>>(
+    `/lecturers/${id}`,
+  );
+  return data.data;
 };
 
 export const deleteLecturer = async (ids: string[], id?: string) => {
   const url = id ? `/lecturers/${id}` : '/lecturers';
   const config = id ? {} : { lecturerIds: ids };
 
-  const response = await apiService.delete<ILecturer | ILecturer[]>(
-    url,
-    config,
-  );
-  return response.data;
+  const { data } = await apiService.delete<
+    ResponseData<ILecturer | ILecturer[]>
+  >(url, config);
+  return data;
 };
 
-export const createLecturer = async (data: CreateLecturerSchema) => {
+export const createLecturer = async (payload: CreateLecturerSchema) => {
   const formData = new FormData();
 
-  (Object.keys(data) as (keyof ILecturer)[]).forEach((key) => {
-    const value = data[key as keyof CreateLecturerSchema];
+  (Object.keys(payload) as (keyof ILecturer)[]).forEach((key) => {
+    const value = payload[key as keyof CreateLecturerSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));
     }
   });
-  const response = await apiService.post<ILecturer>('/lecturers', data);
-  return response.data;
+  const { data } = await apiService.post<ResponseData<ILecturer>>(
+    '/lecturers',
+    payload,
+  );
+  return data;
 };
 
 export const updateLecturer = async ({
   id,
-  data,
+  payload,
 }: {
   id: string;
-  data: UpdateLecturerSchema;
+  payload: UpdateLecturerSchema;
 }) => {
   const formData = new FormData();
 
-  Object.keys(data as keyof ILecturer[]).forEach((key) => {
-    const value = data[key as keyof UpdateLecturerSchema];
+  Object.keys(payload as keyof ILecturer[]).forEach((key) => {
+    const value = payload[key as keyof UpdateLecturerSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));
     }
   });
 
-  const response = await apiService.put<ILecturer>(
+  const { data } = await apiService.put<ResponseData<ILecturer>>(
     `/lecturers/${id}`,
     formData,
   );
-  return response.data;
+  return data;
 };
 
 export const downloadExcelTemplateLecturer = async () => {
@@ -114,9 +119,9 @@ export const importEcxelLecturer = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await apiService.post<ILecturer[]>(
+  const { data } = await apiService.post<ResponseData<ILecturer[]>>(
     '/lecturers/templates',
     formData,
   );
-  return response.data;
+  return data;
 };

@@ -68,15 +68,18 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
           <TableBody className="">
             {data.map((item) => (
               <TableRow key={item.id} className="border-b hover:bg-gray-50">
-                <TableCell className="text-center">
+                <TableCell className="text-center align-top">
                   <Checkbox
                     checked={selected.includes(item.id)}
                     onCheckedChange={() => toggleSelect(item.id)}
-                    className="border-[#ffffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
+                    className="border-[#ffffff]  data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
                   />
                 </TableCell>
                 {columns.map((column, colIndex) => (
-                  <TableCell key={colIndex} className="px-6">
+                  <TableCell
+                    key={colIndex}
+                    className="px-6 align-top text-left"
+                  >
                     {column.cell ? column.cell(item) : item[column.accessorKey]}
                   </TableCell>
                 ))}

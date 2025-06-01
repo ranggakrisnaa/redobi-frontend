@@ -11,9 +11,15 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { useAssessmentPagination } from '@/hooks/useAssessment';
+import {
+  useAssessmentDelete,
+  useAssessmentPagination,
+} from '@/hooks/useAssessment';
+import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useAssessmentStore } from '@/store/assessmentStore';
+import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
+import { useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const AssessmentPage = () => {
@@ -29,76 +35,120 @@ const AssessmentPage = () => {
     // setSearch,
     // setSortData,
   } = useAssessmentStore();
-  const formattedData =
-    data?.data.map((assessment: IAssessment) => {
+  const { selected } = useGlobalStore();
+  const { mutateAsync: deleteMutate } = useAssessmentDelete();
+  const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
+
+  const formattedData = useMemo(() => {
+    if (!data?.data) return [];
+
+    const lecturerMap = new Map<
+      string,
+      {
+        id: string;
+        lecturerName: string;
+        criteriaName: Set<string>;
+        subCriteriaName: (string | number)[];
+        subCriteriaScores: (string | number)[];
+      }
+    >();
+
+    data.data.forEach((assessment: IAssessment) => {
+      const lecturerName = assessment.lecturer.fullName;
+
+      if (!lecturerMap.has(lecturerName)) {
+        lecturerMap.set(lecturerName, {
+          id: assessment.id,
+          lecturerName,
+          criteriaName: new Set<string>(),
+          subCriteriaName: [],
+          subCriteriaScores: [],
+        });
+      }
+
+      const currentLecturer = lecturerMap.get(lecturerName);
       const subCriteriaData = assessment.assessmentSubCriteria ?? [];
 
-      const criteriaNames: JSX.Element[] = [];
-      const subCriteriaNames: JSX.Element[] = [];
-      const subCriteriaScores: JSX.Element[] = [];
+      subCriteriaData.forEach((assSub) => {
+        const criteriaName = assSub.subCriteria?.criteria?.name || '-';
+        const subName = assSub.subCriteria?.name || '-';
+        const score = assSub.score ?? '-';
 
-      subCriteriaData.forEach((assSub, index) => {
-        criteriaNames.push(
-          <span key={`name-${index}`} className="block mb-2">
-            {assSub.subCriteria.criteria?.name}
-          </span>,
-        );
-        subCriteriaNames.push(
-          <span key={`name-${index}`} className="block mb-2">
-            {assSub.subCriteria.name}
-          </span>,
-        );
-        subCriteriaScores.push(
-          <span key={`name-${index}`} className="block mb-2">
-            {assSub.score}
-          </span>,
-        );
+        currentLecturer?.criteriaName.add(criteriaName);
+        currentLecturer?.subCriteriaName.push(subName);
+        currentLecturer?.subCriteriaScores.push(score);
       });
+    });
 
-      return {
-        id: assessment.id,
-        lecturerName: assessment.lecturer.fullName,
-        criteriaName: criteriaNames ?? null,
-        subCriteriaName: subCriteriaNames ?? null,
-        subCriteriaScores: subCriteriaScores ?? null,
-      };
-    }) || [];
+    return Array.from(lecturerMap.values()).map((lecturer) => ({
+      ...lecturer,
+      criteriaName: Array.from(lecturer.criteriaName).map((name, index) => (
+        <span key={`criteria-${index}`} className="block mb-2">
+          {name}
+        </span>
+      )),
+      subCriteriaName: Array.from(lecturer.subCriteriaName).map(
+        (name, index) => (
+          <span key={`sub-${index}`} className="block mb-2">
+            {name}
+          </span>
+        ),
+      ),
+      subCriteriaScores: Array.from(lecturer.subCriteriaScores).map(
+        (score, index) => (
+          <span key={`sub-${index}`} className="block mb-2">
+            {score}
+          </span>
+        ),
+      ),
+    }));
+  }, [data?.data]);
 
   const handleMultipleDelete = async () => {
-    return true;
+    try {
+      await deleteMutate(selected as unknown as string[]);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
 
   const handleSortData = () => {};
 
   const handleSearchChange = () => {};
-  const handleSingleDelete = async () => {
-    return true;
+
+  const handleSingleDelete = async (id: string) => {
+    try {
+      await deleteMutate([id]);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Data Penilaian Dosen">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/assessments')}
-                  className={
-                    currentPath == '/assessments'
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Penilaian Dosen
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/assessments')}
+              className={
+                currentPath == '/assessments'
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Penilaian Dosen
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div>
           <DataManagementComponent
             onClickDelete={handleMultipleDelete}
@@ -118,7 +168,7 @@ const AssessmentPage = () => {
               <TableComponent
                 data={formattedData}
                 columns={assessmentColumn}
-                pathDetail="lecturers"
+                pathDetail="assessments"
                 onDelete={handleSingleDelete}
                 onSort={handleSortData}
               />

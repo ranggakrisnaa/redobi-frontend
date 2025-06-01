@@ -37,38 +37,34 @@ const StudentDetailPage = () => {
   return (
     <div ref={detailRef}>
       <DashboardContainer pageTitle="Profil Mahasiswa">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/students')}
-                  className="hover:cursor-pointer"
-                >
-                  Mahasiswa
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate(`/students/${id}`)}
-                  className={
-                    currentPath == `/students/${id}`
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Profil Mahasiswa
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/students')}
+              className="hover:cursor-pointer"
+            >
+              Mahasiswa
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate(`/students/${id}`)}
+              className={
+                currentPath == `/students/${id}`
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Profil Mahasiswa
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[200px]">
             <LoadingComponent />

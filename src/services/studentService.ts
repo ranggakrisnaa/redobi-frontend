@@ -5,6 +5,7 @@ import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
 import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
 import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';
 import { StudentFilter } from '@/commons/types/student/student-filter-data.type.ts';
+import { ResponseData } from '@/utils/responseData';
 
 export const fetchStudentsPagination = async (
   page = 1,
@@ -36,59 +37,70 @@ export const fetchStudentsPagination = async (
     params.append('order', 'ASC');
   }
 
-  const response = await apiService.get<StudentPaginationResponse>(
+  const { data } = await apiService.get<StudentPaginationResponse>(
     `/students?${params.toString()}`,
   );
-  return response.data;
+  return data;
 };
 
 export const fetchStudentDetail = async (id: string) => {
-  const response = await apiService.get<IStudent>(`/students/${id}`);
-  return response.data;
+  const { data } = await apiService.get<ResponseData<IStudent>>(
+    `/students/${id}`,
+  );
+  return data.data;
 };
 
-export const createStudent = async (data: CreateStudentSchema) => {
+export const createStudent = async (payload: CreateStudentSchema) => {
   const formData = new FormData();
 
-  (Object.keys(data) as (keyof IStudent)[]).forEach((key) => {
-    const value = data[key as keyof CreateStudentSchema];
+  (Object.keys(payload) as (keyof IStudent)[]).forEach((key) => {
+    const value = payload[key as keyof CreateStudentSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));
     }
   });
 
-  const response = await apiService.post<IStudent>('/students', formData);
-  return response.data;
+  const { data } = await apiService.post<ResponseData<IStudent>>(
+    '/students',
+    formData,
+  );
+  return data;
 };
 
 export const updateStudent = async ({
   id,
-  data,
+  payload,
 }: {
   id: string;
-  data: UpdateStudentSchema;
+  payload: UpdateStudentSchema;
 }) => {
   const formData = new FormData();
 
-  (Object.keys(data) as (keyof IStudent)[]).forEach((key) => {
-    const value = data[key as keyof UpdateStudentSchema];
+  (Object.keys(payload) as (keyof IStudent)[]).forEach((key) => {
+    const value = payload[key as keyof UpdateStudentSchema];
 
     if (value !== undefined && value !== null) {
       formData.append(key, value instanceof File ? value : String(value));
     }
   });
 
-  const response = await apiService.put<IStudent>(`/students/${id}`, formData);
-  return response.data;
+  const { data } = await apiService.put<ResponseData<IStudent>>(
+    `/students/${id}`,
+    formData,
+  );
+  return data;
 };
 
 export const deleteStudent = async (ids: string[], id?: string) => {
   const url = id ? `/students/${id}` : '/students';
   const config = id ? {} : { studentIds: ids };
 
-  const response = await apiService.delete<IStudent | IStudent[]>(url, config);
-  return response.data;
+  const { data } = await apiService.delete<ResponseData<IStudent | IStudent[]>>(
+    url,
+    config,
+  );
+  return data;
 };
 
 export const downloadExcelTemplateStudent = async () => {
@@ -109,9 +121,9 @@ export const importEcxelStudent = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await apiService.post<IStudent[]>(
+  const { data } = await apiService.post<ResponseData<IStudent[]>>(
     '/students/templates',
     formData,
   );
-  return response.data;
+  return data;
 };

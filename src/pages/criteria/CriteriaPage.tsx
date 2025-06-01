@@ -15,9 +15,11 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { useCriteriaDelete, useCriteriaPagination } from '@/hooks/useCriteria';
+import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useCriteriaStore } from '@/store/criteriaStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
+import { useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const CriteriaPage = () => {
@@ -37,6 +39,8 @@ const CriteriaPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { mutateAsync: deleteMutate } = useCriteriaDelete();
   const { selected } = useGlobalStore();
+  const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
 
   const formattedData =
     data?.data?.map((criteria) => {
@@ -122,29 +126,25 @@ const CriteriaPage = () => {
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Data Kriteria dan Sub-Kriteria">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/criteria')}
-                  className={
-                    currentPath == '/criteria'
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Kriteria & Sub-Kriteria
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/criteria')}
+              className={
+                currentPath == '/criteria'
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Kriteria & Sub-Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div>
           <DataManagementComponent
             onClickCreate={() => navigate('/criteria/create')}
