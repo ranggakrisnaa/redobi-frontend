@@ -34,6 +34,8 @@ export const fetchAssessmentPagination = async (
     params.append('order', 'ASC');
   }
 
+  console.log(search);
+
   const { data } = await apiService.get<AssessmentPaginationResponse>(
     `/assessments?${params.toString()}`,
   );

@@ -20,7 +20,7 @@ import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
 import { useMemo, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const AssessmentPage = () => {
   const navigate = useNavigate();
@@ -32,9 +32,10 @@ const AssessmentPage = () => {
     pageSize,
     setPage,
     setPageSize,
-    // setSearch,
-    // setSortData,
+    setSearch,
+    setSortData,
   } = useAssessmentStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { selected } = useGlobalStore();
   const { mutateAsync: deleteMutate } = useAssessmentDelete();
   const detailRef = useRef<HTMLDivElement>(null);
@@ -43,67 +44,122 @@ const AssessmentPage = () => {
   const formattedData = useMemo(() => {
     if (!data?.data) return [];
 
-    const lecturerMap = new Map<
+    const lecturerGroups: Record<
       string,
       {
         id: string;
         lecturerName: string;
-        criteriaName: Set<string>;
-        subCriteriaName: (string | number)[];
-        subCriteriaScores: (string | number)[];
+        allSubCriteria: any[];
       }
-    >();
+    > = {};
 
     data.data.forEach((assessment: IAssessment) => {
       const lecturerName = assessment.lecturer.fullName;
-
-      if (!lecturerMap.has(lecturerName)) {
-        lecturerMap.set(lecturerName, {
+      if (!lecturerGroups[lecturerName]) {
+        lecturerGroups[lecturerName] = {
           id: assessment.id,
-          lecturerName,
-          criteriaName: new Set<string>(),
-          subCriteriaName: [],
-          subCriteriaScores: [],
-        });
+          lecturerName: lecturerName,
+          allSubCriteria: [],
+        };
       }
-
-      const currentLecturer = lecturerMap.get(lecturerName);
       const subCriteriaData = assessment.assessmentSubCriteria ?? [];
+      lecturerGroups[lecturerName].allSubCriteria.push(...subCriteriaData);
+    });
 
-      subCriteriaData.forEach((assSub) => {
+    const result: Array<{
+      id: string;
+      lecturerName: string | null;
+      criteriaName: string | null;
+      subCriteriaName: string | number;
+      subCriteriaScore: string | number;
+      isNewLecturer: boolean;
+      isNewCriteria: boolean;
+    }> = [];
+
+    Object.values(lecturerGroups).forEach((lecturer) => {
+      const criteriaGroups: Record<
+        string,
+        Array<{
+          subName: string | number;
+          score: string | number;
+        }>
+      > = {};
+
+      lecturer.allSubCriteria.forEach((assSub) => {
         const criteriaName = assSub.subCriteria?.criteria?.name || '-';
         const subName = assSub.subCriteria?.name || '-';
         const score = assSub.score ?? '-';
 
-        currentLecturer?.criteriaName.add(criteriaName);
-        currentLecturer?.subCriteriaName.push(subName);
-        currentLecturer?.subCriteriaScores.push(score);
+        if (!criteriaGroups[criteriaName]) {
+          criteriaGroups[criteriaName] = [];
+        }
+        criteriaGroups[criteriaName].push({ subName, score });
+      });
+
+      let isFirstRowForLecturer = true;
+      Object.entries(criteriaGroups).forEach(([criteriaName, subItems]) => {
+        let isFirstRowForCriteria = true;
+        subItems.forEach((item) => {
+          result.push({
+            id: lecturer.id,
+            lecturerName: isFirstRowForLecturer ? lecturer.lecturerName : null,
+            criteriaName: isFirstRowForCriteria ? criteriaName : null,
+            subCriteriaName: item.subName,
+            subCriteriaScore: item.score,
+            isNewLecturer: isFirstRowForLecturer,
+            isNewCriteria: isFirstRowForCriteria && !isFirstRowForLecturer,
+          });
+          isFirstRowForLecturer = false;
+          isFirstRowForCriteria = false;
+        });
       });
     });
 
-    return Array.from(lecturerMap.values()).map((lecturer) => ({
-      ...lecturer,
-      criteriaName: Array.from(lecturer.criteriaName).map((name, index) => (
-        <span key={`criteria-${index}`} className="block mb-2">
-          {name}
-        </span>
-      )),
-      subCriteriaName: Array.from(lecturer.subCriteriaName).map(
-        (name, index) => (
-          <span key={`sub-${index}`} className="block mb-2">
-            {name}
-          </span>
-        ),
-      ),
-      subCriteriaScores: Array.from(lecturer.subCriteriaScores).map(
-        (score, index) => (
-          <span key={`sub-${index}`} className="block mb-2">
-            {score}
-          </span>
-        ),
-      ),
+    return result.map((row, index) => ({
+      id: index == 0 ? row.id : `${row.id}-${index}`,
+      lecturerName: row.lecturerName
+        ? [
+            <span key={`lecturer-${index}`} className="block">
+              {row.lecturerName}
+            </span>,
+          ]
+        : [<span key={`lecturer-empty-${index}`}></span>],
+      criteriaName: row.criteriaName
+        ? [
+            <span key={`criteria-${index}`} className="block">
+              {row.criteriaName}
+            </span>,
+          ]
+        : [<span key={`criteria-empty-${index}`}></span>],
+      subCriteriaName: [
+        <span key={`sub-${index}`} className="block">
+          {row.subCriteriaName}
+        </span>,
+      ],
+      subCriteriaScores: [
+        <span key={`score-${index}`} className="block">
+          {row.subCriteriaScore}
+        </span>,
+      ],
+      showOneRowActions: true,
+      isNewLecturer: row.isNewLecturer,
+      isNewCriteria: row.isNewCriteria,
+      assessmentTable: true,
     }));
   }, [data?.data]);
+
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setSearchParams(newParams, { replace: true });
+  };
 
   const handleMultipleDelete = async () => {
     try {
@@ -115,9 +171,16 @@ const AssessmentPage = () => {
     }
   };
 
-  const handleSortData = () => {};
+  const handleSortData = (sort: string) => {
+    setPage(1);
+    setSortData(sort);
+  };
 
-  const handleSearchChange = () => {};
+  const handleSearchChange = (search: string) => {
+    setPage(1);
+    setSearch(search);
+    updateURL({ search });
+  };
 
   const handleSingleDelete = async (id: string) => {
     try {
