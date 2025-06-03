@@ -127,7 +127,7 @@ const CriteriaPage = () => {
 
   return (
     <div ref={detailRef}>
-      <DashboardContainer pageTitle="Data Kriteria dan Sub-Kriteria">
+      <DashboardContainer pageTitle="Kriteria dan Sub-Kriteria">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />

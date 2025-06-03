@@ -19,7 +19,7 @@ import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const AssessmentPage = () => {
@@ -148,6 +148,10 @@ const AssessmentPage = () => {
     }));
   }, [data?.data]);
 
+  useEffect(() => {
+    setSearch(searchParams.get('search') || '');
+  }, [searchParams, setSearch]);
+
   const updateURL = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams);
     Object.keys(params).forEach((key) => {
@@ -194,7 +198,7 @@ const AssessmentPage = () => {
 
   return (
     <div ref={detailRef}>
-      <DashboardContainer pageTitle="Data Penilaian Dosen">
+      <DashboardContainer pageTitle="Penilaian Dosen">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />

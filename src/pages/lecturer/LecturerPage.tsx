@@ -129,7 +129,7 @@ const LecturerPage = () => {
 
   return (
     <div ref={detailRef}>
-      <DashboardContainer pageTitle="Data Dosen Pembimbing">
+      <DashboardContainer pageTitle="Dosen Pembimbing">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />

@@ -141,7 +141,7 @@ const StudentPage = () => {
 
   return (
     <div>
-      <DashboardContainer pageTitle="Data Mahasiswa">
+      <DashboardContainer pageTitle="Mahasiswa">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />

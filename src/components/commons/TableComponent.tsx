@@ -49,7 +49,6 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
 
   const shouldAddBorder = (currentItem: any, currentIndex: number) => {
     const nextItem = data[currentIndex + 1];
-
     if (!nextItem) return true;
 
     const currentLecturer = extractText(currentItem.lecturerName);
