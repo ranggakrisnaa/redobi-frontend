@@ -1,4 +1,4 @@
-import { ICriteria } from '@/commons/interface-model/criteria.interface';
+import { ICriteria } from '@/commons/interface-model/criteria-entity.interface';
 
 export type CriteriaPaginationResponse = {
   data: ICriteria[];

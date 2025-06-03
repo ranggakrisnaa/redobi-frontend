@@ -29,7 +29,7 @@ export const useLecturerPagination = () => {
       sortOrder,
     ],
     queryFn: async (): Promise<LecturerPaginationResponse> => {
-      const data = await fetchLecturerPagination(
+      return await fetchLecturerPagination(
         currentPage,
         pageSize,
         filters,
@@ -37,9 +37,8 @@ export const useLecturerPagination = () => {
         sortBy as string,
         sortOrder as 'asc',
       );
-      return data;
     },
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -57,7 +56,10 @@ export const useLecturerCreate = () => {
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
+    onSuccess: (newLecturer) => {
+      queryClient.invalidateQueries({
+        queryKey: ['lecturer-detail', newLecturer.data.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess(
         'Data Dosen Pembimbing berhasil ditambahkan.',
@@ -90,7 +92,7 @@ export const useLecturerDetail = () => {
       return data;
     },
     enabled: !!lecturerId,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -108,13 +110,16 @@ export const useLecturerUpdate = () => {
     Error,
     { id: string; data: UpdateLecturerSchema }
   >({
-    mutationFn: ({ data, id }) => updateLecturer({ data, id }),
+    mutationFn: async ({ data, id }) => {
+      const response = await updateLecturer({ payload: data, id });
+      return response.data;
+    },
 
     onMutate: handleMutate,
 
-    onSuccess: (_, variables) => {
+    onSuccess: (newLecturer) => {
       queryClient.invalidateQueries({
-        queryKey: ['lecturer-detail', variables.id],
+        queryKey: ['lecturer-detail', newLecturer.id],
       });
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess('Data dosen pembimbing berhasil diperbarui.', '/lecturers');

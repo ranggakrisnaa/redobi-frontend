@@ -4,6 +4,7 @@ import { CreateCriteriaSchema } from '@/commons/schema/create-criteria.schema';
 import { UpdateCriteriaSchema } from '@/commons/schema/update-criteria.schema';
 import { CriteriaPaginationResponse } from '@/commons/types/criteria/criteria-fetch-api.type';
 import { CriteriaFilter } from '@/commons/types/criteria/criteria-filter-data.type';
+import { ResponseData } from '@/utils/responseData';
 
 export const fetchCriteriaPagination = async (
   page = 1,
@@ -35,40 +36,47 @@ export const fetchCriteriaPagination = async (
     params.append('order', 'ASC');
   }
 
-  const response = await apiService.get<CriteriaPaginationResponse>(
+  const { data } = await apiService.get<CriteriaPaginationResponse>(
     `/criteria?${params.toString()}`,
   );
-  return response.data;
+  return data;
 };
 
 export const fetchCriteriaDetail = async (id: number) => {
-  const response = await apiService.get<ICriteria>(`/criteria/${id}`);
-  return response.data;
+  const { data } = await apiService.get<ResponseData<ICriteria>>(
+    `/criteria/${id}`,
+  );
+  return data.data;
 };
 
-export const createCriteria = async (data: CreateCriteriaSchema) => {
-  const response = await apiService.post<ICriteria>('/criteria', data);
-  return response.data;
+export const createCriteria = async (payload: CreateCriteriaSchema) => {
+  const { data } = await apiService.post<ResponseData<ICriteria>>(
+    '/criteria',
+    payload,
+  );
+  return data;
 };
 
 export const updateCriteria = async ({
   id,
-  data,
+  payload,
 }: {
   id: number;
-  data: UpdateCriteriaSchema;
+  payload: UpdateCriteriaSchema;
 }) => {
-  const response = await apiService.put<ICriteria>(`/criteria/${id}`, data);
-  return response.data;
+  const { data } = await apiService.put<ResponseData<ICriteria>>(
+    `/criteria/${id}`,
+    payload,
+  );
+  return data;
 };
 
 export const deleteCriteria = async (ids: number[], id?: number) => {
   const url = id ? `/criteria/${id}` : '/criteria';
   const config = id ? {} : { criteriaIds: ids };
 
-  const response = await apiService.delete<ICriteria | ICriteria[]>(
-    url,
-    config,
-  );
-  return response.data;
+  const { data } = await apiService.delete<
+    ResponseData<ICriteria | ICriteria[]>
+  >(url, config);
+  return data;
 };

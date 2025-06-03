@@ -6,6 +6,7 @@ import StudentDetailPage from '@/pages/student/StudentDetailPage.tsx';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AssessmentCreatePage from './pages/assessment/AsessmentCreatePage';
 import AssessmentPage from './pages/assessment/AssesmentPage';
+import AssessmentUpdatePage from './pages/assessment/AssessmentUpdatePage';
 import SignInPage from './pages/auth/SignInPage';
 import VerifySignInPage from './pages/auth/VerifySignInPage';
 import CriteriaCreatePage from './pages/criteria/CriteriaCreatePage';
@@ -50,6 +51,10 @@ const AppRoutes = () => {
           <Route
             path="/assessments/create"
             element={<AssessmentCreatePage />}
+          />
+          <Route
+            path="/assessments/:id/update"
+            element={<AssessmentUpdatePage />}
           />
         </Route>
       </Routes>

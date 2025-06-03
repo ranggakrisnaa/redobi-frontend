@@ -38,7 +38,7 @@ export const useCriteriaPagination = () => {
       );
       return data;
     },
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -46,12 +46,13 @@ export const useCriteriaDetail = () => {
   const { criteriaId } = useCriteriaStore();
 
   return useQuery({
-    queryKey: ['criteria', criteriaId],
+    queryKey: ['criteria-detail', criteriaId],
     queryFn: async () => {
       const data = await fetchCriteriaDetail(criteriaId as number);
       return data;
     },
     enabled: !!criteriaId,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -96,11 +97,17 @@ export const useCriteriaUpdate = () => {
     Error,
     { id: number; data: UpdateCriteriaSchema }
   >({
-    mutationFn: ({ data, id }) => updateCriteria({ data, id }),
+    mutationFn: async ({ data, id }) => {
+      const response = await updateCriteria({ payload: data, id });
+      return response.data;
+    },
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
+    onSuccess: (newCriteria) => {
+      queryClient.invalidateQueries({
+        queryKey: ['criteria-detail', newCriteria.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['criteria'] });
       handleSuccess(
         'Data Kriteria dan Sub-Kriteria berhasil diperbarui.',
@@ -137,7 +144,10 @@ export const useCriteriaCreate = () => {
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
+    onSuccess: (newCriteria) => {
+      queryClient.invalidateQueries({
+        queryKey: ['criteria-detail', newCriteria.data.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['criteria'] });
       handleSuccess(
         'Data Criteria dan Sub-Kriteria berhasil ditambahkan.',

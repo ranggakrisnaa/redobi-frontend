@@ -9,11 +9,14 @@ type AsessmentStore = {
   search: string | null;
   totalRecords: number;
   totalPages: number;
+  selectedCriteria: string[];
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   setSearch: (searchValue: string) => void;
   setSortData: (sort: string) => void;
   setAsessmentId: (id: string) => void;
+  setSelectedCriteria: (criteria: string | string[]) => void;
+  resetSelectedCriteria: () => void;
 };
 
 export const useAssessmentStore = create<AsessmentStore>((set) => ({
@@ -26,6 +29,7 @@ export const useAssessmentStore = create<AsessmentStore>((set) => ({
   assessmentId: null,
   pageSize: 10,
   search: null,
+  selectedCriteria: [],
 
   setPage: (page) => set({ currentPage: page }),
   setPageSize: (size) => set({ pageSize: size, currentPage: 1 }),
@@ -37,4 +41,11 @@ export const useAssessmentStore = create<AsessmentStore>((set) => ({
         state.sortBy == column && state.sortOrder == 'desc' ? 'asc' : 'desc',
     })),
   setAsessmentId: (id) => set({ assessmentId: id }),
+  setSelectedCriteria: (criteria: string | string[]) =>
+    set((state) => ({
+      selectedCriteria: Array.isArray(criteria)
+        ? criteria
+        : [...state.selectedCriteria, criteria],
+    })),
+  resetSelectedCriteria: () => set({ selectedCriteria: [] }),
 }));

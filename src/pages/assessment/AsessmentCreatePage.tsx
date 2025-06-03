@@ -28,38 +28,34 @@ const AssessmentCreatePage = () => {
 
   return (
     <DashboardContainer pageTitle="Tambah Data Penilaian Dosen">
-      <div>
-        <BreadcrumbList>
-          <BreadcrumbList>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate('/assessments')}
-                className="hover:cursor-pointer"
-              >
-                Penilaian Dosen
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate('/assessments/create')}
-                className={
-                  currentPath == '/assessments/create'
-                    ? 'text-black font-medium hover:cursor-pointer'
-                    : 'hover:cursor-pointer'
-                }
-              >
-                Tambah Data Penilaian Dosen
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </BreadcrumbList>
-      </div>
+      <BreadcrumbList>
+        <BreadcrumbSeparator>
+          <Slash />
+        </BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <BreadcrumbLink
+            onClick={() => navigate('/assessments')}
+            className="hover:cursor-pointer"
+          >
+            Penilaian Dosen
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>
+          <Slash />
+        </BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <BreadcrumbLink
+            onClick={() => navigate('/assessments/create')}
+            className={
+              currentPath == '/assessments/create'
+                ? 'text-black font-medium hover:cursor-pointer'
+                : 'hover:cursor-pointer'
+            }
+          >
+            Tambah Data Penilaian Dosen
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </BreadcrumbList>
       <div className="mt-4">
         <Card>
           <CardContent className="relative">

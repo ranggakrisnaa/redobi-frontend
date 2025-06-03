@@ -1,8 +1,8 @@
-import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
+import { UpdateAssessmentSchema } from '@/commons/schema/update-assessment.schema';
 import AlertComponent from '@/components/commons/AlertComponent';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
-import UpdateLecturerForm from '@/components/modules/lecturer/UpdateLecturerForm';
+import UpdateAssessmentForm from '@/components/modules/assessment/UpdateAssessmentForm';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
@@ -10,49 +10,52 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Card, CardContent } from '@/components/ui/card';
-import { useLecturerDetail, useLecturerUpdate } from '@/hooks/useLecturer';
+import {
+  useAssessmentDetail,
+  useAssessmentUpdate,
+} from '@/hooks/useAssessment';
 import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
+import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
-import { useLecturerStore } from '@/store/lecturerStore';
 import { Slash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const LecturerUpdatePage = () => {
+const AssessmentUpdatePage = () => {
   const { id } = useParams();
-  const { mutate } = useLecturerUpdate();
-  const { error } = useGlobalStore();
-  const { setLecturerId, lecturerId } = useLecturerStore();
-  const navigate = useNavigate();
-  const { data, isLoading } = useLecturerDetail();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { error } = useGlobalStore();
   const currentPath = location.pathname;
+  const { data, isLoading } = useAssessmentDetail();
+  const { assessmentId, setAsessmentId } = useAssessmentStore();
+  const { mutate } = useAssessmentUpdate();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
 
   useEffect(() => {
     if (id) {
-      setLecturerId(id);
+      setAsessmentId(id);
     }
-  }, [id, setLecturerId]);
+  }, [id, setAsessmentId]);
 
-  const handleSuccess = async (data: UpdateLecturerSchema) => {
-    mutate({ data, id: lecturerId as string });
+  const handleSuccess = async (data: UpdateAssessmentSchema) => {
+    mutate({ data, id: assessmentId as string });
   };
 
   return (
-    <div>
-      <DashboardContainer pageTitle="Edit Data Dosen Pembimbing">
+    <div ref={detailRef}>
+      <DashboardContainer pageTitle="Edit Data Penilaian Dosen">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink
-              onClick={() => navigate('/lecturers')}
+              onClick={() => navigate('/assessments')}
               className="hover:cursor-pointer"
             >
-              Dosen Pembimbing
+              Penilaian Dosen
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator>
@@ -60,14 +63,14 @@ const LecturerUpdatePage = () => {
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink
-              onClick={() => navigate(`/lecturers/${lecturerId}/update`)}
+              onClick={() => navigate(`/assessments/${assessmentId}/update`)}
               className={
-                currentPath == `/lecturers/${lecturerId}/update`
+                currentPath == `/assessments/${assessmentId}/update`
                   ? 'text-black font-medium hover:cursor-pointer'
-                  : ''
+                  : 'hover:cursor-pointer'
               }
             >
-              Edit Data Dosen Pembimbing
+              Edit Data Penilaian Dosen
             </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -84,7 +87,7 @@ const LecturerUpdatePage = () => {
                 </div>
               )}
               <CardContent>
-                <UpdateLecturerForm onSuccess={handleSuccess} data={data} />
+                <UpdateAssessmentForm onSuccess={handleSuccess} data={data} />
               </CardContent>
             </Card>
           ) : null}
@@ -94,4 +97,4 @@ const LecturerUpdatePage = () => {
   );
 };
 
-export default LecturerUpdatePage;
+export default AssessmentUpdatePage;

@@ -24,10 +24,11 @@ const CriteriaUpdatePage = () => {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { data, isLoading } = useCriteriaDetail();
-  const { setCriteriaId, criteriaId } = useCriteriaStore();
+  const { criteriaId, setCriteriaId } = useCriteriaStore();
   const { error } = useGlobalStore();
   const { mutate } = useCriteriaUpdate();
   const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
 
   useEffect(() => {
     if (id) {
@@ -35,47 +36,41 @@ const CriteriaUpdatePage = () => {
     }
   }, [id, setCriteriaId]);
 
-  useScrollToTopOnPush(detailRef, [isLoading]);
-
   const handleSuccess = async (data: UpdateCriteriaSchema) => {
     mutate({ data, id: criteriaId as number });
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Edit Data Kriteria dan Sub-Kriteria">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/criteria')}
-                  className="hover:cursor-pointer"
-                >
-                  Kriteria & Sub-Kriteria
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate(`/criteria/${criteriaId}/update`)}
-                  className={
-                    currentPath == `/criteria/${criteriaId}/update`
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Edit Data Kriteria & Sub-Kriteria
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/criteria')}
+              className="hover:cursor-pointer"
+            >
+              Kriteria & Sub-Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate(`/criteria/${criteriaId}/update`)}
+              className={
+                currentPath == `/criteria/${criteriaId}/update`
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Edit Data Kriteria & Sub-Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div className="relative mt-4 min-h-full">
           {isLoading ? (
             <div className="absolute inset-0 bg-white bg-opacity-60 z-10 flex justify-center items-center rounded-md">

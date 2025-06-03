@@ -44,36 +44,34 @@ const CriteriaDetailPage = () => {
   return (
     <div ref={detailRef}>
       <DashboardContainer pageTitle="Detail Kriteria dan Sub-Kriteria">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate('/criteria')}
-                className="hover:cursor-pointer"
-              >
-                Kriteria & Sub-Kriteria
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate(`/criteria/${id}`)}
-                className={
-                  currentPath == `/criteria/${id}`
-                    ? 'text-black font-medium hover:cursor-pointer'
-                    : 'hover:cursor-pointer'
-                }
-              >
-                Detail Kriteria & Sub-Kriteria
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/criteria')}
+              className="hover:cursor-pointer"
+            >
+              Kriteria & Sub-Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate(`/criteria/${id}`)}
+              className={
+                currentPath == `/criteria/${id}`
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Detail Kriteria & Sub-Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div>
           {isLoading ? (
             <div className="flex justify-center items-center min-h-[200px]">

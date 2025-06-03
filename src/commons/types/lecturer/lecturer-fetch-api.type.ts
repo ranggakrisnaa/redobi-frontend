@@ -1,4 +1,4 @@
-import { ILecturer } from '@/commons/interface-model/lecturer.interface';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 
 export type LecturerPaginationResponse = {
   data: ILecturer[];

@@ -19,10 +19,12 @@ import {
   useLecturerImportExcel,
   useLecturerPagination,
 } from '@/hooks/useLecturer';
+import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { downloadExcelTemplateLecturer } from '@/services/lecturerService';
 import { useGlobalStore } from '@/store/globalStore';
 import { useLecturerStore } from '@/store/lecturerStore';
 import { Slash } from 'lucide-react';
+import { useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const LecturerPage = () => {
@@ -43,6 +45,8 @@ const LecturerPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const detailRef = useRef<HTMLDivElement>(null);
+  useScrollToTopOnPush(detailRef, [isLoading]);
 
   const formattedData =
     data?.data.map((lecturer: ILecturer) => ({
@@ -124,69 +128,67 @@ const LecturerPage = () => {
   };
 
   return (
-    <DashboardContainer pageTitle="Data Dosen Pembimbing">
-      <div>
+    <div ref={detailRef}>
+      <DashboardContainer pageTitle="Data Dosen Pembimbing">
         <BreadcrumbList>
-          <BreadcrumbList>
-            <BreadcrumbSeparator>
-              <Slash />
-            </BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() => navigate('/lecturers')}
-                className={
-                  currentPath == '/lecturers'
-                    ? 'text-black font-medium hover:cursor-pointer'
-                    : ''
-                }
-              >
-                Dosen Pembimbing
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/lecturers')}
+              className={
+                currentPath == '/lecturers'
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : ''
+              }
+            >
+              Dosen Pembimbing
+            </BreadcrumbLink>
+          </BreadcrumbItem>
         </BreadcrumbList>
-      </div>
-      <div>
-        <DataManagementComponent
-          onClickCreate={() => navigate('/lecturers/create')}
-          onClickDelete={handleMultipleDelete}
-          onClickImport={handleImportExcel}
-          onSearchChange={handleSearcChange}
-          onClickDownload={downloadExcelTemplateLecturer}
-          titleDialog="Dosen Pembimbing"
-        />
-        <FilterComponent
-          filterOptions={filterOptions}
-          onFilterChange={handleFilterChange}
-        />
-        {isLoading ? (
-          <div className="flex justify-center items-center min-h-[200px]">
-            <LoadingComponent />
-          </div>
-        ) : isError ? (
-          <p className="text-center text-red-500 mt-3">{error.message}</p>
-        ) : (
-          <>
-            <TableComponent
-              data={formattedData}
-              columns={lecturerColumns}
-              pathDetail="lecturers"
-              onDelete={handleSingleDelete}
-              onSort={handleSortData}
-            />
-            <div className="flex justify-end mt-4 w-full">
-              <PaginationComponent
-                currentPage={currentPage}
-                pageSize={pageSize}
-                totalItems={data?.pagination.totalRecords || 0}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
+        <div>
+          <DataManagementComponent
+            onClickCreate={() => navigate('/lecturers/create')}
+            onClickDelete={handleMultipleDelete}
+            onClickImport={handleImportExcel}
+            onSearchChange={handleSearcChange}
+            onClickDownload={downloadExcelTemplateLecturer}
+            titleDialog="Dosen Pembimbing"
+          />
+          <FilterComponent
+            filterOptions={filterOptions}
+            onFilterChange={handleFilterChange}
+          />
+          {isLoading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <LoadingComponent />
             </div>
-          </>
-        )}
-      </div>
-    </DashboardContainer>
+          ) : isError ? (
+            <p className="text-center text-red-500 mt-3">{error.message}</p>
+          ) : (
+            <>
+              <TableComponent
+                data={formattedData}
+                columns={lecturerColumns}
+                pathDetail="lecturers"
+                onDelete={handleSingleDelete}
+                onSort={handleSortData}
+              />
+              <div className="flex justify-end mt-4 w-full">
+                <PaginationComponent
+                  currentPage={currentPage}
+                  pageSize={pageSize}
+                  totalItems={data?.pagination.totalRecords || 0}
+                  onPageChange={setPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </DashboardContainer>
+    </div>
   );
 };
 export default LecturerPage;

@@ -44,38 +44,34 @@ const StudentUpdatePage = () => {
   return (
     <div ref={detailRef}>
       <DashboardContainer pageTitle="Edit Data Mahasiswa">
-        <div>
-          <BreadcrumbList>
-            <BreadcrumbList>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate('/students')}
-                  className="hover:cursor-pointer"
-                >
-                  Mahasiswa
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <Slash />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  onClick={() => navigate(`/students/${studentId}/update`)}
-                  className={
-                    currentPath == `/students/${studentId}/update`
-                      ? 'text-black font-medium hover:cursor-pointer'
-                      : 'hover:cursor-pointer'
-                  }
-                >
-                  Edit Data Mahasiswa
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </BreadcrumbList>
-        </div>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate('/students')}
+              className="hover:cursor-pointer"
+            >
+              Mahasiswa
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator>
+            <Slash />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              onClick={() => navigate(`/students/${studentId}/update`)}
+              className={
+                currentPath == `/students/${studentId}/update`
+                  ? 'text-black font-medium hover:cursor-pointer'
+                  : 'hover:cursor-pointer'
+              }
+            >
+              Edit Data Mahasiswa
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
         <div className="relative mt-4 min-h-full">
           {isLoading ? (
             <div className="absolute inset-0 bg-white bg-opacity-60 z-10 flex justify-center items-center rounded-md">
