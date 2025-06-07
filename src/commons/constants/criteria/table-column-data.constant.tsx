@@ -27,38 +27,20 @@ export const criteriaColumns: TableComponentColumnDef[] = [
         </div>
       );
     },
-    width: 'w-[320px]',
+    width: 'w-[820px]',
   },
   {
     accessorKey: 'subKriteria',
     header: () => (
       <div className="border-l px-4 border-gray-300">Sub Kriteria</div>
     ),
-    width: 'w-[320px]',
-  },
-  {
-    accessorKey: 'subCriteriaWeight',
-    header: () => (
-      <div className="border-l px-4 border-gray-300">
-        Pembobotan Sub-Kriteria
-      </div>
-    ),
-    width: 'w-[370px]',
+    width: 'w-[820px]',
   },
   {
     accessorKey: 'type',
     header: () => (
-      <div className="border-l px-4 border-gray-300">Tipe Kriteria</div>
+      <div className="border-x px-4 border-gray-300">Tipe Kriteria</div>
     ),
-    width: 'w-[190px]',
-  },
-  {
-    accessorKey: 'criteriaWeight',
-    header: () => (
-      <div className="border-l px-4 border-r border-gray-300">
-        Pembobotan Kriteria
-      </div>
-    ),
-    width: 'w-[280px]',
+    width: 'w-[890px]',
   },
 ];

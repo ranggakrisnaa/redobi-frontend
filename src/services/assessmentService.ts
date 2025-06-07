@@ -15,6 +15,7 @@ export const fetchAssessmentPagination = async (
   const params = new URLSearchParams();
   params.append('page', page.toString());
   params.append('limit', limit.toString());
+  console.log(search);
 
   if (search) {
     params.append('search', search);

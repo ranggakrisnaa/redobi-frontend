@@ -66,12 +66,7 @@ const CriteriaPage = () => {
         id: criteria.id ?? null,
         name: criteria.name ?? '-',
         type: criteria.type ?? '-',
-        criteriaWeight: criteria.weight ?? '-',
         subKriteria: subKriteriaElements.length > 0 ? subKriteriaElements : '-',
-        subCriteriaWeight:
-          subCriteriaWeightElements.length > 0
-            ? subCriteriaWeightElements
-            : '-',
       };
     }) || [];
 
@@ -127,7 +122,7 @@ const CriteriaPage = () => {
 
   return (
     <div ref={detailRef}>
-      <DashboardContainer pageTitle="Data Kriteria dan Sub-Kriteria">
+      <DashboardContainer pageTitle="Kriteria dan Sub-Kriteria">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <Slash />

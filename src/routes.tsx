@@ -20,6 +20,9 @@ import LecturerPage from './pages/lecturer/LecturerPage';
 import LecturerUpdatePage from './pages/lecturer/LecturerUpdatePage';
 import StudentPage from './pages/student/StudentPage';
 import StudentUpdatePage from './pages/student/StudentUpdatePage';
+import ThesisKeywordCreatePage from './pages/thesis-keyword/ThesisKeywordCreatePage';
+import ThesisKeywordPage from './pages/thesis-keyword/ThesisKeywordPage';
+import ThesisKeywordUpdatePage from './pages/thesis-keyword/ThesisKeywordUpdatePage';
 
 const AppRoutes = () => {
   return (
@@ -55,6 +58,15 @@ const AppRoutes = () => {
           <Route
             path="/assessments/:id/update"
             element={<AssessmentUpdatePage />}
+          />
+          <Route path="/thesis-keywords" element={<ThesisKeywordPage />} />
+          <Route
+            path="/thesis-keywords/create"
+            element={<ThesisKeywordCreatePage />}
+          />
+          <Route
+            path="/thesis-keywords/:id/update"
+            element={<ThesisKeywordUpdatePage />}
           />
         </Route>
       </Routes>

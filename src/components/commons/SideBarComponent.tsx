@@ -20,7 +20,7 @@ const menuItems = [
   { name: 'Dosen Pembimbing', icon: GraduationCap, path: '/lecturers' },
   { name: 'Kriteria & Sub-kriteria', icon: ClipboardList, path: '/criteria' },
   { name: 'Penilaian Dosen', icon: FilePenLine, path: '/assessments' },
-  { name: 'Judul Skripsi', icon: Book, path: '/judul' },
+  { name: 'Judul Skripsi', icon: Book, path: '/thesis-keywords' },
   { name: 'Hasil Rekomendasi', icon: FileUser, path: '/hasil' },
 ];
 

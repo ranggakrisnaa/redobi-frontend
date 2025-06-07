@@ -57,10 +57,6 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
     }
   };
 
-  const handleReset = () => {
-    form.reset();
-  };
-
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -213,7 +209,7 @@ const CreateCriteriaForm: React.FC<CreateCriteriaProps> = ({ onSuccess }) => {
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <Button type="button" variant="outline" onClick={handleReset}>
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
             <RotateCcw /> Reset
           </Button>
           <Button

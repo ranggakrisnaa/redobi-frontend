@@ -47,7 +47,10 @@ export const useAssessmentCreate = () => {
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
+    onSuccess: (newAssessment) => {
+      queryClient.invalidateQueries({
+        queryKey: ['assessment-detail', newAssessment.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
       handleSuccess(
         'Data Penilaian Dosen berhasil ditambahkan.',
@@ -104,8 +107,10 @@ export const useAssessmentUpdate = () => {
 
     onMutate: handleMutate,
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['assessment-detail'] });
+    onSuccess: (newAssessment) => {
+      queryClient.invalidateQueries({
+        queryKey: ['assessment-detail', newAssessment.id],
+      });
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
       handleSuccess(
         'Data Penilaian Dosen berhasil diperbarui.',
