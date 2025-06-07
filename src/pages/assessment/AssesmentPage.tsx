@@ -238,6 +238,7 @@ const AssessmentPage = () => {
                 pathDetail="assessments"
                 onDelete={handleSingleDelete}
                 onSort={handleSortData}
+                isDetail={false}
               />
               <div className="flex justify-end mt-4 w-full">
                 <PaginationComponent

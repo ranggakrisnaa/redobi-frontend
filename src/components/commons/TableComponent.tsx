@@ -20,6 +20,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   columns,
   pathDetail,
   onDelete,
+  isDetail = true,
 }) => {
   const navigate = useNavigate();
   const { selected, setSelected } = useGlobalStore();
@@ -56,12 +57,13 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
 
     const currentCriteria = extractText(currentItem.criteriaName);
     const nextCriteria = extractText(nextItem.criteriaName);
-    if (currentCriteria[currentIndex]) return false;
+    if (currentCriteria) return false;
+
     return currentLecturer !== nextLecturer || currentCriteria !== nextCriteria;
   };
 
   return (
-    <div className="rounded-lg mt-10 overflow-hidden border-b-4">
+    <div className="rounded-lg mt-4 overflow-hidden border-y-2">
       <div className="relative max-h-full overflow-y-auto">
         <Table className="w-full min-w-[1000px] border-0">
           <TableHeader className="bg-[#FEF7F7] text-gray-700 top-0 z-10 py-3">
@@ -93,11 +95,14 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                 className={`${shouldAddBorder(item, index) ? 'border-b' : 'border-b-0'} hover:bg-gray-50 ${!item.assessmentTable && 'border-b'}`}
               >
                 <TableCell className="text-center align-top">
-                  <Checkbox
-                    checked={selected.includes(item.id)}
-                    onCheckedChange={() => toggleSelect(item.id)}
-                    className="border-[#ffffff]  data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
-                  />
+                  {(item.showOneRowActions && index == 0) ||
+                  !item.showOneRowActions ? (
+                    <Checkbox
+                      checked={selected.includes(item.id)}
+                      onCheckedChange={() => toggleSelect(item.id)}
+                      className="border-[#ffffff]  data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
+                    />
+                  ) : null}
                 </TableCell>
                 {columns.map((column, colIndex) => (
                   <TableCell
@@ -107,16 +112,18 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     {column.cell ? column.cell(item) : item[column.accessorKey]}
                   </TableCell>
                 ))}
-                {(item.showOneRowActions && index == 0) ||
-                !item.showOneRowActions ? (
-                  <TableCell>
+                <TableCell>
+                  {(item.showOneRowActions && index == 0) ||
+                  !item.showOneRowActions ? (
                     <div className="flex justify-center items-center gap-2">
-                      <button
-                        onClick={() => navigate(`/${pathDetail}/${item.id}`)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <Eye size={18} />
-                      </button>
+                      {isDetail ? (
+                        <button
+                          onClick={() => navigate(`/${pathDetail}/${item.id}`)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <Eye size={18} />
+                        </button>
+                      ) : null}
                       <button
                         className="text-yellow-600 hover:text-yellow-800"
                         onClick={() =>
@@ -133,8 +140,8 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                         }}
                       />
                     </div>
-                  </TableCell>
-                ) : null}
+                  ) : null}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

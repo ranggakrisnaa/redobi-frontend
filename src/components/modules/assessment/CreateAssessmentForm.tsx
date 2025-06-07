@@ -89,7 +89,9 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
     setSelectedCriteria(criteriaName);
   };
 
-  const onSubmit: SubmitHandler<CreateAssessmentSchema> = (data) => {
+  const onSubmit: SubmitHandler<CreateAssessmentSchema> = (
+    data: CreateAssessmentSchema,
+  ) => {
     const totalCriteriaCount = criteriaData?.data?.length ?? 0;
 
     const filledCriteriaCount = data.scores.filter(

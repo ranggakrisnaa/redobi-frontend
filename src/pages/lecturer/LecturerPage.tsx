@@ -73,7 +73,7 @@ const LecturerPage = () => {
     setSearchParams(newParams, { replace: true });
   };
 
-  const handleSearcChange = (search: string) => {
+  const handleSearchChange = (search: string) => {
     setPage(1);
     setSearch(search);
     updateURL({ search });
@@ -152,7 +152,7 @@ const LecturerPage = () => {
             onClickCreate={() => navigate('/lecturers/create')}
             onClickDelete={handleMultipleDelete}
             onClickImport={handleImportExcel}
-            onSearchChange={handleSearcChange}
+            onSearchChange={handleSearchChange}
             onClickDownload={downloadExcelTemplateLecturer}
             titleDialog="Dosen Pembimbing"
           />

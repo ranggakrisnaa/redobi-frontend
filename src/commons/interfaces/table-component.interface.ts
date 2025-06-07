@@ -10,4 +10,5 @@ export interface TableComponentProps<T extends TableComponentItem> {
   onSort?: (sort: string) => void;
   onDelete: (id: any) => Promise<boolean>;
   pathDetail: string;
+  isDetail?: boolean;
 }
