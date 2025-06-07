@@ -41,7 +41,7 @@ const LecturerUpdatePage = () => {
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Edit Data Dosen Pembimbing">
         <BreadcrumbList>
           <BreadcrumbSeparator>

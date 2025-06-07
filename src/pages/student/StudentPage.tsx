@@ -140,7 +140,7 @@ const StudentPage = () => {
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Mahasiswa">
         <BreadcrumbList>
           <BreadcrumbSeparator>

@@ -41,7 +41,7 @@ const LecturerDetailPage = () => {
   }, [id, setLecturerId]);
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Profil Dosen Pembimbing">
         <BreadcrumbList>
           <BreadcrumbSeparator>
