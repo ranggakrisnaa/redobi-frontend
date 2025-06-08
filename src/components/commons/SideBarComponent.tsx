@@ -21,7 +21,7 @@ const menuItems = [
   { name: 'Kriteria & Sub-kriteria', icon: ClipboardList, path: '/criteria' },
   { name: 'Penilaian Dosen', icon: FilePenLine, path: '/assessments' },
   { name: 'Judul Skripsi', icon: Book, path: '/thesis-keywords' },
-  { name: 'Hasil Rekomendasi', icon: FileUser, path: '/hasil' },
+  { name: 'Hasil Rekomendasi', icon: FileUser, path: '/recomendations' },
 ];
 
 const SideBarComponent = () => {
@@ -71,5 +71,4 @@ const SideBarComponent = () => {
     </div>
   );
 };
-
 export default SideBarComponent;

@@ -18,6 +18,7 @@ import LecturerCreatePage from './pages/lecturer/LecturerCreatePage';
 import LecturerDetailPage from './pages/lecturer/LecturerDetailPage';
 import LecturerPage from './pages/lecturer/LecturerPage';
 import LecturerUpdatePage from './pages/lecturer/LecturerUpdatePage';
+import RecommendationPage from './pages/recomendation/RecomendationPage';
 import StudentPage from './pages/student/StudentPage';
 import StudentUpdatePage from './pages/student/StudentUpdatePage';
 import ThesisKeywordCreatePage from './pages/thesis-keyword/ThesisKeywordCreatePage';
@@ -68,6 +69,7 @@ const AppRoutes = () => {
             path="/thesis-keywords/:id/update"
             element={<ThesisKeywordUpdatePage />}
           />
+          <Route path="/recomendations" element={<RecommendationPage />} />
         </Route>
       </Routes>
     </Router>

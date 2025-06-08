@@ -42,17 +42,17 @@ export const lecturerColumns: TableComponentColumnDef[] = [
         <span className="whitespace-pre-line">{item.name}</span>
       </div>
     ),
-    width: 'min-w-[220px]',
+    width: 'min-w-[320px]',
   },
   {
     accessorKey: 'nidn',
     header: () => <div className="border-l pl-4 border-gray-300">NIDN</div>,
-    width: 'w-[120px]',
+    width: 'w-[300px]',
   },
   {
     accessorKey: 'prodi',
     header: () => <div className="border-l pl-4 border-gray-300">Prodi</div>,
-    width: 'w-[100px]',
+    width: 'w-[300px]',
   },
   {
     accessorKey: 'tipePembimbing',

@@ -16,7 +16,12 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
       </aside>
 
       <main className="overflow-y-auto min-h-full mb-5 relative overflow-x-hidden px-6">
-        <NavBreadCumbComponent>{childrenArray[0]}</NavBreadCumbComponent>
+        <NavBreadCumbComponent>
+          {childrenArray[0]}
+          {location.pathname === '/' && (
+            <span className="font-medium text-black">Halaman Dashboard</span>
+          )}
+        </NavBreadCumbComponent>
         <div className="w-full border-t left-0 absolute"></div>
         <h1 className="text-2xl font-bold w-full mt-4">{pageTitle}</h1>
         {childrenArray[1]}

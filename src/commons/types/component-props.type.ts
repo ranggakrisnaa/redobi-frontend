@@ -6,7 +6,7 @@ export type AuthContainerProps = {
 
 export type DashboardContainerProps = {
   children: ReactNode;
-  pageTitle: string;
+  pageTitle: string | ReactNode;
 };
 
 export type AlertComponentProps = {
