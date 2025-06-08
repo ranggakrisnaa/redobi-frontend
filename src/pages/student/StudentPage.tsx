@@ -38,7 +38,7 @@ const StudentPage = () => {
     setSortData,
   } = useStudentStore();
   const { data, isLoading, isError, error } = useStudentsPagination();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,6 +47,10 @@ const StudentPage = () => {
   const { mutateAsync: importExcelMutate } = useStudentImportExcel();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   useEffect(() => {
     setFilters({
@@ -68,6 +72,7 @@ const StudentPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 

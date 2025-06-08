@@ -23,7 +23,7 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { useThesisKeywordStore } from '@/store/thesisKeywordStore';
 import { Slash } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const ThesisKeywordPage = () => {
@@ -39,12 +39,16 @@ const ThesisKeywordPage = () => {
   const { data, isLoading, isError, error } = useThesisKeywordPagination();
   const navigate = useNavigate();
   const location = useLocation();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const { mutateAsync: deleteMutate } = useThesisKeywordDelete();
   const currentPath = location.pathname;
   const [searchParams, setSearchParams] = useSearchParams();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedThesisKeywordData =
     data?.data?.map((item: IThesisKeyword) => {
@@ -90,6 +94,7 @@ const ThesisKeywordPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 

@@ -26,6 +26,7 @@ import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
+import { useEffect } from 'react';
 import {
   FormProvider,
   SubmitHandler,
@@ -41,6 +42,10 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
   const { selectedCriteria, setSelectedCriteria, resetSelectedCriteria } =
     useAssessmentStore();
   const { loading } = useGlobalStore();
+
+  useEffect(() => {
+    setSelectedCriteria(['']);
+  }, [setSelectedCriteria]);
 
   const form = useForm<CreateAssessmentSchema>({
     resolver: zodResolver(createAssessmentSchema),

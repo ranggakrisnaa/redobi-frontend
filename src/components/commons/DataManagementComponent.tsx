@@ -1,4 +1,5 @@
 import { FormControl, FormField } from '@/components/ui/form';
+import { useGlobalStore } from '@/store/globalStore';
 import { FileDown, Plus, Search, X } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -27,6 +28,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   titleDialog,
   excludeImportExport,
 }) => {
+  const { setIsSearch } = useGlobalStore();
   const form = useForm({
     defaultValues: {
       search: '',
@@ -60,7 +62,10 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
                   {field.value && (
                     <button
                       type="button"
-                      onClick={() => form.setValue('search', '')}
+                      onClick={() => {
+                        form.setValue('search', '');
+                        setIsSearch(null);
+                      }}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       <X />

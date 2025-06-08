@@ -19,7 +19,7 @@ import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useCriteriaStore } from '@/store/criteriaStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const CriteriaPage = () => {
@@ -38,9 +38,13 @@ const CriteriaPage = () => {
   } = useCriteriaStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { mutateAsync: deleteMutate } = useCriteriaDelete();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData =
     data?.data?.map((criteria) => {
@@ -90,6 +94,7 @@ const CriteriaPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 

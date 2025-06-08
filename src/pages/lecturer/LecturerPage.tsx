@@ -24,7 +24,7 @@ import { downloadExcelTemplateLecturer } from '@/services/lecturerService';
 import { useGlobalStore } from '@/store/globalStore';
 import { useLecturerStore } from '@/store/lecturerStore';
 import { Slash } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const LecturerPage = () => {
@@ -41,12 +41,16 @@ const LecturerPage = () => {
   const { mutateAsync: importExcelMutate } = useLecturerImportExcel();
   const { mutateAsync: deleteMutate } = useLecturerDelete();
   const location = useLocation();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData =
     data?.data.map((lecturer: ILecturer) => ({
@@ -70,6 +74,7 @@ const LecturerPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 

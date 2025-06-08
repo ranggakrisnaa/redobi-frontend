@@ -36,10 +36,14 @@ const AssessmentPage = () => {
     setSortData,
   } = useAssessmentStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const { mutateAsync: deleteMutate } = useAssessmentDelete();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData = useMemo(() => {
     if (!data?.data) return [];
@@ -162,6 +166,7 @@ const AssessmentPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 

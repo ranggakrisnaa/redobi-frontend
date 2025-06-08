@@ -42,12 +42,12 @@ export const lecturerColumns: TableComponentColumnDef[] = [
         <span className="whitespace-pre-line">{item.name}</span>
       </div>
     ),
-    width: 'min-w-[320px]',
+    width: 'min-w-[280px]',
   },
   {
     accessorKey: 'nidn',
     header: () => <div className="border-l pl-4 border-gray-300">NIDN</div>,
-    width: 'w-[300px]',
+    width: 'w-[180px]',
   },
   {
     accessorKey: 'prodi',
@@ -59,7 +59,7 @@ export const lecturerColumns: TableComponentColumnDef[] = [
     header: () => (
       <div className="border-l pl-4 border-gray-300">Tipe Pembimbing</div>
     ),
-    width: 'w-[180px]',
+    width: 'w-[280px]',
   },
   {
     accessorKey: 'jumlahBimbingan',
@@ -68,6 +68,6 @@ export const lecturerColumns: TableComponentColumnDef[] = [
         Jumlah Bimbingan
       </div>
     ),
-    width: 'w-[180px]',
+    width: 'w-[280px]',
   },
 ];
