@@ -11,4 +11,5 @@ export interface TableComponentProps<T extends TableComponentItem> {
   onDelete: (id: any) => Promise<boolean>;
   pathDetail: string;
   isDetail?: boolean;
+  isMatriks?: boolean;
 }

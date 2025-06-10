@@ -1,3 +1,4 @@
+import { IAssessment } from '@/commons/interface-model/assessment-entity.interface';
 import { ISubCriteria } from '@/commons/interface-model/sub-criteria-entity.entity';
 import {
   createAssessmentSchema,
@@ -20,13 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAssessmentPagination } from '@/hooks/useAssessment';
 import { useCriteriaPagination } from '@/hooks/useCriteria';
 import { useLecturerPagination } from '@/hooks/useLecturer';
 import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   FormProvider,
   SubmitHandler,
@@ -39,13 +41,15 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
 }) => {
   const { data: lecturerData } = useLecturerPagination();
   const { data: criteriaData } = useCriteriaPagination();
-  const { selectedCriteria, setSelectedCriteria, resetSelectedCriteria } =
-    useAssessmentStore();
+  const {
+    selectedCriteria,
+    setSelectedCriteria,
+    resetSelectedCriteria,
+    setLecturerId,
+    lecturerId,
+  } = useAssessmentStore();
   const { loading } = useGlobalStore();
-
-  useEffect(() => {
-    setSelectedCriteria(['']);
-  }, [setSelectedCriteria]);
+  const { data: paginationAssessments } = useAssessmentPagination();
 
   const form = useForm<CreateAssessmentSchema>({
     resolver: zodResolver(createAssessmentSchema),
@@ -66,6 +70,29 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
     control: form.control,
     name: 'scores',
   });
+
+  const fieldRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  const scrollToField = (index: number) => {
+    const targetRef = fieldRefs.current[index];
+    if (targetRef) {
+      targetRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      resetSelectedCriteria();
+    };
+  }, [resetSelectedCriteria]);
+
+  useEffect(() => {
+    if (paginationAssessments) {
+      paginationAssessments.data.map((assessment: IAssessment) =>
+        setLecturerId(assessment.lecturerId),
+      );
+    }
+  }, [setLecturerId, paginationAssessments]);
 
   const handleCriteriaChange = (criteriaName: string, index: number) => {
     if (!criteriaData?.data) return;
@@ -92,13 +119,12 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
     form.setValue(`scores.${index}.subScores`, subScores);
 
     setSelectedCriteria(criteriaName);
+
+    setTimeout(() => scrollToField(index), 100);
   };
 
-  const onSubmit: SubmitHandler<CreateAssessmentSchema> = (
-    data: CreateAssessmentSchema,
-  ) => {
+  const onSubmit: SubmitHandler<CreateAssessmentSchema> = (data) => {
     const totalCriteriaCount = criteriaData?.data?.length ?? 0;
-
     const filledCriteriaCount = data.scores.filter(
       (score) => score.criteriaName && score.criteriaName.trim() !== '',
     ).length;
@@ -147,11 +173,15 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
                         <SelectValue placeholder="Pilih Nama Dosen" />
                       </SelectTrigger>
                       <SelectContent>
-                        {lecturerData?.data?.map((lecturer) => (
-                          <SelectItem value={lecturer.id} key={lecturer.id}>
-                            {lecturer.fullName}
-                          </SelectItem>
-                        ))}
+                        {lecturerData?.data
+                          ?.filter(
+                            (lecturer) => !lecturerId?.includes(lecturer.id),
+                          )
+                          .map((lecturer) => (
+                            <SelectItem value={lecturer.id} key={lecturer.id}>
+                              {lecturer.fullName}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -161,9 +191,11 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
             />
           </div>
         </div>
+
         {fields.map((field, index) => (
           <div
             key={field.id}
+            ref={(el) => (fieldRefs.current[index] = el)}
             className="w-full space-y-3 border p-3 rounded-md"
           >
             <div className="flex items-center gap-2">
@@ -177,51 +209,47 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
                     />
                   </div>
                 ) : (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name={`scores.${index}.criteriaName`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Pilih Kriteria</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              handleCriteriaChange(value, index);
-                            }}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Pilih Kriteria" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {criteriaData?.data
-                                .filter(
-                                  (data) =>
-                                    !selectedCriteria.some(
-                                      (selected) => selected === data.name,
-                                    ),
-                                )
-                                .map((criteria) => (
-                                  <SelectItem
-                                    key={criteria.id}
-                                    value={criteria.name}
-                                  >
-                                    {criteria.name}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
+                  <FormField
+                    control={form.control}
+                    name={`scores.${index}.criteriaName`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pilih Kriteria</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleCriteriaChange(value, index);
+                          }}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih Kriteria" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {criteriaData?.data
+                              .filter(
+                                (data) => !selectedCriteria.includes(data.name),
+                              )
+                              .map((criteria) => (
+                                <SelectItem
+                                  key={criteria.id}
+                                  value={criteria.name}
+                                >
+                                  {criteria.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
               </div>
             </div>
+
             {form.watch('scores')[index]?.subCriteria?.map((sub, subIndex) => (
               <div key={sub.id} className="flex items-center gap-4">
                 <div className="w-1/2 space-y-2">
@@ -266,15 +294,17 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
             {form.formState.errors.scores.message}
           </p>
         )}
+
         <Button
           type="button"
-          onClick={() =>
+          onClick={() => {
             append({
               criteriaName: '',
               subCriteria: [],
               subScores: [],
-            })
-          }
+            });
+            setTimeout(() => scrollToField(fields.length), 100);
+          }}
           disabled={
             isAnyEmptyCriteria ||
             fields.length >= (criteriaData?.data.length ?? 0)

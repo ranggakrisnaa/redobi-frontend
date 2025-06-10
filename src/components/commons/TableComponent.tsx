@@ -2,7 +2,15 @@ import { TableComponentProps } from '@/commons/interfaces/table-component.interf
 import { TableComponentItem } from '@/commons/types/table-component.type.ts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useGlobalStore } from '@/store/globalStore.ts';
-import { Database, Eye, PencilLine, Plus, SearchX } from 'lucide-react';
+import {
+  Database,
+  Eye,
+  PencilLine,
+  Plus,
+  RefreshCcwDot,
+  Repeat2,
+  SearchX,
+} from 'lucide-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,6 +30,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   pathDetail,
   onDelete,
   isDetail = true,
+  isMatriks,
 }) => {
   const navigate = useNavigate();
   const { selected, setSelected, isSearch } = useGlobalStore();
@@ -58,12 +67,11 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
 
     const currentCriteria = extractText(currentItem.criteriaName);
     const nextCriteria = extractText(nextItem.criteriaName);
+
     if (currentCriteria) return false;
 
-    return currentLecturer !== nextLecturer || currentCriteria !== nextCriteria;
+    return currentLecturer !== nextLecturer && currentCriteria !== nextCriteria;
   };
-
-  console.log(isSearch);
 
   if (isSearch !== null && data.length === 0) {
     return (
@@ -87,9 +95,11 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     {column.header()}
                   </TableHead>
                 ))}
-                <TableHead className="w-32 text-center border-gray-300 text-black">
-                  Aksi
-                </TableHead>
+                {!isMatriks ? (
+                  <TableHead className="w-32 text-center border-gray-300 text-black">
+                    Aksi
+                  </TableHead>
+                ) : null}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -133,21 +143,37 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     {column.header()}
                   </TableHead>
                 ))}
-                <TableHead className="w-32 text-center border-gray-300 text-black">
-                  Aksi
-                </TableHead>
+                {!isMatriks ? (
+                  <TableHead className="w-32 text-center border-gray-300 text-black">
+                    Aksi
+                  </TableHead>
+                ) : null}
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
                 <TableCell colSpan={columns.length + 2} className="h-64">
                   <EmptyState
-                    icon={Database}
-                    title="Belum Ada Data"
-                    description="Data belum tersedia. Mulai dengan menambahkan data pertama Anda."
-                    actionLabel="Tambah Data"
-                    onAction={() => navigate(`/${pathDetail}/create`)}
-                    actionIcon={Plus}
+                    icon={isMatriks ? Repeat2 : Database}
+                    title={
+                      isMatriks
+                        ? 'Data Matriks Belum di Generate'
+                        : 'Belum Ada Data'
+                    }
+                    description={
+                      isMatriks
+                        ? 'Generate data matriks terlebih dahulu untuk melihat hasil normalisasi dan ranking matriks.'
+                        : 'Data belum tersedia. Mulai dengan menambahkan data pertama Anda.'
+                    }
+                    actionLabel={
+                      isMatriks ? 'Generate Matriks Data' : 'Tambah Data'
+                    }
+                    onAction={
+                      !isMatriks
+                        ? () => navigate(`/${pathDetail}/create`)
+                        : () => navigate(`/${pathDetail}/create`)
+                    }
+                    actionIcon={isMatriks ? RefreshCcwDot : Plus}
                     variant="minimal"
                     size="medium"
                     className="py-8"
@@ -182,9 +208,11 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                   {column.header()}
                 </TableHead>
               ))}
-              <TableHead className="w-32 text-center border-gray-300 text-black">
-                Aksi
-              </TableHead>
+              {!isMatriks ? (
+                <TableHead className="w-32 text-center border-gray-300 text-black">
+                  Aksi
+                </TableHead>
+              ) : null}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -206,13 +234,17 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                 {columns.map((column, colIndex) => (
                   <TableCell
                     key={colIndex}
-                    className="px-6 align-top text-left"
+                    className={`px-6 align-top text-left ${
+                      colIndex >= 1 && colIndex <= 3 && item.isNewCriteria
+                        ? 'border-b'
+                        : ''
+                    }`}
                   >
                     {column.cell ? column.cell(item) : item[column.accessorKey]}
                   </TableCell>
                 ))}
                 <TableCell>
-                  {(item.showOneRowActions && index == 0) ||
+                  {(item.showOneRowActions && item.isNewLecturer) ||
                   !item.showOneRowActions ? (
                     <div className="flex justify-center items-center gap-2">
                       {isDetail ? (

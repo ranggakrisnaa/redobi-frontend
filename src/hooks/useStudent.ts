@@ -1,4 +1,4 @@
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
+import { IStudent } from '@/commons/interface-model/student-entity.interface';
 import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
 import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
 import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';

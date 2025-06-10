@@ -166,7 +166,7 @@ const LecturerDetailPage = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data?.reccomendation?.map((mhs, idx) => (
+                      {data?.recommendation?.map((mhs, idx) => (
                         <TableRow key={mhs.student?.id}>
                           <TableCell className="text-center">
                             {idx + 1}.

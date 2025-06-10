@@ -1,13 +1,29 @@
+import { rankingColumn } from '@/commons/constants/recommendation/table-column-data.constant';
+import DataManagementComponent from '@/components/commons/DataManagementComponent';
+import TableComponent from '@/components/commons/TableComponent';
+
 const RankingTab = () => {
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-2 text-gray-800">
-        Ranking Matriks
-      </h3>
-      <p className="text-gray-600">
-        Konten untuk hasil ranking matriks akan ditampilkan di sini. Proses ini
-        menentukan urutan prioritas dari setiap alternatif.
-      </p>
+      <DataManagementComponent
+        onClickCreate={() => {}}
+        excludeImportExport={true}
+        onClickDelete={async () => {
+          return true;
+        }}
+        onSearchChange={() => {}}
+        titleDialog="Nomalisasi Matriks"
+        isMatriks={true}
+      />
+      <TableComponent
+        data={[]}
+        columns={rankingColumn}
+        onDelete={async () => {
+          return true;
+        }}
+        isMatriks={true}
+        pathDetail=""
+      />
     </div>
   );
 };

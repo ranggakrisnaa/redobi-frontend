@@ -36,9 +36,7 @@ const CustomTabs = ({ tabs, value, onValueChange }: CustomTabsProps) => {
         <div className="mt-6">
           {tabs.map((tab) => (
             <TabsContent key={tab.value} value={tab.value} className="mt-6">
-              <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
-                {tab.component}
-              </div>
+              <div>{tab.component}</div>
             </TabsContent>
           ))}
         </div>

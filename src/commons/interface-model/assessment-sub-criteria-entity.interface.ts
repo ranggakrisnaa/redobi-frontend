@@ -6,5 +6,5 @@ export interface IAssessmentSubCriteria {
   subCriteriaId: number;
   score: number;
   assessmentId: UUID;
-  subCriteria: ISubCriteria;
+  subCriteria?: ISubCriteria;
 }

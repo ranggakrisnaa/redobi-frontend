@@ -1,6 +1,6 @@
 import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
 import { studentColumns } from '@/commons/constants/student/table-column-data.constant.tsx';
-import { IStudent } from '@/commons/interface-model/student.interface';
+import { IStudent } from '@/commons/interface-model/student-entity.interface';
 import { StudentFilterParams } from '@/commons/types/student/student-filter-data.type.ts';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
