@@ -1,29 +1,90 @@
 import { rankingColumn } from '@/commons/constants/recommendation/table-column-data.constant';
+import { IRankingMatrices } from '@/commons/interface-model/ranking-matrices-entity.interface';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
+import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
+import {
+  useCreateNormalization,
+  useCreateRankingMatrices,
+  useDeleteRankingMatrices,
+  usePaginationRankingMatrices,
+} from '@/hooks/useRecommendation';
+import { useGlobalStore } from '@/store/globalStore';
+import { useRecommendationStore } from '@/store/recommendationStore';
+import { useEffect } from 'react';
 
 const RankingTab = () => {
+  const { mutate: normalizationMutate } = useCreateNormalization();
+  const { mutate: rankingMutate } = useCreateRankingMatrices();
+  const { selected } = useGlobalStore();
+  const { data: rankingsData } = usePaginationRankingMatrices();
+  const { mutateAsync: deleteMutate } = useDeleteRankingMatrices();
+  const { currentPage, pageSize, setPage, setPageSize } =
+    useRecommendationStore();
+
+  const formattedData =
+    rankingsData?.data
+      .map((ranking: IRankingMatrices) => ({
+        id: ranking.id,
+        lecturerName: ranking.lecturer?.fullName,
+        finalScore: ranking.finalScore,
+        rank: ranking.rank,
+      }))
+      .sort((a, b) => a.rank - b.rank) || [];
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const createParams = params.get('create');
+
+    if (createParams) {
+      normalizationMutate();
+      rankingMutate();
+
+      params.delete('create');
+      const newUrl =
+        window.location.pathname +
+        (params.toString() ? '?' + params.toString() : '');
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [normalizationMutate, rankingMutate]);
+
+  const handleCreateRanking = () => {
+    rankingMutate();
+  };
+
+  const handleDeleteRanking = async () => {
+    try {
+      await deleteMutate(selected as unknown as string[]);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
   return (
     <div>
       <DataManagementComponent
-        onClickCreate={() => {}}
+        onClickCreate={handleCreateRanking}
         excludeImportExport={true}
-        onClickDelete={async () => {
-          return true;
-        }}
+        onClickDelete={handleDeleteRanking}
         onSearchChange={() => {}}
         titleDialog="Nomalisasi Matriks"
         isMatriks={true}
       />
       <TableComponent
-        data={[]}
+        data={formattedData}
         columns={rankingColumn}
-        onDelete={async () => {
-          return true;
-        }}
         isMatriks={true}
-        pathDetail=""
       />
+      <div className="flex justify-end mt-4 w-full">
+        <PaginationComponent
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={rankingsData?.pagination.totalRecords || 0}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+        />
+      </div>
     </div>
   );
 };

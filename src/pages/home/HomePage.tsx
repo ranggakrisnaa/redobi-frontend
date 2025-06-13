@@ -4,6 +4,7 @@ import DashboardContainer from '@/components/containers/DashboardContainer';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { useGetStatistics } from '@/hooks/useStatistics';
 import {
   Award,
   BarChart3,
@@ -17,30 +18,35 @@ import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const { data: statistics } = useGetStatistics();
   const [progress, setProgress] = useState<{
     guidance: number;
-    rpl: number;
-    sc: number;
-    mm: number;
   }>({
-    rpl: 0,
     guidance: 0,
-    sc: 0,
-    mm: 0,
   });
+  const [majorCount, setMajorCount] = useState<number[]>([0]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setProgress((prev) => ({
         ...prev,
-        guidance: 64,
-        rpl: 50,
-        sc: 30,
-        mm: 70,
+        guidance: statistics?.data.guidanceProgress.percentageGuidance ?? 0,
       }));
     }, 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [statistics?.data.guidanceProgress]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (statistics?.data.getMajorTotal) {
+        const counts = statistics.data.getMajorTotal.map(
+          (major) => major.majorCount,
+        );
+        setMajorCount(counts);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [statistics?.data.getMajorTotal]);
 
   return (
     <div className="w-full h-full">
@@ -83,7 +89,7 @@ const HomePage = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-green-50 p-4 rounded-lg text-center">
                       <div className="text-3xl font-bold text-green-600 mb-1">
-                        54
+                        {statistics?.data.guidanceProgress.countStudentGuidance}
                       </div>
                       <p className="text-sm text-gray-600">
                         Mahasiswa Sudah Mendapat Dosen Pembimbing
@@ -91,7 +97,10 @@ const HomePage = () => {
                     </div>
                     <div className="bg-red-50 p-4 rounded-lg text-center">
                       <div className="text-3xl font-bold text-red-600 mb-1">
-                        36
+                        {
+                          statistics?.data.guidanceProgress
+                            .countStudentUnguidance
+                        }
                       </div>
                       <p className="text-sm text-gray-600">
                         Mahasiswa Belum Mendapat Dosen Pembimbing
@@ -109,7 +118,9 @@ const HomePage = () => {
                     <p className="text-xs text-gray-600 mb-1">
                       Jumlah Mahasiswa
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">234</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {statistics?.data.countTotalData.countStudentTotal}
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -117,7 +128,10 @@ const HomePage = () => {
                   <CardContent className="p-4 text-center">
                     <BookOpen className="w-6 h-6 text-green-600 mx-auto mb-2" />
                     <p className="text-xs text-gray-600 mb-1">Jumlah Dosen</p>
-                    <p className="text-2xl font-bold text-gray-900">12</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {' '}
+                      {statistics?.data.countTotalData.countLecturerTotal}
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -127,7 +141,9 @@ const HomePage = () => {
                     <p className="text-xs text-gray-600 mb-1">
                       Jumlah Kriteria
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">6</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {statistics?.data.countTotalData.countCriteriaTotal}
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -137,7 +153,10 @@ const HomePage = () => {
                     <p className="text-xs text-gray-600 mb-1">
                       Jumlah Sub-Kriteria
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">21</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {' '}
+                      {statistics?.data.countTotalData.countSubCriteriaTotal}
+                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -155,33 +174,41 @@ const HomePage = () => {
                 className="w-full rounded-lg border mt-3"
               />
 
-              {/* Progress Indicators */}
               <div className="space-y-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                        <BarChart3 className="w-8 h-8 text-teal-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-base text-gray-600 mb-2">
-                          Rekayasa Perangkat Lunak
-                        </p>
-                        <div className="flex items-center gap-3">
-                          <Progress
-                            value={progress.rpl}
-                            className="flex-1 h-3 [&>div]:bg-teal-600"
-                          />
-                          <span className="text-base font-semibold text-teal-600">
-                            {progress.rpl}%
-                          </span>
+                {/* Progress Indicators */}
+                {statistics?.data.getMajorTotal.map((major, idx) => (
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                          {major.major == 'Rekayasa Perangkat Lunak' ? (
+                            <BarChart3 className="w-8 h-8 text-teal-600" />
+                          ) : major.major == 'Multimedia' ? (
+                            <Monitor className="w-8 h-8 text-teal-600" />
+                          ) : (
+                            <PieChart className="w-8 h-8 text-teal-600" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-base text-gray-600 mb-2">
+                            {major.major}
+                          </p>
+                          <div className="flex items-center gap-3">
+                            <Progress
+                              value={majorCount[idx]}
+                              className="flex-1 h-3 [&>div]:bg-teal-600"
+                            />
+                            <span className="text-base font-semibold text-teal-600">
+                              {major.majorCount}%
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ))}
 
-                <Card>
+                {/* <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
@@ -227,7 +254,7 @@ const HomePage = () => {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
               </div>
             </div>
           </div>

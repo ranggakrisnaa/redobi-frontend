@@ -33,6 +33,7 @@ export const UseBaseMutationHandler = () => {
   };
 
   return {
+    toast,
     navigate,
     queryClient,
     handleMutate,

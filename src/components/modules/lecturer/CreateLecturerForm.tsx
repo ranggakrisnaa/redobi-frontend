@@ -71,6 +71,7 @@ const CreateLecturerForm: React.FC<CreateLecturerProps> = ({ onSuccess }) => {
       data = {
         ...data,
         file: photoFile,
+        tipePembimbing: undefined,
       };
       setPhoto(undefined);
       if (inputRef.current) {

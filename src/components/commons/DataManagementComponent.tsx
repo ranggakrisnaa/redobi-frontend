@@ -18,6 +18,8 @@ type DataManagementComponentProps = {
   titleDialog: string;
   excludeImportExport?: boolean;
   isMatriks?: boolean;
+  isRecommendation?: boolean;
+  onCreatePDF?: () => void;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
@@ -29,6 +31,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   titleDialog,
   excludeImportExport,
   isMatriks,
+  isRecommendation,
 }) => {
   const { setIsSearch } = useGlobalStore();
   const form = useForm({
@@ -87,8 +90,19 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
           </Button>
         )}
         {isMatriks && (
-          <Button className="bg-[#166534] hover:bg-[#16A34A] transition-all duration-200">
+          <Button
+            className="bg-[#166534] hover:bg-[#16A34A] transition-all duration-200"
+            onClick={onClickCreate}
+          >
             <RefreshCcwDot className="w-4 h-4 mr-1" /> Perbarui Data
+          </Button>
+        )}
+        {isRecommendation && (
+          <Button
+            className="bg-success-500 hover:bg-[#13B14E] transition-all duration-200"
+            onClick={onClickDownload}
+          >
+            <FileDown className="w-4 h-4 mr-1" /> Download PDF
           </Button>
         )}
         {!excludeImportExport && (

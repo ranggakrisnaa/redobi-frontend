@@ -69,7 +69,7 @@ const AppRoutes = () => {
             path="/thesis-keywords/:id/update"
             element={<ThesisKeywordUpdatePage />}
           />
-          <Route path="/recomendations" element={<RecommendationPage />} />
+          <Route path="/recommendations" element={<RecommendationPage />} />
         </Route>
       </Routes>
     </Router>

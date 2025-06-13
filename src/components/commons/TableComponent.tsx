@@ -171,7 +171,8 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     onAction={
                       !isMatriks
                         ? () => navigate(`/${pathDetail}/create`)
-                        : () => navigate(`/${pathDetail}/create`)
+                        : () =>
+                            (window.location.href = `/recommendations?create=true`)
                     }
                     actionIcon={isMatriks ? RefreshCcwDot : Plus}
                     variant="minimal"
@@ -219,10 +220,10 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
             {data.map((item: any, index: number) => (
               <TableRow
                 key={item.id}
-                className={`${shouldAddBorder(item, index) ? 'border-b' : 'border-b-0'} hover:bg-gray-50 ${!item.assessmentTable && 'border-b'}`}
+                className={`${shouldAddBorder(item, index) ? 'border-b' : 'border-b-0'} hover:bg-gray-50 ${!item.assessmentTable && 'border-b'} ${item.isNewLecturer && 'border-t'}`}
               >
                 <TableCell className="text-center align-top">
-                  {(item.showOneRowActions && index == 0) ||
+                  {(item.showOneRowActions && item.isNewLecturer == true) ||
                   !item.showOneRowActions ? (
                     <Checkbox
                       checked={selected.includes(item.id)}
@@ -236,43 +237,49 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                     key={colIndex}
                     className={`px-6 align-top text-left ${
                       colIndex >= 1 && colIndex <= 3 && item.isNewCriteria
-                        ? 'border-b'
+                        ? 'border-t'
                         : ''
                     }`}
                   >
                     {column.cell ? column.cell(item) : item[column.accessorKey]}
                   </TableCell>
                 ))}
-                <TableCell>
-                  {(item.showOneRowActions && item.isNewLecturer) ||
-                  !item.showOneRowActions ? (
-                    <div className="flex justify-center items-center gap-2">
-                      {isDetail ? (
+                {!isMatriks && (
+                  <TableCell>
+                    {(item.showOneRowActions && item.isNewLecturer) ||
+                    (!item.showOneRowActions && !isMatriks) ? (
+                      <div className="flex justify-center items-center gap-2">
+                        {isDetail ? (
+                          <button
+                            onClick={() =>
+                              navigate(`/${pathDetail}/${item.id}`)
+                            }
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        ) : null}
                         <button
-                          onClick={() => navigate(`/${pathDetail}/${item.id}`)}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-yellow-600 hover:text-yellow-800"
+                          onClick={() =>
+                            navigate(`/${pathDetail}/${item.id}/update`)
+                          }
                         >
-                          <Eye size={18} />
+                          <PencilLine size={18} />
                         </button>
-                      ) : null}
-                      <button
-                        className="text-yellow-600 hover:text-yellow-800"
-                        onClick={() =>
-                          navigate(`/${pathDetail}/${item.id}/update`)
-                        }
-                      >
-                        <PencilLine size={18} />
-                      </button>
-                      <DeleteConfirmationComponent
-                        isSingle={true}
-                        onConfirm={async () => {
-                          await onDelete(item.id);
-                          return true;
-                        }}
-                      />
-                    </div>
-                  ) : null}
-                </TableCell>
+                        <DeleteConfirmationComponent
+                          isSingle={true}
+                          onConfirm={async () => {
+                            if (onDelete) {
+                              await onDelete(item.id);
+                            }
+                            return true;
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

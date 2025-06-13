@@ -7,9 +7,10 @@ import {
   authResendOTPVerify,
   authSignIn,
   authVerifySignIn,
+  getProfile,
 } from '@/services/authService.ts';
 import { useAuthStore } from '@/store/authStore.ts';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const useAuthSignIn = () => {
@@ -105,5 +106,15 @@ export const useAuthLogout = () => {
     },
 
     onSettled: handleSettled,
+  });
+};
+
+export const useProfileUser = () => {
+  return useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const response = await getProfile();
+      return response;
+    },
   });
 };

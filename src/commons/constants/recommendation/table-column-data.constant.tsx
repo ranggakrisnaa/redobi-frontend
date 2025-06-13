@@ -2,45 +2,45 @@ import { TableComponentColumnDef } from '@/commons/types/table-component.type';
 
 export const normalizationColumn: TableComponentColumnDef[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'lecturerName',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nama Dosen</div>
     ),
-    width: '220px',
+    width: '250px',
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'criteriaName',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nama Kriteria</div>
     ),
     width: '200px',
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'normalizedValue',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nilai Normalisasi</div>
     ),
-    width: '220px',
+    width: '200px',
   },
 ];
 
 export const rankingColumn: TableComponentColumnDef[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'lecturerName',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nama Dosen</div>
     ),
     width: '220px',
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'finalScore',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nilai Final</div>
     ),
     width: '220px',
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'rank',
     header: () => (
       <div className="border-l px-4 border-gray-300">Ranking Final</div>
     ),
@@ -49,31 +49,31 @@ export const rankingColumn: TableComponentColumnDef[] = [
 ];
 export const recommendationColumn: TableComponentColumnDef[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'studentName',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nama Mahasiswa</div>
     ),
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'lecturerFirst',
     header: () => (
       <div className="border-l px-4 border-gray-300">Dosen Pembimbing 1</div>
     ),
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'valueFirst',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nilai Rekomendasi</div>
     ),
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'lecturerSecond',
     header: () => (
       <div className="border-l px-4 border-gray-300">Dosen Pembimbing 2</div>
     ),
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'valueSecond',
     header: () => (
       <div className="border-l px-4 border-gray-300">Nilai Rekomendasi</div>
     ),

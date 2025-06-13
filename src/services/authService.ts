@@ -1,10 +1,12 @@
 import apiService from '@/api/apiService.ts';
+import { IUser } from '@/commons/interface-model/user-entity.interface';
 import { SignInSchema } from '@/commons/schema/sign-in.schema.ts';
 import { ResendOtpResponse } from '@/commons/types/auth/resend-otp-res.type.ts';
 import { SignInResponse } from '@/commons/types/auth/sign-in-res.type.ts';
 import { UserLoginData } from '@/commons/types/auth/user-login-data.type.ts';
 import { VerifySignInParams } from '@/commons/types/auth/verify-sign-in-params.type.ts';
 import { VerifySignInResponse } from '@/commons/types/auth/verify-sign-in-res.type.ts';
+import { ResponseData } from '@/utils/responseData';
 
 export const authSignIn = async (data: SignInSchema) => {
   const response = await apiService.post<SignInResponse>('/auth/login', data);
@@ -35,5 +37,10 @@ export const authResendOTPVerify = async (user: UserLoginData) => {
 
 export const authLogout = async () => {
   const response = await apiService.post('/auth/logout');
+  return response.data;
+};
+
+export const getProfile = async () => {
+  const response = await apiService.get<ResponseData<IUser>>('/users');
   return response.data;
 };

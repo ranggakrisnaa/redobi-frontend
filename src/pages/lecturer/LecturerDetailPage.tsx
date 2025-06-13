@@ -1,3 +1,4 @@
+import { TipePembimbingEnum } from '@/commons/enums/tipe-pembimbing.enum';
 import LoadingComponent from '@/components/commons/LoadingComponent';
 import DashboardContainer from '@/components/containers/DashboardContainer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -18,6 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useLecturerDetail } from '@/hooks/useLecturer';
+import { usePaginationRecommendations } from '@/hooks/useRecommendation';
 import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useLecturerStore } from '@/store/lecturerStore';
 import { FilePenLine, Slash } from 'lucide-react';
@@ -31,14 +33,49 @@ const LecturerDetailPage = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const { data, isLoading } = useLecturerDetail();
+  const { data: listRecommendations } = usePaginationRecommendations();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+  console.log(data?.recommendation);
+
+  const groupedStudents = listRecommendations?.data.reduce(
+    (acc, curr) => {
+      const studentId = curr.student?.id;
+      if (!studentId) return acc;
+
+      if (!acc[studentId]) {
+        acc[studentId] = {
+          student: curr.student,
+          pembimbing1: null,
+          pembimbing2: null,
+        };
+      }
+
+      if (curr.position === TipePembimbingEnum.PEMBIMBING_SATU) {
+        acc[studentId].pembimbing1 = curr.lecturer?.fullName ?? null;
+      } else if (curr.position === TipePembimbingEnum.PEMBIMBING_DUA) {
+        acc[studentId].pembimbing2 = curr.lecturer?.fullName ?? null;
+      }
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        student: (typeof listRecommendations.data)[number]['student'];
+        pembimbing1: string | null;
+        pembimbing2: string | null;
+      }
+    >,
+  );
+  console.log(groupedStudents);
 
   useEffect(() => {
     if (id) {
       setLecturerId(id);
     }
   }, [id, setLecturerId]);
+  console.log(data?.recommendation);
 
   return (
     <div ref={detailRef}>
@@ -142,7 +179,7 @@ const LecturerDetailPage = () => {
                             Nama Mahasiswa
                           </div>
                         </TableHead>
-                        <TableHead className="p-2 font-bold text-black">
+                        <TableHead className="p-0 font-bold text-black">
                           <div className="border-l-2 py-1 px-2">
                             Jurusan <br />
                             Kelas
@@ -155,23 +192,23 @@ const LecturerDetailPage = () => {
                         </TableHead>
                         <TableHead className="p-0 font-bold text-black">
                           <div className="border-l-2 py-3 px-2">
-                            Dosen Pembimbing 1
+                            Pembimbing 1
                           </div>
                         </TableHead>
                         <TableHead className="p-0 font-bold text-black">
                           <div className="border-x-2 py-3 px-2">
-                            Dosen Pembimbing 2
+                            Pembimbing 2
                           </div>
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data?.recommendation?.map((mhs, idx) => (
+                      {Object.values(groupedStudents || {}).map((mhs, idx) => (
                         <TableRow key={mhs.student?.id}>
                           <TableCell className="text-center">
                             {idx + 1}.
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="w-[400px]">
                             <div className="flex items-center gap-3">
                               <Avatar className="w-10 h-10">
                                 <AvatarImage
@@ -190,20 +227,14 @@ const LecturerDetailPage = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>
-                            {mhs.student?.major} / {mhs.student?.class}
+                          <TableCell className="w-[200px]">
+                            {mhs.student?.major} <br /> {mhs.student?.class}
                           </TableCell>
-                          <TableCell className="whitespace-normal">
+                          <TableCell className="whitespace-normal w-[600px]">
                             {mhs.student?.judulSkripsi}
                           </TableCell>
-                          <TableCell>
-                            <div className="font-medium">
-                              {mhs.lecturer?.fullName}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {mhs.lecturer?.nidn}
-                            </div>
-                          </TableCell>
+                          <TableCell>{mhs.pembimbing1}</TableCell>
+                          <TableCell>{mhs.pembimbing2}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

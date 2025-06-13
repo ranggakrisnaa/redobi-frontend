@@ -1,3 +1,4 @@
+import { IRecommendation } from '@/commons/interface-model/recommendation-entity.interface';
 import LoadingComponent from '@/components/commons/LoadingComponent.tsx'; // pastikan di-import
 import DashboardContainer from '@/components/containers/DashboardContainer.tsx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -81,54 +82,36 @@ const StudentDetailPage = () => {
                 </div>
                 <Card>
                   <CardContent className="space-y-4 pt-6">
-                    <div>
-                      <p className="font-medium border-b p-2">
-                        Dosen Pembimbing 1
-                      </p>
-                      <div className="p-2 flex items-center gap-4">
-                        <div>
-                          <Avatar className="w-[54px] h-[54px] border-4 border-white">
-                            <AvatarImage
-                              src={
-                                'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
-                              }
-                              alt="Foto Dosen Pembimbing"
-                            />
-                            <AvatarFallback />
-                          </Avatar>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">
-                            Nama Dosen :
+                    {data?.recommendation?.map(
+                      (recommendation: IRecommendation, index: number) => (
+                        <div key={recommendation.id}>
+                          <p className="font-medium border-b p-2">
+                            Dosen Pembimbing {index + 1}
                           </p>
-                          <p className="text-sm text-muted-foreground">NIP :</p>
+                          <div className="p-2 flex items-center gap-4">
+                            <div>
+                              <Avatar className="w-[54px] h-[54px] border-4 border-white">
+                                <AvatarImage
+                                  src={
+                                    'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
+                                  }
+                                  alt="Foto Dosen Pembimbing"
+                                />
+                                <AvatarFallback />
+                              </Avatar>
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-1">
+                                Nama Dosen : {recommendation.lecturer?.fullName}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                NIDN : {recommendation.lecturer?.nidn}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="font-medium border-b p-2">
-                        Dosen Pembimbing 2
-                      </p>
-                      <div className="p-2 flex items-center gap-4">
-                        <div>
-                          <Avatar className="w-[54px] h-[54px] border-4 border-white">
-                            <AvatarImage
-                              src={
-                                'https://res.cloudinary.com/dbuyqvhts/image/upload/v1744100470/uploads/iczoe4d0fedfping1ns6.png'
-                              }
-                              alt="Foto Dosen Pembimbing"
-                            />
-                            <AvatarFallback />
-                          </Avatar>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">
-                            Nama Dosen :
-                          </p>
-                          <p className="text-sm text-muted-foreground">NIP :</p>
-                        </div>
-                      </div>
-                    </div>
+                      ),
+                    )}
                   </CardContent>
                 </Card>
               </div>
