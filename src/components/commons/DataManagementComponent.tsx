@@ -1,5 +1,6 @@
 import { FormControl, FormField } from '@/components/ui/form';
-import { FileDown, Plus, Search, X } from 'lucide-react';
+import { useGlobalStore } from '@/store/globalStore';
+import { FileDown, Plus, RefreshCcwDot, Search, X } from 'lucide-react';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -16,6 +17,9 @@ type DataManagementComponentProps = {
   onClickImport?: (file: File) => Promise<boolean>;
   titleDialog: string;
   excludeImportExport?: boolean;
+  isMatriks?: boolean;
+  isRecommendation?: boolean;
+  onCreatePDF?: () => void;
 };
 
 const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
@@ -26,7 +30,11 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   onClickImport,
   titleDialog,
   excludeImportExport,
+  isMatriks,
+  isRecommendation,
+  onCreatePDF,
 }) => {
+  const { setIsSearch } = useGlobalStore();
   const form = useForm({
     defaultValues: {
       search: '',
@@ -60,7 +68,10 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
                   {field.value && (
                     <button
                       type="button"
-                      onClick={() => form.setValue('search', '')}
+                      onClick={() => {
+                        form.setValue('search', '');
+                        setIsSearch(null);
+                      }}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       <X />
@@ -71,12 +82,30 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
             )}
           />
         </form>
-        <Button
-          className="bg-primary-500 hover:bg-blue-500 transition-all duration-200"
-          onClick={onClickCreate}
-        >
-          <Plus className="w-4 h-4 mr-1" /> Tambah Data
-        </Button>
+        {!isMatriks && (
+          <Button
+            className="bg-primary-500 hover:bg-blue-500 transition-all duration-200"
+            onClick={onClickCreate}
+          >
+            <Plus className="w-4 h-4 mr-1" /> Tambah Data
+          </Button>
+        )}
+        {isMatriks && (
+          <Button
+            className="bg-[#166534] hover:bg-[#16A34A] transition-all duration-200"
+            onClick={onClickCreate}
+          >
+            <RefreshCcwDot className="w-4 h-4 mr-1" /> Perbarui Data
+          </Button>
+        )}
+        {isRecommendation && (
+          <Button
+            className="bg-success-500 hover:bg-[#13B14E] transition-all duration-200"
+            onClick={onCreatePDF}
+          >
+            <FileDown className="w-4 h-4 mr-1" /> Download PDF
+          </Button>
+        )}
         {!excludeImportExport && (
           <>
             <Button

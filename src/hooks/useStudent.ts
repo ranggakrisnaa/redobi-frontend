@@ -1,4 +1,4 @@
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
+import { IStudent } from '@/commons/interface-model/student-entity.interface';
 import { CreateStudentSchema } from '@/commons/schema/create-student.schema.ts';
 import { UpdateStudentSchema } from '@/commons/schema/update-student.schema';
 import { StudentPaginationResponse } from '@/commons/types/student/student-fetch-api.type.ts';
@@ -75,6 +75,7 @@ export const useStudentCreate = () => {
         queryKey: ['student-detail', newStudent.data.id],
       });
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 
@@ -150,6 +151,8 @@ export const useStudentDelete = () => {
     onMutate: handleMutate,
 
     onError: (error: any) => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleError(error, 'Gagal menghapus data mahasiswa!');
     },
 
@@ -178,6 +181,7 @@ export const useStudentImportExcel = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 

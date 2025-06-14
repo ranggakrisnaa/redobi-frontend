@@ -19,7 +19,7 @@ import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useCriteriaStore } from '@/store/criteriaStore';
 import { useGlobalStore } from '@/store/globalStore';
 import { Slash } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const CriteriaPage = () => {
@@ -38,9 +38,13 @@ const CriteriaPage = () => {
   } = useCriteriaStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { mutateAsync: deleteMutate } = useCriteriaDelete();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch, setSelected } = useGlobalStore();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData =
     data?.data?.map((criteria) => {
@@ -73,6 +77,7 @@ const CriteriaPage = () => {
   const handleMultipleDelete = async () => {
     try {
       await deleteMutate(selected as unknown as number[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -90,6 +95,7 @@ const CriteriaPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 
@@ -113,6 +119,7 @@ const CriteriaPage = () => {
   const handleSingleDelete = async (id: number) => {
     try {
       await deleteMutate([id]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);

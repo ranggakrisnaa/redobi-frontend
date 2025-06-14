@@ -8,7 +8,8 @@ export interface TableComponentProps<T extends TableComponentItem> {
   columns: TableComponentColumnDef[];
   title?: string;
   onSort?: (sort: string) => void;
-  onDelete: (id: any) => Promise<boolean>;
-  pathDetail: string;
+  onDelete?: (id: any) => Promise<boolean>;
+  pathDetail?: string;
   isDetail?: boolean;
+  isMatriks?: boolean;
 }

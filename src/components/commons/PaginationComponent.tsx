@@ -65,13 +65,18 @@ const PaginationComponent: React.FC<PaginationProps> = ({
       <div className="">
         <Pagination>
           <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-                aria-disabled={currentPage === 1}
-                className="hover:bg-blue-100"
-              />
-            </PaginationItem>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    currentPage > 1 && onPageChange(currentPage - 1)
+                  }
+                  aria-disabled={currentPage === 1}
+                  className="hover:bg-blue-100"
+                />
+              </PaginationItem>
+            )}
+
             {totalPages > 3 && currentPage > 2 && (
               <>
                 <PaginationItem>
@@ -119,15 +124,17 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                 </PaginationItem>
               </>
             )}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  currentPage < totalPages && onPageChange(currentPage + 1)
-                }
-                aria-disabled={currentPage === totalPages}
-                className="hover:bg-blue-100"
-              />
-            </PaginationItem>
+            {currentPage !== totalPages && (
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    currentPage < totalPages && onPageChange(currentPage + 1)
+                  }
+                  aria-disabled={currentPage === totalPages}
+                  className="hover:bg-blue-100"
+                />
+              </PaginationItem>
+            )}
           </PaginationContent>
         </Pagination>
       </div>
@@ -144,6 +151,8 @@ const PaginationComponent: React.FC<PaginationProps> = ({
             <SelectItem value="10">10</SelectItem>
             <SelectItem value="15">15</SelectItem>
             <SelectItem value="20">20</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
           </SelectContent>
         </Select>
       </div>

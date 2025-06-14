@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useGlobalStore } from '@/store/globalStore';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -37,10 +38,10 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   filterOptions,
   onFilterChange,
 }) => {
+  const { setIsSearch } = useGlobalStore();
   const defaultValues = Object.fromEntries(
     Object.keys(filterOptions).map((key) => [key, '']),
   );
-
   const form = useForm({ defaultValues });
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
 
   const handleReset = () => {
     form.reset(defaultValues);
+    setIsSearch(null);
   };
 
   return (

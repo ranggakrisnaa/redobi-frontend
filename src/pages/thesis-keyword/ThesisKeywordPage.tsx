@@ -23,7 +23,7 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { useThesisKeywordStore } from '@/store/thesisKeywordStore';
 import { Slash } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const ThesisKeywordPage = () => {
@@ -34,25 +34,45 @@ const ThesisKeywordPage = () => {
     setPageSize,
     setFilters,
     setSearch,
-    // setSortData,
+    setSortData,
   } = useThesisKeywordStore();
   const { data, isLoading, isError, error } = useThesisKeywordPagination();
   const navigate = useNavigate();
   const location = useLocation();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch } = useGlobalStore();
   const { mutateAsync: deleteMutate } = useThesisKeywordDelete();
   const currentPath = location.pathname;
   const [searchParams, setSearchParams] = useSearchParams();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
 
-  const formatThesisKeywordData =
-    data?.data.map((item: IThesisKeyword) => ({
-      id: item.id,
-      category: item.category,
-      keywords: item?.keyword?.map((k: IKeyword) => k.name).join(', '),
-      createdAt: new Date(item.createdAt).toLocaleString(),
-    })) || [];
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
+
+  const formattedThesisKeywordData =
+    data?.data?.map((item: IThesisKeyword) => {
+      const keywordList = item.keyword ?? [];
+
+      const keywordElements: JSX.Element[] = [];
+
+      keywordList.forEach((k: IKeyword, index: number) => {
+        keywordElements.push(
+          <span key={`keyword-${index}`} className="block mb-2">
+            {k.name}
+          </span>,
+        );
+      });
+
+      return {
+        id: item.id ?? null,
+        category: item.category ?? '-',
+        keywords: keywordElements.length > 0 ? keywordElements : '-',
+        createdAt: item.createdAt
+          ? new Date(item.createdAt).toLocaleString()
+          : '-',
+      };
+    }) || [];
 
   const handleMultipleDelete = async () => {
     try {
@@ -74,7 +94,13 @@ const ThesisKeywordPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSortData = (sort: string) => {
+    setPage(1);
+    setSortData(sort);
   };
 
   const handleSearchChange = (search: string) => {
@@ -140,11 +166,11 @@ const ThesisKeywordPage = () => {
           ) : (
             <>
               <TableComponent
-                data={formatThesisKeywordData}
+                data={formattedThesisKeywordData}
                 columns={thesisKeywordColumn}
                 pathDetail="thesis-keywords"
                 onDelete={handleSingleDelete}
-                onSort={() => {}}
+                onSort={handleSortData}
                 isDetail={false}
               />
               <div className="flex justify-end mt-4 w-full">

@@ -58,9 +58,9 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
         > = {};
 
         data.assessmentSubCriteria?.forEach((subCriteria) => {
-          const criteriaName = subCriteria.subCriteria.criteria?.name ?? '';
-          const subCriteriaId = subCriteria.subCriteria.id?.toString() ?? '';
-          const subCriteriaName = subCriteria.subCriteria.name ?? '';
+          const criteriaName = subCriteria?.subCriteria?.criteria?.name ?? '';
+          const subCriteriaId = subCriteria?.subCriteria?.id?.toString() ?? '';
+          const subCriteriaName = subCriteria?.subCriteria?.name ?? '';
           const score = subCriteria.score?.toString() ?? '';
           const assessmentSubCriteriaId = subCriteria.id.toString();
 
@@ -128,7 +128,7 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
     return Array.from(
       new Set(
         data.assessmentSubCriteria
-          .map((item) => item.subCriteria.criteria?.name)
+          .map((item) => item?.subCriteria?.criteria?.name)
           .filter(Boolean),
       ),
     ) as string[];

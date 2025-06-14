@@ -1,5 +1,4 @@
 import apiService from '@/api/apiService';
-import { DefaultEnum } from '@/commons/enums/enum';
 import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import { CreateLecturerSchema } from '@/commons/schema/create-lecturer.schema';
 import { UpdateLecturerSchema } from '@/commons/schema/update-lecturer.schema';
@@ -102,17 +101,16 @@ export const updateLecturer = async ({
 };
 
 export const downloadExcelTemplateLecturer = async () => {
-  const url = `${DefaultEnum.CLOUDCUBE_BASE_URL}/1745141441230-template_dosen.xlsx`;
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const objectUrl = URL.createObjectURL(blob);
+  const response = await apiService.get<ResponseData<{ supabaseUrl: string }>>(
+    '/lecturers/templates',
+  );
+
   const link = document.createElement('a');
-  link.href = objectUrl;
+  link.href = response.data.data.supabaseUrl;
   link.setAttribute('download', 'template_dosen_pembimbing.xlsx');
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(objectUrl);
 };
 
 export const importEcxelLecturer = async (file: File) => {

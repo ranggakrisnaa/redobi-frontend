@@ -1,4 +1,4 @@
-import { IStudent } from '@/commons/interface-model/student.interface.ts';
+import { IStudent } from '@/commons/interface-model/student-entity.interface';
 
 export type StudentPaginationResponse = {
   data: IStudent[];

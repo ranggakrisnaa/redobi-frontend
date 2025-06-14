@@ -1,6 +1,6 @@
 import { filterOptions } from '@/commons/constants/student/filter-option-student.constant.ts';
 import { studentColumns } from '@/commons/constants/student/table-column-data.constant.tsx';
-import { IStudent } from '@/commons/interface-model/student.interface';
+import { IStudent } from '@/commons/interface-model/student-entity.interface';
 import { StudentFilterParams } from '@/commons/types/student/student-filter-data.type.ts';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import FilterComponent from '@/components/commons/FilterComponent';
@@ -38,7 +38,7 @@ const StudentPage = () => {
     setSortData,
   } = useStudentStore();
   const { data, isLoading, isError, error } = useStudentsPagination();
-  const { selected } = useGlobalStore();
+  const { selected, setIsSearch, setSelected } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,6 +47,10 @@ const StudentPage = () => {
   const { mutateAsync: importExcelMutate } = useStudentImportExcel();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   useEffect(() => {
     setFilters({
@@ -68,6 +72,7 @@ const StudentPage = () => {
       }
     });
 
+    setIsSearch(params);
     setSearchParams(newParams, { replace: true });
   };
 
@@ -112,6 +117,7 @@ const StudentPage = () => {
   const handleMultipleDelete = async () => {
     try {
       await deleteMutate(selected as unknown as string[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -122,6 +128,7 @@ const StudentPage = () => {
   const handleSingleDelete = async (id: string) => {
     try {
       await deleteMutate([id]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -140,7 +147,7 @@ const StudentPage = () => {
   };
 
   return (
-    <div>
+    <div ref={detailRef}>
       <DashboardContainer pageTitle="Mahasiswa">
         <BreadcrumbList>
           <BreadcrumbSeparator>

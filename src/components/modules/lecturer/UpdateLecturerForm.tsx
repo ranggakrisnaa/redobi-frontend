@@ -74,6 +74,7 @@ const UpdateLecturerForm: React.FC<UpdateLecturerProps> = ({
       data = {
         ...data,
         file: photoFile,
+        tipePembimbing: undefined,
       };
       setPhoto(undefined);
       onSuccess(data);
@@ -233,7 +234,7 @@ const UpdateLecturerForm: React.FC<UpdateLecturerProps> = ({
                 <FormItem>
                   <FormLabel>
                     {isEmpty(values.tipePembimbing) && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-teal-500 text-xs">optional</span>
                     )}{' '}
                     Tipe Pembimbing
                   </FormLabel>
@@ -260,17 +261,16 @@ const UpdateLecturerForm: React.FC<UpdateLecturerProps> = ({
             <FormField
               control={form.control}
               name="jumlahBimbingan"
-              disabled={true}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {isEmpty(values.fullName) && (
+                    {isEmpty(values.jumlahBimbingan) && (
                       <span className="text-red-500">*</span>
-                    )}{' '}
+                    )}
                     Jumlah Bimbingan
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} value="-" className="bg-neutral-100" />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

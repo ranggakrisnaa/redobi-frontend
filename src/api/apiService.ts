@@ -70,9 +70,17 @@ const apiService = {
   post: <T>(
     endpoint: string,
     data?: any,
-    config?: { headers?: Record<string, string> },
-  ): Promise<AxiosResponse<T>> =>
-    apiClient.post<T>(endpoint, data, { headers: config?.headers }),
+    config?: {
+      headers?: Record<string, string>;
+      responseType?:
+        | 'blob'
+        | 'json'
+        | 'text'
+        | 'arraybuffer'
+        | 'document'
+        | 'stream';
+    },
+  ): Promise<AxiosResponse<T>> => apiClient.post<T>(endpoint, data, config),
 
   put: <T>(
     endpoint: string,
