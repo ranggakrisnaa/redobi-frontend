@@ -72,6 +72,7 @@ export const useCriteriaDelete = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['criteria'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data criteria berhasil dihapus.', '/criteria');
     },
 
@@ -149,6 +150,7 @@ export const useCriteriaCreate = () => {
         queryKey: ['criteria-detail', newCriteria.data.id],
       });
       queryClient.invalidateQueries({ queryKey: ['criteria'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess(
         'Data Criteria dan Sub-Kriteria berhasil ditambahkan.',
         '/criteria',

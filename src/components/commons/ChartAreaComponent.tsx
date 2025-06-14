@@ -29,7 +29,7 @@ const ChartAreaComponent = () => {
   const chartData = [
     { lecturerName: '', guidananceCount: 0 },
     ...data,
-    { lecturerName: '', guidananceCount: 16 },
+    { lecturerName: '', guidananceCount: 0 },
   ];
 
   const chartConfig = {
@@ -41,9 +41,9 @@ const ChartAreaComponent = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Data Jumlah Bimbingan</CardTitle>
+        <CardTitle>Data Jumlah Bimbingan Tertinggi</CardTitle>
         <CardDescription>
-          Menunjukkan area chart data jumlah bimbingan tiap dosen.
+          Menunjukkan top 4 dosen yang memiliki bimbingan terbanyak
         </CardDescription>
       </CardHeader>
       <CardContent>

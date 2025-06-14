@@ -41,7 +41,7 @@ const LecturerPage = () => {
   const { mutateAsync: importExcelMutate } = useLecturerImportExcel();
   const { mutateAsync: deleteMutate } = useLecturerDelete();
   const location = useLocation();
-  const { selected, setIsSearch } = useGlobalStore();
+  const { selected, setIsSearch, setSelected } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -97,6 +97,7 @@ const LecturerPage = () => {
   const handleMultipleDelete = async () => {
     try {
       await deleteMutate(selected as unknown as string[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -107,6 +108,7 @@ const LecturerPage = () => {
   const handleSingleDelete = async (id: string) => {
     try {
       await deleteMutate([id]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);

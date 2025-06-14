@@ -61,6 +61,7 @@ export const useLecturerCreate = () => {
         queryKey: ['lecturer-detail', newLecturer.data.id],
       });
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess(
         'Data Dosen Pembimbing berhasil ditambahkan.',
         '/lecturers',
@@ -153,6 +154,7 @@ export const useLecturerDelete = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data Dosen Pembimbing berhasil dihapus.', '/lecturers');
     },
 
@@ -180,6 +182,7 @@ export const useLecturerImportExcel = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess(
         'Data Dosen Pembimbing berhasil ditambahkan.',
         '/lecturers',

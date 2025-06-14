@@ -38,7 +38,7 @@ const CriteriaPage = () => {
   } = useCriteriaStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { mutateAsync: deleteMutate } = useCriteriaDelete();
-  const { selected, setIsSearch } = useGlobalStore();
+  const { selected, setIsSearch, setSelected } = useGlobalStore();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
 
@@ -77,6 +77,7 @@ const CriteriaPage = () => {
   const handleMultipleDelete = async () => {
     try {
       await deleteMutate(selected as unknown as number[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -118,6 +119,7 @@ const CriteriaPage = () => {
   const handleSingleDelete = async (id: number) => {
     try {
       await deleteMutate([id]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);

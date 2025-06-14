@@ -12,15 +12,25 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { useRecommendationStore } from '@/store/recommendationStore';
 import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const NormalizationTab = () => {
   const { mutate: normalizationMutate } = useCreateNormalization();
   const { mutate: rankingMutate } = useCreateRankingMatrices();
-  const { selected, setSelected } = useGlobalStore();
+  const { selected, setSelected, setIsSearch } = useGlobalStore();
   const { data: normalizationsData } = usePaginationNormalization();
   const { mutateAsync: deleteMutate } = useDeleteNormalization();
-  const { currentPage, pageSize, setPage, setPageSize } =
+  const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    setPage(1);
+  }, [setPage]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -132,6 +142,26 @@ const NormalizationTab = () => {
     normalizationMutate();
   };
 
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setIsSearch(params);
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (search: string) => {
+    setPage(1);
+    setSearch(search);
+    updateURL({ search });
+  };
+
   const handleDeleteNormalization = async (): Promise<boolean> => {
     try {
       await deleteMutate(selected as string[]);
@@ -149,7 +179,7 @@ const NormalizationTab = () => {
         onClickCreate={handleCreateNormalization}
         excludeImportExport={true}
         onClickDelete={handleDeleteNormalization}
-        onSearchChange={() => {}}
+        onSearchChange={handleSearchChange}
         titleDialog="Nomalisasi Matriks"
         isMatriks={true}
       />

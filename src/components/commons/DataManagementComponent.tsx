@@ -32,6 +32,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
   excludeImportExport,
   isMatriks,
   isRecommendation,
+  onCreatePDF,
 }) => {
   const { setIsSearch } = useGlobalStore();
   const form = useForm({
@@ -100,7 +101,7 @@ const DataManagementComponent: React.FC<DataManagementComponentProps> = ({
         {isRecommendation && (
           <Button
             className="bg-success-500 hover:bg-[#13B14E] transition-all duration-200"
-            onClick={onClickDownload}
+            onClick={onCreatePDF}
           >
             <FileDown className="w-4 h-4 mr-1" /> Download PDF
           </Button>

@@ -36,7 +36,7 @@ const AssessmentPage = () => {
     setSortData,
   } = useAssessmentStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { selected, setIsSearch } = useGlobalStore();
+  const { selected, setIsSearch, setSelected } = useGlobalStore();
   const { mutateAsync: deleteMutate } = useAssessmentDelete();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
@@ -173,6 +173,7 @@ const AssessmentPage = () => {
   const handleMultipleDelete = async () => {
     try {
       await deleteMutate(selected as unknown as string[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
@@ -194,6 +195,7 @@ const AssessmentPage = () => {
   const handleSingleDelete = async (id: string) => {
     try {
       await deleteMutate([id]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);

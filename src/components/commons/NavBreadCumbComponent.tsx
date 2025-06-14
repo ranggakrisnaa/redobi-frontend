@@ -43,7 +43,10 @@ const NavBreadCumbComponent: React.FC<NavBreadCumbComponentProps> = ({
           <Bell className="w-4 h-4" />
           Notifikasi
         </button> */}
-        <button className="flex items-center gap-1 px-4 py-2 rounded-full bg-gray-200 text-gray-800 text-sm font-medium hover:bg-gray-300 transition">
+        <button
+          className="flex items-center gap-1 px-4 py-2 rounded-full bg-gray-200 text-gray-800 text-sm font-medium hover:bg-gray-300 transition"
+          onClick={() => navigate('/profile')}
+        >
           <Settings className="w-4 h-4" />
           Profil Admin
         </button>

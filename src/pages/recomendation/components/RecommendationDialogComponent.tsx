@@ -1,3 +1,4 @@
+import { RecommendationFormSchema } from '@/commons/schema/update-recommendation.schema';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -6,10 +7,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useCreateRecommendation } from '@/hooks/useRecommendation';
+import {
+  useCreateRecommendation,
+  useUpdateRecommendation,
+} from '@/hooks/useRecommendation';
 import { RefreshCcwDot, Search } from 'lucide-react';
 import { useState } from 'react';
-import RecommendationForm from './RecommendationForm';
+import RecommendationFormPage from './RecommendationForm';
 
 type Props = {
   open: boolean;
@@ -19,9 +23,14 @@ type Props = {
 const RecommendationDialogComponent = ({ open, setOpen }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { mutate: recommendationMutate } = useCreateRecommendation();
+  const { mutate: updateRecommendationMutate } = useUpdateRecommendation();
 
   const handleRefreshData = () => {
     recommendationMutate();
+  };
+
+  const handleUpdateRecommendation = (data: RecommendationFormSchema) => {
+    updateRecommendationMutate(data);
   };
 
   return (
@@ -55,7 +64,11 @@ const RecommendationDialogComponent = ({ open, setOpen }: Props) => {
         </div>
 
         <div className="flex-1 overflow-hidden">
-          <RecommendationForm open={open} setOpen={setOpen} />
+          <RecommendationFormPage
+            onSuccess={handleUpdateRecommendation}
+            open={open}
+            setOpen={setOpen}
+          />
         </div>
       </DialogContent>
     </Dialog>

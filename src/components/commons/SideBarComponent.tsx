@@ -2,6 +2,7 @@ import logo from '@/assets/images/redobi.png';
 import { DefaultEnum } from '@/commons/enums/enum';
 import { useProfileUser } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { maskEmail } from '@/utils/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import {
@@ -76,7 +77,7 @@ const SideBarComponent = () => {
             {profile?.data.fullName || ''}
           </span>
           <span className="text-xs text-muted-foreground">
-            {profile?.data.email || ''}
+            {maskEmail(profile?.data.email) || ''}
           </span>
         </div>
       </div>

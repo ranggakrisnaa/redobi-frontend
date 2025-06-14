@@ -1,3 +1,4 @@
+import apiService from '@/api/apiService';
 import { recommendationColumn } from '@/commons/constants/recommendation/table-column-data.constant';
 import { TipePembimbingEnum } from '@/commons/enums/tipe-pembimbing.enum';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
@@ -5,10 +6,14 @@ import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
 import {
   useCreateRecommendation,
+  useDeleteRecommendation,
   usePaginationRecommendations,
 } from '@/hooks/useRecommendation';
+import { useGlobalStore } from '@/store/globalStore';
 import { useRecommendationStore } from '@/store/recommendationStore';
+import { ResponseData } from '@/utils/responseData';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import RecommendationDialogComponent from '../components/RecommendationDialogComponent';
 
 type FormattedRecommendation = {
@@ -25,15 +30,19 @@ const RecommendationTab = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { mutate: recommendationMutate } = useCreateRecommendation();
   const { data: listRecommendations } = usePaginationRecommendations();
-  const { currentPage, pageSize, setPage, setPageSize } =
+  const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
-  const [total, setTotal] = useState<number>(0);
+  const { mutateAsync: deleteMutate } = useDeleteRecommendation();
+  const { selected, setSelected, setIsSearch } = useGlobalStore();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    if (listRecommendations?.data) {
-      setTotal(listRecommendations.data.length);
-    }
-  }, [listRecommendations?.data]);
+    setPage(1);
+  }, [setPage]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData: FormattedRecommendation[] = (() => {
     const recommendationMap = new Map<string, FormattedRecommendation>();
@@ -44,7 +53,7 @@ const RecommendationTab = () => {
 
       if (!recommendationMap.has(studentId)) {
         recommendationMap.set(studentId, {
-          id: recommendation.id,
+          id: recommendation.studentId,
           studentId: studentId,
           studentName: recommendation.student?.fullName ?? '-',
           lecturerFirst: null,
@@ -71,20 +80,64 @@ const RecommendationTab = () => {
     return Array.from(recommendationMap.values());
   })();
 
+  const handleExportPDF = async () => {
+    const response = await apiService.get<
+      ResponseData<{ supabaseUrl: string }>
+    >('/recommendations/pdf');
+
+    const pdfUrl = response.data.data.supabaseUrl;
+
+    window.open(pdfUrl, '_blank');
+  };
+
+  const handleDeleteRecommendation = async () => {
+    try {
+      await deleteMutate(selected as unknown as string[]);
+      setSelected([]);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setIsSearch(params);
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (search: string) => {
+    setPage(1);
+    setSearch(search);
+    updateURL({ search });
+  };
+
   return (
     <div>
       <DataManagementComponent
         onClickCreate={() => {
-          setPageSize(total);
           if (listRecommendations?.data.length == 0) {
             recommendationMutate();
+          } else {
+            setPage(1);
+            setPageSize(99999);
           }
           setDialogOpen(true);
         }}
         isRecommendation={true}
         excludeImportExport={true}
-        onClickDelete={async () => true}
-        onSearchChange={() => {}}
+        onClickDelete={handleDeleteRecommendation}
+        onSearchChange={handleSearchChange}
+        onCreatePDF={handleExportPDF}
         titleDialog="Normalisasi Matriks"
         isMatriks={true}
       />

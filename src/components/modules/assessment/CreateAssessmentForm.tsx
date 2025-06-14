@@ -105,7 +105,7 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
 
     const subCriteria = selectedCriteriaItem?.subCriteria?.map(
       (sub: ISubCriteria) => ({
-        id: sub.id,
+        id: String(sub.id),
         name: sub.name,
       }),
     ) as unknown as { id: string; name: string }[];
@@ -152,6 +152,48 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
     }
   };
 
+  const handleAddAllCriteria = () => {
+    if (!criteriaData?.data) return;
+
+    const existingCriteriaNames = form
+      .watch('scores')
+      .map((s) => s.criteriaName);
+
+    form.setValue(
+      'scores',
+      form
+        .watch('scores')
+        .filter((s) => s.criteriaName && s.criteriaName.trim() !== ''),
+    );
+
+    const remainingCriteria = criteriaData.data.filter(
+      (c) => !existingCriteriaNames.includes(c.name),
+    );
+
+    remainingCriteria.forEach((criteria) => {
+      const subCriteria =
+        criteria.subCriteria?.map((sub) => ({
+          id: String(sub.id),
+          name: sub.name,
+        })) ?? [];
+
+      const subScores = subCriteria.map((sub) => ({
+        subCriteriaId: sub.id,
+        score: '',
+      }));
+
+      append({
+        criteriaName: criteria.name,
+        subCriteria,
+        subScores,
+      });
+
+      setSelectedCriteria(criteria.name);
+    });
+
+    setTimeout(() => scrollToField(fields.length), 100);
+  };
+
   const isAnyEmptyCriteria = form
     .watch('scores')
     .some((score) => !score.criteriaName);
@@ -192,7 +234,7 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
           </div>
         </div>
 
-        {fields.map((field, index) => (
+        {fields.map((field, index: number) => (
           <div
             key={field.id}
             ref={(el) => (fieldRefs.current[index] = el)}
@@ -313,6 +355,16 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
         >
           <PlusIcon className="mr-2" size={16} />
           Tambah Kriteria
+        </Button>
+
+        <Button
+          type="button"
+          disabled={fields.length >= (criteriaData?.data.length ?? 0)}
+          onClick={handleAddAllCriteria}
+          className="mt-2 mx-2 bg-green-600 hover:bg-green-700 text-white"
+        >
+          <PlusIcon className="mr-2" size={16} />
+          Tampilkan Semua
         </Button>
 
         <div className="flex justify-end gap-2 mt-4">

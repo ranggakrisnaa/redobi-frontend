@@ -12,15 +12,25 @@ import {
 import { useGlobalStore } from '@/store/globalStore';
 import { useRecommendationStore } from '@/store/recommendationStore';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const RankingTab = () => {
   const { mutate: normalizationMutate } = useCreateNormalization();
   const { mutate: rankingMutate } = useCreateRankingMatrices();
-  const { selected } = useGlobalStore();
+  const { selected, setSelected, setIsSearch } = useGlobalStore();
   const { data: rankingsData } = usePaginationRankingMatrices();
   const { mutateAsync: deleteMutate } = useDeleteRankingMatrices();
-  const { currentPage, pageSize, setPage, setPageSize } =
+  const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    setPage(1);
+  }, [setPage]);
+
+  useEffect(() => {
+    setIsSearch(null);
+  }, [setIsSearch]);
 
   const formattedData =
     rankingsData?.data
@@ -48,6 +58,20 @@ const RankingTab = () => {
     }
   }, [normalizationMutate, rankingMutate]);
 
+  const updateURL = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        newParams.set(key, params[key]);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setIsSearch(params);
+    setSearchParams(newParams, { replace: true });
+  };
+
   const handleCreateRanking = () => {
     rankingMutate();
   };
@@ -55,19 +79,27 @@ const RankingTab = () => {
   const handleDeleteRanking = async () => {
     try {
       await deleteMutate(selected as unknown as string[]);
+      setSelected([]);
       return true;
     } catch (error) {
       console.error(error);
       return false;
     }
   };
+
+  const handleSearchChange = (search: string) => {
+    setPage(1);
+    setSearch(search);
+    updateURL({ search });
+  };
+
   return (
     <div>
       <DataManagementComponent
         onClickCreate={handleCreateRanking}
         excludeImportExport={true}
         onClickDelete={handleDeleteRanking}
-        onSearchChange={() => {}}
+        onSearchChange={handleSearchChange}
         titleDialog="Nomalisasi Matriks"
         isMatriks={true}
       />

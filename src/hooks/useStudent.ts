@@ -75,6 +75,7 @@ export const useStudentCreate = () => {
         queryKey: ['student-detail', newStudent.data.id],
       });
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 
@@ -150,6 +151,8 @@ export const useStudentDelete = () => {
     onMutate: handleMutate,
 
     onError: (error: any) => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleError(error, 'Gagal menghapus data mahasiswa!');
     },
 
@@ -178,6 +181,7 @@ export const useStudentImportExcel = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['statistics'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 
