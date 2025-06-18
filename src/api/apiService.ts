@@ -9,9 +9,10 @@ const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     Accept: 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   },
   timeout: 10000,
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
