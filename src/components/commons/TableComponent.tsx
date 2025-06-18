@@ -46,7 +46,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
   };
 
   const toggleSelectAll = () => {
-    const allIds = data.map((item) => item.id);
+    const allIds = data.map((item) => item.assessmentId || item.id);
     setSelected(isAllSelected ? [] : allIds);
   };
 
@@ -223,14 +223,15 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                 className={`${shouldAddBorder(item, index) ? 'border-b' : 'border-b-0'} hover:bg-gray-50 ${!item.assessmentTable && 'border-b'} ${item.isNewLecturer && 'border-t'}`}
               >
                 <TableCell className="text-center align-top">
-                  {(item.showOneRowActions && item.isNewLecturer == true) ||
-                  !item.showOneRowActions ? (
+                  {(item.isNewLecturer || !item.showOneRowActions) && (
                     <Checkbox
-                      checked={selected.includes(item.id)}
-                      onCheckedChange={() => toggleSelect(item.id)}
-                      className="border-[#ffffff]  data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
+                      checked={selected.includes(item.assessmentId || item.id)}
+                      onCheckedChange={() =>
+                        toggleSelect(item.assessmentId || item.id)
+                      }
+                      className="border-[#ffffff] data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-foreground size-5"
                     />
-                  ) : null}
+                  )}
                 </TableCell>
                 {columns.map((column, colIndex) => (
                   <TableCell
@@ -252,7 +253,9 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                         {isDetail ? (
                           <button
                             onClick={() =>
-                              navigate(`/${pathDetail}/${item.id}`)
+                              navigate(
+                                `/${pathDetail}/${item.assessmentId || item.id}`,
+                              )
                             }
                             className="text-blue-600 hover:text-blue-800"
                           >
@@ -262,7 +265,9 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                         <button
                           className="text-yellow-600 hover:text-yellow-800"
                           onClick={() =>
-                            navigate(`/${pathDetail}/${item.id}/update`)
+                            navigate(
+                              `/${pathDetail}/${item.assessmentId || item.id}/update`,
+                            )
                           }
                         >
                           <PencilLine size={18} />
@@ -271,7 +276,7 @@ const TableComponent: React.FC<TableComponentProps<TableComponentItem>> = ({
                           isSingle={true}
                           onConfirm={async () => {
                             if (onDelete) {
-                              await onDelete(item.id);
+                              await onDelete(item.assessmentId || item.id);
                             }
                             return true;
                           }}

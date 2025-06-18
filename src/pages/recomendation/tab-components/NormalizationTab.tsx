@@ -111,7 +111,8 @@ const NormalizationTab = () => {
     });
 
     return result.map((row, index) => ({
-      id: index === 0 ? row.id : `${row.id}-${index}`,
+      id: `${row.id}-${index}`,
+      assessmentId: row.id,
       lecturerName: row.lecturerName
         ? [
             <span key={`lecturer-${index}`} className="block">

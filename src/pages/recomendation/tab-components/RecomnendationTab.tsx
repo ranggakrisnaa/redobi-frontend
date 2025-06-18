@@ -10,6 +10,7 @@ import {
   usePaginationRecommendations,
 } from '@/hooks/useRecommendation';
 import { useGlobalStore } from '@/store/globalStore';
+import { useLecturerStore } from '@/store/lecturerStore';
 import { useRecommendationStore } from '@/store/recommendationStore';
 import { ResponseData } from '@/utils/responseData';
 import { useEffect, useState } from 'react';
@@ -32,6 +33,8 @@ const RecommendationTab = () => {
   const { data: listRecommendations } = usePaginationRecommendations();
   const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
+  const { setPageSize: setPageSizeLecturer, setPage: setPageLecturer } =
+    useLecturerStore();
   const { mutateAsync: deleteMutate } = useDeleteRecommendation();
   const { selected, setSelected, setIsSearch } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -128,8 +131,8 @@ const RecommendationTab = () => {
           if (listRecommendations?.data.length == 0) {
             recommendationMutate();
           } else {
-            setPage(1);
-            setPageSize(99999);
+            setPageLecturer(1);
+            setPageSizeLecturer(99999);
           }
           setDialogOpen(true);
         }}

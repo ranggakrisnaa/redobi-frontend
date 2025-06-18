@@ -2,6 +2,7 @@ import * as React from 'react';
 
 export type TableComponentItem = {
   id: any;
+  assessmentId?: string;
   avatar?: string;
   [key: string]: string | number | boolean | null | undefined | JSX.Element[];
 };

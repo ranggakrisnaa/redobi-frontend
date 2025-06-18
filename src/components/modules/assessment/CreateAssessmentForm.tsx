@@ -26,6 +26,7 @@ import { useCriteriaPagination } from '@/hooks/useCriteria';
 import { useLecturerPagination } from '@/hooks/useLecturer';
 import { useAssessmentStore } from '@/store/assessmentStore';
 import { useGlobalStore } from '@/store/globalStore';
+import { useLecturerStore } from '@/store/lecturerStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, PlusIcon, RotateCcw, Save } from 'lucide-react';
 import { useEffect, useRef } from 'react';
@@ -40,6 +41,7 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
   onSuccess,
 }) => {
   const { data: lecturerData } = useLecturerPagination();
+  const { setPageSize } = useLecturerStore();
   const { data: criteriaData } = useCriteriaPagination();
   const {
     selectedCriteria,
@@ -79,6 +81,14 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
       targetRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  useEffect(() => {
+    setPageSize(999);
+
+    return () => {
+      setPageSize(10);
+    };
+  }, [setPageSize]);
 
   useEffect(() => {
     return () => {
