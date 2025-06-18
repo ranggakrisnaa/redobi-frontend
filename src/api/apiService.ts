@@ -11,7 +11,7 @@ const apiClient: AxiosInstance = axios.create({
     Accept: 'application/json',
   },
   timeout: 10000,
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
