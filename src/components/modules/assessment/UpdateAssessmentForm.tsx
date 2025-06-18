@@ -51,9 +51,13 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
           string,
           {
             criteriaName: string;
-            assessmentSubCriteriaId: string;
+
             subCriteria: { id: string; name: string }[];
-            subScores: { subCriteriaId: string; score: string }[];
+            subScores: {
+              assessmentSubCriteriaId: string;
+              subCriteriaId: string;
+              score: string;
+            }[];
           }
         > = {};
 
@@ -67,14 +71,11 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
           if (!grouped[criteriaName]) {
             grouped[criteriaName] = {
               criteriaName,
-              assessmentSubCriteriaId,
               subCriteria: [],
               subScores: [],
             };
           }
 
-          grouped[criteriaName].assessmentSubCriteriaId =
-            assessmentSubCriteriaId;
           grouped[criteriaName].subCriteria.push({
             id: subCriteriaId,
             name: subCriteriaName,
@@ -83,6 +84,7 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
           grouped[criteriaName].subScores.push({
             subCriteriaId,
             score,
+            assessmentSubCriteriaId,
           });
         });
 
@@ -109,6 +111,7 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
     const subScores = subCriteria?.map((sub: any) => ({
       subCriteriaId: sub.id,
       score: '',
+      assessmentSubCriteriaId: '',
     }));
 
     form.setValue(`scores.${index}.criteriaName`, criteriaName);
@@ -151,7 +154,7 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
       lecturerId: data.lecturerId,
       scores: data?.scores?.flatMap((score) =>
         score?.subScores?.map((subScore) => ({
-          assessmentSubCriteriaId: score.assessmentSubCriteriaId,
+          assessmentSubCriteriaId: subScore?.assessmentSubCriteriaId,
           subCriteriaId: Number(subScore?.subCriteriaId),
           score: Number(subScore?.score),
         })),
@@ -306,7 +309,6 @@ const UpdateAssessmentForm: React.FC<UpdateAssessmentProps> = ({
             onClick={() =>
               append({
                 criteriaName: '',
-                assessmentSubCriteriaId: '',
                 subCriteria: [],
                 subScores: [],
               })

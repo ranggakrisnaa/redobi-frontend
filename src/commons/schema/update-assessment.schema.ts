@@ -6,7 +6,6 @@ export const updateAssessmentSchema = z.object({
     .array(
       z.object({
         criteriaName: z.string().min(1, 'Kriteria harus diisi'),
-        assessmentSubCriteriaId: z.coerce.string(),
         subCriteria: z
           .array(
             z
@@ -21,6 +20,7 @@ export const updateAssessmentSchema = z.object({
           .array(
             z
               .object({
+                assessmentSubCriteriaId: z.coerce.string(),
                 subCriteriaId: z.coerce.string(),
                 score: z
                   .string()

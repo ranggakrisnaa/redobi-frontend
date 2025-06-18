@@ -120,7 +120,8 @@ const AssessmentPage = () => {
     });
 
     return result.map((row, index) => ({
-      id: index == 0 ? row.id : `${row.id}-${index}`,
+      id: `${row.id}-${index}`,
+      assessmentId: row.id,
       lecturerName: row.lecturerName
         ? [
             <span key={`lecturer-${index}`} className="block">
@@ -172,6 +173,8 @@ const AssessmentPage = () => {
 
   const handleMultipleDelete = async () => {
     try {
+      console.log(selected);
+
       await deleteMutate(selected as unknown as string[]);
       setSelected([]);
       return true;
