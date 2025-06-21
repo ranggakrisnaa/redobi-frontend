@@ -38,36 +38,38 @@ const LecturerDetailPage = () => {
   useScrollToTopOnPush(detailRef, [isLoading]);
   console.log(data?.recommendation);
 
-  const groupedStudents = listRecommendations?.data.reduce(
-    (acc, curr) => {
-      const studentId = curr.student?.id;
-      if (!studentId) return acc;
+  const groupedStudents = listRecommendations?.data
+    .filter((r) => r.lecturer?.fullName == data?.fullName)
+    .reduce(
+      (acc, curr) => {
+        const studentId = curr.student?.id;
+        if (!studentId) return acc;
 
-      if (!acc[studentId]) {
-        acc[studentId] = {
-          student: curr.student,
-          pembimbing1: null,
-          pembimbing2: null,
-        };
-      }
+        if (!acc[studentId]) {
+          acc[studentId] = {
+            student: curr.student,
+            pembimbing1: null,
+            pembimbing2: null,
+          };
+        }
 
-      if (curr.position === TipePembimbingEnum.PEMBIMBING_SATU) {
-        acc[studentId].pembimbing1 = curr.lecturer?.fullName ?? null;
-      } else if (curr.position === TipePembimbingEnum.PEMBIMBING_DUA) {
-        acc[studentId].pembimbing2 = curr.lecturer?.fullName ?? null;
-      }
+        if (curr.position === TipePembimbingEnum.PEMBIMBING_SATU) {
+          acc[studentId].pembimbing1 = curr.lecturer?.fullName ?? null;
+        } else if (curr.position === TipePembimbingEnum.PEMBIMBING_DUA) {
+          acc[studentId].pembimbing2 = curr.lecturer?.fullName ?? null;
+        }
 
-      return acc;
-    },
-    {} as Record<
-      string,
-      {
-        student: (typeof listRecommendations.data)[number]['student'];
-        pembimbing1: string | null;
-        pembimbing2: string | null;
-      }
-    >,
-  );
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          student: (typeof listRecommendations.data)[number]['student'];
+          pembimbing1: string | null;
+          pembimbing2: string | null;
+        }
+      >,
+    );
   console.log(groupedStudents);
 
   useEffect(() => {
@@ -233,8 +235,8 @@ const LecturerDetailPage = () => {
                           <TableCell className="whitespace-normal w-[600px]">
                             {mhs.student?.judulSkripsi}
                           </TableCell>
-                          <TableCell>{mhs.pembimbing1}</TableCell>
-                          <TableCell>{mhs.pembimbing2}</TableCell>
+                          <TableCell>{mhs.pembimbing1 ?? '-'}</TableCell>
+                          <TableCell>{mhs.pembimbing2 ?? '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

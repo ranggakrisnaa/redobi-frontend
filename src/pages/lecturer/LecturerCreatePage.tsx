@@ -32,7 +32,7 @@ const LecturerCreatePage = () => {
 
   return (
     <div ref={detailRef}>
-      <DashboardContainer pageTitle="Tambah Data Mahasiswa">
+      <DashboardContainer pageTitle="Tambah Data Dosen">
         <BreadcrumbList>
           <BreadcrumbSeparator>
             <SlashIcon />

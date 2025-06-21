@@ -32,7 +32,7 @@ const SideBarComponent = () => {
   ];
 
   return (
-    <div className="w-[284px] flex flex-col border-r fixed h-screen">
+    <div className="w-[284px] flex flex-col border-r fixed h-screen top-0">
       <div className="p-[21.1px] border-b flex items-center gap-2">
         <img src={logo} alt="ReDoBi" className="h-auto w-[109.6px]" />
       </div>

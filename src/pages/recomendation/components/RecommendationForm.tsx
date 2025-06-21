@@ -159,52 +159,74 @@ const RecommendationFormPage: React.FC<Props> = ({
     if (!listRecommendations?.data || !listLecturers?.data) return;
 
     const recommendationIds: string[] = [];
-    const lecturerIds: string[] = [];
     const studentIds: string[] = [];
+    const lecturers: {
+      lecturerId: string;
+      positions: TipePembimbingEnum;
+    }[] = [];
 
     data.mahasiswa.forEach((entry) => {
       const matchedRecs = listRecommendations.data.filter(
         (rec) => rec.student?.fullName === entry.nama,
       );
 
-      matchedRecs.forEach((rec) => {
-        recommendationIds.push(rec.id);
+      const pembimbing1 = listLecturers.data.find(
+        (lect) => lect.fullName === entry.pembimbing1,
+      );
+      const pembimbing2 = listLecturers.data.find(
+        (lect) => lect.fullName === entry.pembimbing2,
+      );
 
-        const pembimbing1 = listLecturers.data.find(
-          (lect) => lect.fullName === entry.pembimbing1,
+      if (pembimbing1) {
+        const rec1 = matchedRecs.find(
+          (r) =>
+            r.lecturer?.tipePembimbing === TipePembimbingEnum.PEMBIMBING_SATU,
         );
-        const pembimbing2 = listLecturers.data.find(
-          (lect) => lect.fullName === entry.pembimbing2,
+
+        lecturers.push({
+          lecturerId: pembimbing1.id,
+          positions: TipePembimbingEnum.PEMBIMBING_SATU,
+        });
+
+        if (rec1?.id) {
+          recommendationIds.push(rec1.id);
+          studentIds.push(rec1.studentId);
+        } else {
+          studentIds.push(matchedRecs[0]?.studentId);
+        }
+      }
+
+      if (pembimbing2) {
+        const rec2 = matchedRecs.find(
+          (r) =>
+            r.lecturer?.tipePembimbing === TipePembimbingEnum.PEMBIMBING_DUA,
         );
 
-        if (
-          rec.lecturer?.tipePembimbing === TipePembimbingEnum.PEMBIMBING_SATU
-        ) {
-          if (pembimbing1) {
-            lecturerIds.push(pembimbing1.id);
-            studentIds.push(rec.studentId);
-          }
+        lecturers.push({
+          lecturerId: pembimbing2.id,
+          positions: TipePembimbingEnum.PEMBIMBING_DUA,
+        });
+        if (rec2?.id) {
+          recommendationIds.push(rec2.id);
+          studentIds.push(rec2.studentId);
+        } else {
+          studentIds.push(matchedRecs[0]?.studentId);
         }
-
-        if (
-          rec.lecturer?.tipePembimbing === TipePembimbingEnum.PEMBIMBING_DUA
-        ) {
-          if (pembimbing2) {
-            lecturerIds.push(pembimbing2.id);
-            studentIds.push(rec.studentId);
-          }
-        }
-      });
+      }
     });
 
     const payload = {
       recommendationIds,
-      lecturerIds,
       studentIds,
+      lecturers,
     };
+
+    console.log(payload);
+
     if (onSuccess) {
       onSuccess(payload as unknown as RecommendationFormSchema);
     }
+
     setPageSize(10);
     setOpen(false);
   };

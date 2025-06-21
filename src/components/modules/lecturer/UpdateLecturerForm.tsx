@@ -74,7 +74,7 @@ const UpdateLecturerForm: React.FC<UpdateLecturerProps> = ({
       data = {
         ...data,
         file: photoFile,
-        tipePembimbing: undefined,
+        tipePembimbing: data.tipePembimbing ?? undefined,
       };
       setPhoto(undefined);
       onSuccess(data);
