@@ -47,6 +47,7 @@ export const useCreateNormalization = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['normalizations'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess(
         'Data Normalisasi Matriks Berhasil di generate.',
         '/recommendations',

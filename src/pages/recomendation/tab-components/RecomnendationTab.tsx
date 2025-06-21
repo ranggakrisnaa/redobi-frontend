@@ -1,9 +1,12 @@
 import apiService from '@/api/apiService';
 import { recommendationColumn } from '@/commons/constants/recommendation/table-column-data.constant';
 import { TipePembimbingEnum } from '@/commons/enums/tipe-pembimbing.enum';
+import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
 import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
+import { useToast } from '@/hooks/use-toast';
+import { useAssessmentPagination } from '@/hooks/useAssessment';
 import {
   useCreateRecommendation,
   useDeleteRecommendation,
@@ -38,6 +41,9 @@ const RecommendationTab = () => {
   const { mutateAsync: deleteMutate } = useDeleteRecommendation();
   const { selected, setSelected, setIsSearch } = useGlobalStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { data: listAssessments } = useAssessmentPagination();
+  const [lecturers, setLecturers] = useState<ILecturer[] | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     setPage(1);
@@ -46,6 +52,14 @@ const RecommendationTab = () => {
   useEffect(() => {
     setIsSearch(null);
   }, [setIsSearch]);
+
+  useEffect(() => {
+    setLecturers(
+      listAssessments?.data
+        ? listAssessments.data.map((ass) => ass.lecturer)
+        : null,
+    );
+  }, [listAssessments?.data]);
 
   const formattedData: FormattedRecommendation[] = (() => {
     const recommendationMap = new Map<string, FormattedRecommendation>();
@@ -129,8 +143,23 @@ const RecommendationTab = () => {
       <DataManagementComponent
         onClickCreate={() => {
           if (listRecommendations?.data.length == 0) {
+            if (
+              !lecturers ||
+              lecturers.filter(
+                (l) => l.tipePembimbing === TipePembimbingEnum.PEMBIMBING_DUA,
+              ).length === 0
+            ) {
+              toast({
+                title: 'Gagal!',
+                description: 'Data dosen pembimbing kedua tidak ditemukan.',
+                duration: 2000,
+              });
+              return;
+            }
             recommendationMutate();
+            setPageSizeLecturer(99999);
           } else {
+            setPageSize(999999);
             setPageLecturer(1);
             setPageSizeLecturer(99999);
           }

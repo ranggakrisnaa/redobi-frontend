@@ -17,7 +17,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const SignInForm: React.FC<SignInProps> = ({ onSuccess, onClick }) => {
+const SignInForm: React.FC<SignInProps> = ({ onSuccess }) => {
   const { rememberMe, setRememberMe } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const form = useForm<SignInSchema>({
@@ -105,14 +105,14 @@ const SignInForm: React.FC<SignInProps> = ({ onSuccess, onClick }) => {
               Ingat Saya?
             </label>
           </div>
-          <div className="absolute right-0 z-10">
+          {/* <div className="absolute right-0 z-10">
             <p
               className="text-sm font-medium text-primary-500 cursor-pointer select-none"
               onClick={onClick}
             >
               Lupa Password?
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="relative">
           <Button
