@@ -47,7 +47,10 @@ const RecommendationTab = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [setPage]);
+    setPageSize(10);
+    setPageLecturer(1);
+    setPageSizeLecturer(10);
+  }, [setPage, setPageSize, setPageLecturer, setPageSizeLecturer]);
 
   useEffect(() => {
     setIsSearch(null);
@@ -157,6 +160,9 @@ const RecommendationTab = () => {
               return;
             }
             recommendationMutate();
+            setPage(1);
+            setPageSize(999999);
+            setPageLecturer(1);
             setPageSizeLecturer(99999);
           } else {
             setPageSize(999999);
