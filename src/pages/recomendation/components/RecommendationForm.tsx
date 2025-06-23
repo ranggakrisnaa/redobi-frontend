@@ -13,7 +13,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useLecturerPagination } from '@/hooks/useLecturer';
-import { usePaginationRecommendations } from '@/hooks/useRecommendation';
+import {
+  useDeleteRecommendation,
+  usePaginationRecommendations,
+} from '@/hooks/useRecommendation';
 import { useRecommendationStore } from '@/store/recommendationStore';
 import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -34,6 +37,7 @@ const RecommendationFormPage: React.FC<Props> = ({
   const { data: listLecturers, isLoading: isLoadingLecturers } =
     useLecturerPagination();
   const { setPageSize } = useRecommendationStore();
+  const { mutate: deleteRecommendation } = useDeleteRecommendation();
 
   const { register, handleSubmit, control, setValue, watch, reset } =
     useForm<RecommendationFormSchema>({
@@ -330,6 +334,7 @@ const RecommendationFormPage: React.FC<Props> = ({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            deleteRecommendation([]);
             setIsDataProcessed(false);
             setOpen(false);
             setPageSize(10);

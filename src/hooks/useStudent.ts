@@ -182,6 +182,7 @@ export const useStudentImportExcel = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
       queryClient.invalidateQueries({ queryKey: ['statistics'] });
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
       handleSuccess('Data mahasiswa berhasil ditambahkan.', '/students');
     },
 

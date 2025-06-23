@@ -155,6 +155,9 @@ export const useLecturerDelete = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       queryClient.invalidateQueries({ queryKey: ['statistics'] });
+      queryClient.invalidateQueries({ queryKey: ['assessments'] });
+      queryClient.invalidateQueries({ queryKey: ['normalizations'] });
+      queryClient.invalidateQueries({ queryKey: ['rankings'] });
       handleSuccess('Data Dosen Pembimbing berhasil dihapus.', '/lecturers');
     },
 

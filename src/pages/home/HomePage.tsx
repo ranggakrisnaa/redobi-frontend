@@ -167,12 +167,14 @@ const HomePage = () => {
             {/* Right Section - Calendar and Progress */}
             <div className="space-y-6">
               {/* Calendar */}
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                className="w-full rounded-lg border mt-3"
-              />
+              <div className="w-full min-w-full h-[42%] mx-auto">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-lg border mt-3 w-full h-full"
+                />
+              </div>
 
               <div className="space-y-4">
                 {/* Progress Indicators */}
