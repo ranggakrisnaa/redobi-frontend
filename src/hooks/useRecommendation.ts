@@ -257,6 +257,8 @@ export const useDeleteRecommendation = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      queryClient.invalidateQueries({ queryKey: ['students'] });
       handleSuccess('Data Rekomendasi berhasil dihapus.', '/recommendations');
     },
 
