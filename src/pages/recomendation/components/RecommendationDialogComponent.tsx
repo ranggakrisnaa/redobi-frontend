@@ -6,13 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import {
   useCreateRecommendation,
   useUpdateRecommendation,
 } from '@/hooks/useRecommendation';
-import { RefreshCcwDot, Search } from 'lucide-react';
-import { useState } from 'react';
+import { RefreshCcwDot } from 'lucide-react';
 import RecommendationFormPage from './RecommendationForm';
 
 type Props = {
@@ -20,10 +18,23 @@ type Props = {
   setOpen: (open: boolean) => void;
 };
 
-const RecommendationDialogComponent = ({ open, setOpen }: Props) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const RecommendationDialogComponent: React.FC<Props> = ({ open, setOpen }) => {
   const { mutate: recommendationMutate } = useCreateRecommendation();
   const { mutate: updateRecommendationMutate } = useUpdateRecommendation();
+  // const { setSearch } = useRecommendationStore();
+
+  // const [localSearch, setLocalSearch] = useState('');
+
+  // useEffect(() => {
+  //   setSearch(localSearch.trim() || ' ');
+  //   const timeoutId = setTimeout(() => {
+  //     if (localSearch.trim() === '') {
+  //       setSearch('');
+  //     }
+  //   }, 300);
+
+  //   return () => clearTimeout(timeoutId);
+  // }, [localSearch, setSearch]);
 
   const handleRefreshData = () => {
     recommendationMutate();
@@ -32,6 +43,10 @@ const RecommendationDialogComponent = ({ open, setOpen }: Props) => {
   const handleUpdateRecommendation = (data: RecommendationFormSchema) => {
     updateRecommendationMutate(data);
   };
+
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setLocalSearch(e.target.value); // Update local search term
+  // };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,18 +58,18 @@ const RecommendationDialogComponent = ({ open, setOpen }: Props) => {
         <DialogHeader>
           <DialogTitle>Data Hasil Rekomendasi</DialogTitle>
         </DialogHeader>
-        <div className="border-b"></div>
+        <div className="border-b" />
 
-        <div className="flex gap-3">
-          <div className="relative w-full">
+        <div className="flex gap-3 justify-end">
+          {/* <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={localSearch}
+              onChange={handleSearchChange} // Automatically updates search
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             />
-          </div>
+          </div> */}
           <Button
             className="bg-[#166534] hover:bg-[#16A34A] transition-all duration-200"
             onClick={handleRefreshData}

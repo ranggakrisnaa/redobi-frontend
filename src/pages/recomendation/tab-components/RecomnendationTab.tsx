@@ -46,11 +46,16 @@ const RecommendationTab = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    setPage(1);
-    setPageSize(10);
+    if (dialogOpen == false) {
+      setPage(1);
+      setPageSize(10);
+    }
+  }, [setPage, setPageSize, dialogOpen]);
+
+  useEffect(() => {
     setPageLecturer(1);
     setPageSizeLecturer(10);
-  }, [setPage, setPageSize, setPageLecturer, setPageSizeLecturer]);
+  }, [setPageLecturer, setPageSizeLecturer]);
 
   useEffect(() => {
     setIsSearch(null);
@@ -87,12 +92,16 @@ const RecommendationTab = () => {
       if (!studentData) return;
 
       if (recommendation.position === TipePembimbingEnum.PEMBIMBING_SATU) {
-        studentData.lecturerFirst = recommendation.lecturer?.fullName ?? '-';
+        studentData.lecturerFirst = recommendation.lecturer
+          ? recommendation.lecturer.fullName
+          : '-';
         studentData.valueFirst = recommendation.recommendationScore ?? null;
       }
 
       if (recommendation.position === TipePembimbingEnum.PEMBIMBING_DUA) {
-        studentData.lecturerSecond = recommendation.lecturer?.fullName ?? '-';
+        studentData.lecturerSecond = recommendation.lecturer
+          ? recommendation.lecturer.fullName
+          : '-';
         studentData.valueSecond = recommendation.recommendationScore ?? null;
       }
     });
@@ -161,11 +170,12 @@ const RecommendationTab = () => {
             }
             recommendationMutate();
             setPage(1);
-            setPageSize(999999);
+            setPageSize(99999);
             setPageLecturer(1);
             setPageSizeLecturer(99999);
           } else {
-            setPageSize(999999);
+            setPage(1);
+            setPageSize(99999);
             setPageLecturer(1);
             setPageSizeLecturer(99999);
           }
@@ -180,7 +190,7 @@ const RecommendationTab = () => {
         isMatriks={true}
       />
       <TableComponent
-        data={formattedData}
+        data={dialogOpen ? [] : formattedData}
         columns={recommendationColumn}
         isMatriks={true}
       />
