@@ -200,6 +200,7 @@ export const useCreateRecommendation = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       queryClient.invalidateQueries({ queryKey: ['statistics'] });
     },
 
