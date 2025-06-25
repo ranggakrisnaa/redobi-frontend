@@ -6,11 +6,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useLecturerPagination } from '@/hooks/useLecturer';
 import {
-  useCreateRecommendation,
+  usePaginationRecommendations,
   useUpdateRecommendation,
 } from '@/hooks/useRecommendation';
 import { RefreshCcwDot } from 'lucide-react';
+import { useState } from 'react';
 import RecommendationFormPage from './RecommendationForm';
 
 type Props = {
@@ -19,34 +21,38 @@ type Props = {
 };
 
 const RecommendationDialogComponent: React.FC<Props> = ({ open, setOpen }) => {
-  const { mutate: recommendationMutate } = useCreateRecommendation();
+  // const { mutate: recommendationMutate } = useCreateRecommendation();
   const { mutate: updateRecommendationMutate } = useUpdateRecommendation();
-  // const { setSearch } = useRecommendationStore();
 
-  // const [localSearch, setLocalSearch] = useState('');
+  const { refetch: refetchRecommendations } = usePaginationRecommendations();
+  const { refetch: refetchLecturers } = useLecturerPagination();
 
-  // useEffect(() => {
-  //   setSearch(localSearch.trim() || ' ');
-  //   const timeoutId = setTimeout(() => {
-  //     if (localSearch.trim() === '') {
-  //       setSearch('');
-  //     }
-  //   }, 300);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  //   return () => clearTimeout(timeoutId);
-  // }, [localSearch, setSearch]);
+  const handleRefreshData = async () => {
+    try {
+      setIsRefreshing(true);
 
-  const handleRefreshData = () => {
-    recommendationMutate();
+      await Promise.all([refetchRecommendations(), refetchLecturers()]);
+
+      console.log('Data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const handleUpdateRecommendation = (data: RecommendationFormSchema) => {
-    updateRecommendationMutate(data);
+    updateRecommendationMutate(data, {
+      onSuccess: () => {
+        console.log('Update successful');
+      },
+      onError: (error) => {
+        console.error('Update failed:', error);
+      },
+    });
   };
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setLocalSearch(e.target.value); // Update local search term
-  // };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -61,20 +67,15 @@ const RecommendationDialogComponent: React.FC<Props> = ({ open, setOpen }) => {
         <div className="border-b" />
 
         <div className="flex gap-3 justify-end">
-          {/* <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              placeholder="Search"
-              value={localSearch}
-              onChange={handleSearchChange} // Automatically updates search
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-            />
-          </div> */}
           <Button
             className="bg-[#166534] hover:bg-[#16A34A] transition-all duration-200"
             onClick={handleRefreshData}
+            disabled={isRefreshing}
           >
-            <RefreshCcwDot className="w-4 h-4 mr-1" /> Perbarui Data
+            <RefreshCcwDot
+              className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`}
+            />
+            {isRefreshing ? 'Memperbarui...' : 'Perbarui Data'}
           </Button>
         </div>
 
