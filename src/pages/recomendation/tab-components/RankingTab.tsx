@@ -32,6 +32,10 @@ const RankingTab = () => {
     setIsSearch(null);
   }, [setIsSearch]);
 
+  useEffect(() => {
+    setSearch('');
+  }, [setSearch]);
+
   const formattedData =
     rankingsData?.data
       .map((ranking: IRankingMatrices) => ({

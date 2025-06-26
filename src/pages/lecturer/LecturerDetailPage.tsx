@@ -22,6 +22,7 @@ import { useLecturerDetail } from '@/hooks/useLecturer';
 import { usePaginationRecommendations } from '@/hooks/useRecommendation';
 import { useScrollToTopOnPush } from '@/hooks/useScrollTopOnPush';
 import { useLecturerStore } from '@/store/lecturerStore';
+import { useRecommendationStore } from '@/store/recommendationStore.ts';
 import { FilePenLine, Slash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -33,43 +34,52 @@ const LecturerDetailPage = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const { data, isLoading } = useLecturerDetail();
+  const { setPageSize, setPage } = useRecommendationStore();
   const { data: listRecommendations } = usePaginationRecommendations();
   const detailRef = useRef<HTMLDivElement>(null);
   useScrollToTopOnPush(detailRef, [isLoading]);
   console.log(data?.recommendation);
 
-  const groupedStudents = listRecommendations?.data
-    .filter((r) => r.lecturer?.fullName == data?.fullName)
-    .reduce(
-      (acc, curr) => {
-        const studentId = curr.student?.id;
-        if (!studentId) return acc;
+  useEffect(() => {
+    setPage(1);
+    setPageSize(999999);
+  }, [setPage, setPageSize]);
 
-        if (!acc[studentId]) {
-          acc[studentId] = {
-            student: curr.student,
-            pembimbing1: null,
-            pembimbing2: null,
-          };
-        }
+  const groupedStudents = listRecommendations?.data.reduce(
+    (acc, curr) => {
+      const studentId = curr.student?.id;
+      if (!studentId) return acc;
 
-        if (curr.position === TipePembimbingEnum.PEMBIMBING_SATU) {
-          acc[studentId].pembimbing1 = curr.lecturer?.fullName ?? null;
-        } else if (curr.position === TipePembimbingEnum.PEMBIMBING_DUA) {
-          acc[studentId].pembimbing2 = curr.lecturer?.fullName ?? null;
-        }
+      if (!acc[studentId]) {
+        acc[studentId] = {
+          student: curr.student,
+          pembimbing1: null,
+          pembimbing2: null,
+          involved: false, // tambahan: cek apakah dosen ini terlibat
+        };
+      }
 
-        return acc;
-      },
-      {} as Record<
-        string,
-        {
-          student: (typeof listRecommendations.data)[number]['student'];
-          pembimbing1: string | null;
-          pembimbing2: string | null;
-        }
-      >,
-    );
+      // Isi pembimbing 1/2 sesuai enum
+      if (curr.position === TipePembimbingEnum.PEMBIMBING_SATU) {
+        acc[studentId].pembimbing1 = curr.lecturer?.fullName ?? null;
+        if (curr.lecturerId === data?.id) acc[studentId].involved = true;
+      } else if (curr.position === TipePembimbingEnum.PEMBIMBING_DUA) {
+        acc[studentId].pembimbing2 = curr.lecturer?.fullName ?? null;
+        if (curr.lecturerId === data?.id) acc[studentId].involved = true;
+      }
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        student: (typeof listRecommendations.data)[number]['student'];
+        pembimbing1: string | null;
+        pembimbing2: string | null;
+        involved: boolean;
+      }
+    >,
+  );
   console.log(groupedStudents);
 
   useEffect(() => {
@@ -205,40 +215,42 @@ const LecturerDetailPage = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {Object.values(groupedStudents || {}).map((mhs, idx) => (
-                        <TableRow key={mhs.student?.id}>
-                          <TableCell className="text-center">
-                            {idx + 1}.
-                          </TableCell>
-                          <TableCell className="w-[400px]">
-                            <div className="flex items-center gap-3">
-                              <Avatar className="w-10 h-10">
-                                <AvatarImage
-                                  src={mhs.student?.imageUrl}
-                                  alt={mhs.student?.fullName}
-                                />
-                                <AvatarFallback>NM</AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <div className="font-medium">
-                                  {mhs.student?.fullName}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {mhs.student?.nim}
+                      {Object.values(groupedStudents || {})
+                        .filter((mhs) => mhs.involved)
+                        .map((mhs, idx) => (
+                          <TableRow key={mhs.student?.id}>
+                            <TableCell className="text-center">
+                              {idx + 1}.
+                            </TableCell>
+                            <TableCell className="w-[400px]">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="w-10 h-10">
+                                  <AvatarImage
+                                    src={mhs.student?.imageUrl}
+                                    alt={mhs.student?.fullName}
+                                  />
+                                  <AvatarFallback>NM</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="font-medium">
+                                    {mhs.student?.fullName}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {mhs.student?.nim}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="w-[200px]">
-                            {mhs.student?.major} <br /> {mhs.student?.class}
-                          </TableCell>
-                          <TableCell className="whitespace-normal w-[600px]">
-                            {mhs.student?.judulSkripsi}
-                          </TableCell>
-                          <TableCell>{mhs.pembimbing1 ?? '-'}</TableCell>
-                          <TableCell>{mhs.pembimbing2 ?? '-'}</TableCell>
-                        </TableRow>
-                      ))}
+                            </TableCell>
+                            <TableCell className="w-[200px]">
+                              {mhs.student?.major} <br /> {mhs.student?.class}
+                            </TableCell>
+                            <TableCell className="whitespace-normal w-[600px]">
+                              {mhs.student?.judulSkripsi}
+                            </TableCell>
+                            <TableCell>{mhs.pembimbing1 ?? '-'}</TableCell>
+                            <TableCell>{mhs.pembimbing2 ?? '-'}</TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </div>

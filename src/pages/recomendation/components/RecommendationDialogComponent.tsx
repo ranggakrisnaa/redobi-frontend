@@ -12,7 +12,7 @@ import {
   useUpdateRecommendation,
 } from '@/hooks/useRecommendation';
 import { RefreshCcwDot } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import RecommendationFormPage from './RecommendationForm';
 
 type Props = {

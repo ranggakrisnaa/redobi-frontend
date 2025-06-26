@@ -29,6 +29,10 @@ const NormalizationTab = () => {
   }, [setPage]);
 
   useEffect(() => {
+    setSearch('');
+  }, [setSearch]);
+
+  useEffect(() => {
     setIsSearch(null);
   }, [setIsSearch]);
 

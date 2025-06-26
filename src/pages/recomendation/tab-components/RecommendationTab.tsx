@@ -46,7 +46,7 @@ const RecommendationTab = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (dialogOpen == false) {
+    if (!dialogOpen) {
       setPage(1);
       setPageSize(10);
     }
@@ -60,6 +60,10 @@ const RecommendationTab = () => {
   useEffect(() => {
     setIsSearch(null);
   }, [setIsSearch]);
+
+  useEffect(() => {
+    setSearch('');
+  }, [setSearch]);
 
   useEffect(() => {
     setLecturers(
