@@ -12,7 +12,7 @@ import { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NormalizationTab from './tab-components/NormalizationTab';
 import RankingTab from './tab-components/RankingTab';
-import RecommendationTab from './tab-components/RecomnendationTab';
+import RecommendationTab from './tab-components/RecommendationTab.tsx';
 
 const RecommendationPage = () => {
   const navigate = useNavigate();
