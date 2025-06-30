@@ -149,6 +149,7 @@ export const useAssessmentDelete = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess('Data Penilaian Dosen berhasil dihapus.', '/assessments');
     },
 
