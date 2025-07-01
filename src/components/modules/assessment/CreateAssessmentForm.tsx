@@ -53,6 +53,11 @@ const CreateAssessmentForm: React.FC<CreateAssessmentProps> = ({
   const { loading } = useGlobalStore();
   const { data: paginationAssessments } = useAssessmentPagination();
 
+  useEffect(() => {
+    resetSelectedCriteria();
+    useAssessmentStore.getState().resetLecturerId();
+  }, [resetSelectedCriteria]);
+
   const form = useForm<CreateAssessmentSchema>({
     resolver: zodResolver(createAssessmentSchema),
     mode: 'onChange',

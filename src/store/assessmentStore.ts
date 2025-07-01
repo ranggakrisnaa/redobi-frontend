@@ -19,6 +19,7 @@ type AsessmentStore = {
   setSelectedCriteria: (criteria: string | string[]) => void;
   resetSelectedCriteria: () => void;
   setLecturerId: (lecturerName: string) => void;
+  resetLecturerId: () => void;
 };
 
 export const useAssessmentStore = create<AsessmentStore>((set) => ({
@@ -55,4 +56,5 @@ export const useAssessmentStore = create<AsessmentStore>((set) => ({
     set((state) => ({
       lecturerId: [...state.lecturerId, lecturerId],
     })),
+  resetLecturerId: () => set({ lecturerId: [] }),
 }));
