@@ -52,6 +52,7 @@ export const useAssessmentCreate = () => {
         queryKey: ['assessment-detail', newAssessment.id],
       });
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess(
         'Data Penilaian Dosen berhasil ditambahkan.',
         '/assessments',
@@ -112,6 +113,7 @@ export const useAssessmentUpdate = () => {
         queryKey: ['assessment-detail', newAssessment.id],
       });
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
+      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
       handleSuccess(
         'Data Penilaian Dosen berhasil diperbarui.',
         '/assessments',
