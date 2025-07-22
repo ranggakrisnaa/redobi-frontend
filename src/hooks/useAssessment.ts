@@ -52,7 +52,11 @@ export const useAssessmentCreate = () => {
         queryKey: ['assessment-detail', newAssessment.id],
       });
       queryClient.invalidateQueries({ queryKey: ['assessments'] });
-      queryClient.invalidateQueries({ queryKey: ['lecturers'] });
+      queryClient.invalidateQueries({
+        queryKey: ['lecturers'],
+        exact: false,
+        refetchType: 'active',
+      });
       handleSuccess(
         'Data Penilaian Dosen berhasil ditambahkan.',
         '/assessments',
