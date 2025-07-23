@@ -32,7 +32,8 @@ const NormalizationTab = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [setPage]);
+    setPageSize(10);
+  }, [setPage, setPageSize]);
 
   useEffect(() => {
     setSearch('');
