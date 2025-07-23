@@ -3,6 +3,7 @@ import { recommendationColumn } from '@/commons/constants/recommendation/table-c
 import { TipePembimbingEnum } from '@/commons/enums/tipe-pembimbing.enum';
 import { ILecturer } from '@/commons/interface-model/lecturer-entity.interface';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
+import LoadingComponent from '@/components/commons/LoadingComponent';
 import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
 import { useToast } from '@/hooks/use-toast';
@@ -33,7 +34,12 @@ type FormattedRecommendation = {
 const RecommendationTab = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { mutate: recommendationMutate } = useCreateRecommendation();
-  const { data: listRecommendations } = usePaginationRecommendations();
+  const {
+    data: listRecommendations,
+    isLoading,
+    isError,
+    error,
+  } = usePaginationRecommendations();
   const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
   const { setPageSize: setPageSizeLecturer, setPage: setPageLecturer } =
@@ -199,13 +205,21 @@ const RecommendationTab = () => {
         isMatriks={true}
       />
       <div className="flex justify-end mt-4 w-full">
-        <PaginationComponent
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalItems={listRecommendations?.pagination.totalRecords || 0}
-          onPageChange={setPage}
-          onPageSizeChange={setPageSize}
-        />
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[200px]">
+            <LoadingComponent />
+          </div>
+        ) : isError ? (
+          <p className="text-center text-red-500 mt-3">{error.message}</p>
+        ) : (
+          <PaginationComponent
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={listRecommendations?.pagination.totalRecords || 0}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
+        )}
       </div>
       <RecommendationDialogComponent
         open={dialogOpen}

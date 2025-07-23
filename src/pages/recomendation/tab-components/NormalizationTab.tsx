@@ -1,6 +1,7 @@
 import { normalizationColumn } from '@/commons/constants/recommendation/table-column-data.constant';
 import { INormalizedMatrices } from '@/commons/interface-model/normalized-matrices-entity.interface';
 import DataManagementComponent from '@/components/commons/DataManagementComponent';
+import LoadingComponent from '@/components/commons/LoadingComponent';
 import PaginationComponent from '@/components/commons/PaginationComponent';
 import TableComponent from '@/components/commons/TableComponent';
 import {
@@ -18,7 +19,12 @@ const NormalizationTab = () => {
   const { mutate: normalizationMutate } = useCreateNormalization();
   const { mutate: rankingMutate } = useCreateRankingMatrices();
   const { selected, setSelected, setIsSearch } = useGlobalStore();
-  const { data: normalizationsData } = usePaginationNormalization();
+  const {
+    data: normalizationsData,
+    isLoading,
+    error,
+    isError,
+  } = usePaginationNormalization();
   const { mutateAsync: deleteMutate } = useDeleteNormalization();
   const { currentPage, pageSize, setPage, setPageSize, setSearch } =
     useRecommendationStore();
@@ -188,11 +194,19 @@ const NormalizationTab = () => {
         titleDialog="Nomalisasi Matriks"
         isMatriks={true}
       />
-      <TableComponent
-        data={formattedData}
-        columns={normalizationColumn}
-        isMatriks={true}
-      />
+      {isLoading ? (
+        <div className="flex justify-center items-center min-h-[200px]">
+          <LoadingComponent />
+        </div>
+      ) : isError ? (
+        <p className="text-center text-red-500 mt-3">{error.message}</p>
+      ) : (
+        <TableComponent
+          data={formattedData}
+          columns={normalizationColumn}
+          isMatriks={true}
+        />
+      )}
       <div className="flex justify-end mt-4 w-full">
         <PaginationComponent
           currentPage={currentPage}
