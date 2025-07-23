@@ -26,13 +26,19 @@ const NormalizationTab = () => {
     isError,
   } = usePaginationNormalization();
   const { mutateAsync: deleteMutate } = useDeleteNormalization();
-  const { currentPage, pageSize, setPage, setPageSize, setSearch } =
-    useRecommendationStore();
+  const {
+    currentPage,
+    pageSizeNormalizations,
+    setPage,
+    setPageSizeNormalizations,
+    setSearch,
+  } = useRecommendationStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     setPage(1);
-  }, [setPage]);
+    setPageSizeNormalizations(10);
+  }, [setPage, setPageSizeNormalizations]);
 
   useEffect(() => {
     setSearch('');
@@ -210,10 +216,10 @@ const NormalizationTab = () => {
       <div className="flex justify-end mt-4 w-full">
         <PaginationComponent
           currentPage={currentPage}
-          pageSize={pageSize}
+          pageSize={pageSizeNormalizations}
           totalItems={normalizationsData?.pagination.totalRecords || 0}
           onPageChange={setPage}
-          onPageSizeChange={setPageSize}
+          onPageSizeChange={setPageSizeNormalizations}
         />
       </div>
     </div>
