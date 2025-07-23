@@ -21,11 +21,16 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { UseBaseMutationHandler } from './useBaseMutationHandler';
 
 export const usePaginationNormalization = () => {
-  const { currentPage, pageSize, search } = useRecommendationStore();
+  const { currentPage, pageSizeNormalizations, search } =
+    useRecommendationStore();
   return useQuery({
-    queryKey: ['normalizations', currentPage, pageSize, search],
+    queryKey: ['normalizations', currentPage, pageSizeNormalizations, search],
     queryFn: async (): Promise<NormalizationPaginationResponse> => {
-      return await normalizationsPagination(currentPage, pageSize, search);
+      return await normalizationsPagination(
+        currentPage,
+        pageSizeNormalizations,
+        search,
+      );
     },
     staleTime: 5 * 60 * 1000,
   });
